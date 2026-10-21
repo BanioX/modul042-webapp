@@ -4,6 +4,9 @@ const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { calculateSwissGrade, GRADE_ROUNDING_STEP, neededPointsTable } = require('./grades');
+const { EXAM_TYPES, HFWI_MODULES, randomAlias, isCatalogModule } = require('./catalog');
+const { migrate } = require('./migrate');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,115 +63,43 @@ const pool = new Pool({
   max: 15,
 });
 
-// Calculate Swiss grade from points
-function calculateSwissGrade(points, maxPoints = 100) {
-  const pts = parseFloat(points);
-  const max = parseFloat(maxPoints);
-  if (!max || max <= 0 || isNaN(pts)) return 1.0;
-  const grade = (pts / max) * 5 + 1;
-  const clamped = Math.max(1.0, Math.min(6.0, grade));
-  return Math.round(clamped * 10) / 10; // Round to 0.1
-}
-
-// Anonymization nicknames and avatars
 const AVATARS = ['🦊', '🐺', '🦉', '🐱', '🦄', '🐯', '🐼', '🦅', '🦁', '🐻'];
-function getAnonymousHandle(userId) {
+function getAnonymousHandle(userId, alias) {
   const avatar = AVATARS[userId % AVATARS.length];
-  const hash = ((userId * 9301 + 49297) % 233280).toString(16).toUpperCase().padStart(4, '0');
-  return { name: `WInf-Student #${hash}`, avatar };
+  return { name: alias || `Student #${String(userId).padStart(4, '0')}`, avatar };
 }
 
-// Initialize database schema and pre-populate initial benchmark cohort
+function mapExamRow(row) {
+  const punkte = parseFloat(row.punkte);
+  const maxPunkte = parseFloat(row.max_punkte);
+  const grade = calculateSwissGrade(punkte, maxPunkte);
+  return {
+    id: row.id,
+    user_id: row.user_id,
+    module_code: row.module_code,
+    module_name: row.module_name,
+    typ: row.typ,
+    nummer: row.nummer,
+    punkte,
+    max_punkte: maxPunkte,
+    atl_points: punkte,
+    max_points: maxPunkte,
+    datum: row.datum,
+    grade,
+  };
+}
+
 async function initDb() {
   let attempts = 10;
   while (attempts > 0) {
     try {
-      // 1. Visitors table
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS visitors (
-          id SERIAL PRIMARY KEY,
-          visited_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-          ip_address VARCHAR(100)
-        );
-      `);
-
-      // 2. Users table
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS users (
-          id SERIAL PRIMARY KEY,
-          email VARCHAR(255) UNIQUE NOT NULL,
-          display_name VARCHAR(100) NOT NULL,
-          password_hash VARCHAR(255) NOT NULL,
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-
-      // 3. Module Scores / ATL table
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS module_scores (
-          id SERIAL PRIMARY KEY,
-          user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-          module_code VARCHAR(50) NOT NULL,
-          module_name VARCHAR(255) NOT NULL,
-          atl_points NUMERIC(5,2) NOT NULL,
-          max_points NUMERIC(5,2) DEFAULT 100,
-          grade NUMERIC(3,1) NOT NULL,
-          semester VARCHAR(50) DEFAULT 'HS26',
-          created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-
-      // Seed benchmark users if empty
-      const existingUsers = await pool.query('SELECT COUNT(*) FROM users');
-      if (parseInt(existingUsers.rows[0].count, 10) === 0) {
-        console.log('Seeding initial Wirtschaftsinformatik benchmark cohort...');
-        const pwHash = await bcrypt.hash('DemoPassword123!', BCRYPT_ROUNDS);
-        
-        // Seed primary user (Alban)
-        const albanRes = await pool.query(
-          `INSERT INTO users (email, display_name, password_hash)
-           VALUES ($1, $2, $3) RETURNING id`,
-          ['alban@hkv.ch', 'Alban', pwHash]
-        );
-        const albanId = albanRes.rows[0].id;
-
-        // Seed peer students for benchmark
-        const cohort = [
-          { email: 'student1@hkv.ch', name: 'Anonymous Student 1', points: 94.0, code: 'Modul 042', modName: 'Applications Engineering' },
-          { email: 'student2@hkv.ch', name: 'Anonymous Student 2', points: 87.5, code: 'Modul 042', modName: 'Applications Engineering' },
-          { email: 'student3@hkv.ch', name: 'Anonymous Student 3', points: 82.0, code: 'Modul 042', modName: 'Applications Engineering' },
-          { email: 'student4@hkv.ch', name: 'Anonymous Student 4', points: 76.0, code: 'Modul 042', modName: 'Applications Engineering' },
-          { email: 'student5@hkv.ch', name: 'Anonymous Student 5', points: 91.0, code: 'Modul 114', modName: 'Datenkompression & Codierung' },
-          { email: 'student6@hkv.ch', name: 'Anonymous Student 6', points: 68.5, code: 'Modul 042', modName: 'Applications Engineering' },
-        ];
-
-        // Add Alban's score
-        await pool.query(
-          `INSERT INTO module_scores (user_id, module_code, module_name, atl_points, max_points, grade)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-          [albanId, 'Modul 042', 'Applications Engineering', 96.0, 100, calculateSwissGrade(96.0, 100)]
-        );
-
-        for (const peer of cohort) {
-          const peerRes = await pool.query(
-            `INSERT INTO users (email, display_name, password_hash)
-             VALUES ($1, $2, $3) RETURNING id`,
-            [peer.email, peer.name, pwHash]
-          );
-          await pool.query(
-            `INSERT INTO module_scores (user_id, module_code, module_name, atl_points, max_points, grade)
-             VALUES ($1, $2, $3, $4, $5, $6)`,
-            [peerRes.rows[0].id, peer.code, peer.modName, peer.points, 100, calculateSwissGrade(peer.points, 100)]
-          );
-        }
-      }
-
+      await migrate(pool, { bcryptRounds: BCRYPT_ROUNDS });
       console.log('Database initialized successfully: tables ready.');
       return;
     } catch (err) {
       console.error(`Database connection pending... (${attempts} attempts left)`, err.message);
       attempts--;
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   }
 }
@@ -178,7 +109,10 @@ async function getCurrentUser(req) {
   const userId = req.signedCookies[SESSION_COOKIE];
   if (!userId) return null;
   try {
-    const res = await pool.query('SELECT id, email, display_name FROM users WHERE id = $1', [userId]);
+    const res = await pool.query(
+      'SELECT id, email, display_name, alias, email_verified FROM users WHERE id = $1',
+      [userId]
+    );
     return res.rows[0] || null;
   } catch {
     return null;
@@ -192,14 +126,15 @@ app.get('/health', async (req, res) => {
   try {
     const dbCheck = await pool.query('SELECT 1');
     const userCount = await pool.query('SELECT COUNT(*) FROM users');
-    const scoreCount = await pool.query('SELECT COUNT(*) FROM module_scores');
+    const examCount = await pool.query('SELECT COUNT(*) FROM exams');
     res.status(200).json({
       status: 'healthy',
       database: 'connected',
       version: APP_VERSION,
       uptimeSeconds: Math.floor(process.uptime()),
       registeredUsers: parseInt(userCount.rows[0].count, 10),
-      moduleScores: parseInt(scoreCount.rows[0].count, 10),
+      exams: parseInt(examCount.rows[0].count, 10),
+      gradeRoundingStep: GRADE_ROUNDING_STEP,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
@@ -227,11 +162,22 @@ app.post('/api/register', authLimiter, async (req, res) => {
   try {
     const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
     const name = display_name && display_name.trim() ? display_name.trim() : email.split('@')[0];
-    const result = await pool.query(
-      `INSERT INTO users (email, display_name, password_hash)
-       VALUES ($1, $2, $3) RETURNING id, email, display_name`,
-      [email.toLowerCase().trim(), name, hash]
-    );
+    let result;
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      try {
+        result = await pool.query(
+          `INSERT INTO users (email, display_name, password_hash, alias, email_verified)
+           VALUES ($1, $2, $3, $4, true) RETURNING id, email, display_name, alias`,
+          [email.toLowerCase().trim(), name, hash, randomAlias()]
+        );
+        break;
+      } catch (err) {
+        if (err.code !== '23505' || !String(err.constraint || '').includes('alias')) throw err;
+      }
+    }
+    if (!result) {
+      return res.status(500).json({ error: 'Alias konnte nicht vergeben werden' });
+    }
     const user = result.rows[0];
     res.cookie(SESSION_COOKIE, user.id, SESSION_COOKIE_OPTS);
     res.status(201).json({ user });
@@ -259,7 +205,7 @@ app.post('/api/login', authLimiter, async (req, res) => {
       return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
     }
     res.cookie(SESSION_COOKIE, user.id, SESSION_COOKIE_OPTS);
-    res.json({ user: { id: user.id, email: user.email, display_name: user.display_name } });
+    res.json({ user: { id: user.id, email: user.email, display_name: user.display_name, alias: user.alias } });
   } catch (err) {
     res.status(500).json({ error: 'Loginfehler: ' + err.message });
   }
@@ -273,15 +219,43 @@ app.post('/api/logout', (req, res) => {
 // -------------------------------------------------------------
 // Scoring & Leaderboard Endpoints
 // -------------------------------------------------------------
+app.get('/api/modules', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT code, name, lektionen, catalog FROM modules ORDER BY catalog DESC, code'
+    );
+    res.json({
+      modules: result.rows,
+      catalog: HFWI_MODULES,
+      examTypes: EXAM_TYPES,
+      gradeRoundingStep: GRADE_ROUNDING_STEP,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/grades/needed', (req, res) => {
+  const max = parseFloat(req.query.max);
+  if (!max || max <= 0) {
+    return res.status(400).json({ error: 'max muss grösser als 0 sein' });
+  }
+  res.json({ max, roundingStep: GRADE_ROUNDING_STEP, needed: neededPointsTable(max) });
+});
+
 app.get('/api/scores/my', async (req, res) => {
   const user = await getCurrentUser(req);
   if (!user) return res.status(401).json({ error: 'Nicht angemeldet' });
   try {
     const result = await pool.query(
-      `SELECT * FROM module_scores WHERE user_id = $1 ORDER BY created_at DESC`,
+      `SELECT e.*, m.name AS module_name
+       FROM exams e
+       JOIN modules m ON m.code = e.module_code
+       WHERE e.user_id = $1
+       ORDER BY e.datum DESC, e.id DESC`,
       [user.id]
     );
-    res.json({ scores: result.rows });
+    res.json({ scores: result.rows.map(mapExamRow) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -291,26 +265,39 @@ app.post('/api/scores', async (req, res) => {
   const user = await getCurrentUser(req);
   if (!user) return res.status(401).json({ error: 'Bitte zuerst einloggen oder registrieren.' });
 
-  const { module_code, module_name, atl_points, max_points, semester } = req.body;
-  const pts = parseFloat(atl_points);
-  const max = parseFloat(max_points) || 100;
+  const moduleCode = String(req.body.module_code || '').trim();
+  const typ = String(req.body.typ || 'ATL').trim();
+  const nummer = parseInt(req.body.nummer, 10) || 1;
+  const pts = parseFloat(req.body.punkte ?? req.body.atl_points);
+  const max = parseFloat(req.body.max_punkte ?? req.body.max_points);
+  const datum = req.body.datum || new Date().toISOString().slice(0, 10);
 
-  if (isNaN(pts) || pts < 0 || pts > max) {
+  if (!isCatalogModule(moduleCode)) {
+    return res.status(400).json({ error: 'Bitte ein Modul aus dem HFWI-Katalog wählen.' });
+  }
+  if (!EXAM_TYPES.includes(typ)) {
+    return res.status(400).json({ error: 'Ungültiger Prüfungstyp.' });
+  }
+  if (nummer < 1) {
+    return res.status(400).json({ error: 'Nummer muss mindestens 1 sein.' });
+  }
+  if (Number.isNaN(max) || max <= 0) {
+    return res.status(400).json({ error: 'Max-Punkte müssen grösser als 0 sein.' });
+  }
+  if (Number.isNaN(pts) || pts < 0 || pts > max) {
     return res.status(400).json({ error: `Punkte müssen zwischen 0 und ${max} liegen.` });
   }
 
-  const grade = calculateSwissGrade(pts, max);
-  const code = (module_code || 'Modul 042').trim();
-  const name = (module_name || 'Applications Engineering').trim();
-  const sem = (semester || 'HS26').trim();
-
   try {
     const result = await pool.query(
-      `INSERT INTO module_scores (user_id, module_code, module_name, atl_points, max_points, grade, semester)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [user.id, code, name, pts, max, grade, sem]
+      `INSERT INTO exams (user_id, module_code, typ, nummer, punkte, max_punkte, datum)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       RETURNING *`,
+      [user.id, moduleCode, typ, nummer, pts, max, datum]
     );
-    res.status(201).json({ score: result.rows[0] });
+    const named = await pool.query('SELECT name FROM modules WHERE code = $1', [moduleCode]);
+    const row = { ...result.rows[0], module_name: named.rows[0].name };
+    res.status(201).json({ score: mapExamRow(row) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -320,7 +307,7 @@ app.delete('/api/scores/:id', async (req, res) => {
   const user = await getCurrentUser(req);
   if (!user) return res.status(401).json({ error: 'Nicht angemeldet' });
   try {
-    await pool.query('DELETE FROM module_scores WHERE id = $1 AND user_id = $2', [req.params.id, user.id]);
+    await pool.query('DELETE FROM exams WHERE id = $1 AND user_id = $2', [req.params.id, user.id]);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -330,62 +317,83 @@ app.delete('/api/scores/:id', async (req, res) => {
 // Anonymized Leaderboard & Benchmark
 app.get('/api/leaderboard', async (req, res) => {
   const currentUser = await getCurrentUser(req);
-  const moduleFilter = req.query.module;
+  const moduleFilter = req.query.module || 'ALL';
 
   try {
-    let query = `
-      SELECT 
-        s.id,
-        s.user_id,
-        s.module_code,
-        s.module_name,
-        s.atl_points,
-        s.max_points,
-        s.grade,
-        s.created_at,
-        u.display_name
-      FROM module_scores s
-      JOIN users u ON s.user_id = u.id
-    `;
     const params = [];
+    let where = '';
     if (moduleFilter && moduleFilter !== 'ALL') {
-      query += ` WHERE s.module_code = $1`;
+      where = 'WHERE e.module_code = $1';
       params.push(moduleFilter);
     }
-    query += ` ORDER BY s.grade DESC, s.atl_points DESC, s.created_at ASC`;
 
-    const result = await pool.query(query, params);
-    const rows = result.rows;
+    const result = await pool.query(
+      `SELECT e.*, m.name AS module_name, u.alias, u.display_name
+       FROM exams e
+       JOIN modules m ON m.code = e.module_code
+       JOIN users u ON u.id = e.user_id
+       ${where}
+       ORDER BY e.datum ASC, e.id ASC`,
+      params
+    );
 
-    let totalPoints = 0;
-    let totalGrade = 0;
-    const ranking = rows.map((row, index) => {
-      totalPoints += parseFloat(row.atl_points);
-      totalGrade += parseFloat(row.grade);
-      const isMe = currentUser ? currentUser.id === row.user_id : false;
-      const anon = getAnonymousHandle(row.user_id);
+    const byUser = new Map();
+    for (const row of result.rows) {
+      const mapped = mapExamRow(row);
+      if (!byUser.has(row.user_id)) {
+        byUser.set(row.user_id, {
+          userId: row.user_id,
+          alias: row.alias,
+          displayName: row.display_name,
+          grades: [],
+          points: [],
+          modules: new Set(),
+        });
+      }
+      const bucket = byUser.get(row.user_id);
+      bucket.grades.push(mapped.grade);
+      bucket.points.push(mapped.punkte);
+      bucket.modules.add(`${mapped.module_code} · ${mapped.module_name}`);
+    }
 
-      return {
-        rank: index + 1,
-        id: row.id,
-        isCurrentUser: isMe,
-        displayName: isMe ? `Du (${row.display_name})` : anon.name,
-        avatar: isMe ? '⭐' : anon.avatar,
-        moduleCode: row.module_code,
-        moduleName: row.module_name,
-        atlPoints: parseFloat(row.atl_points),
-        maxPoints: parseFloat(row.max_points),
-        grade: parseFloat(row.grade)
-      };
-    });
+    const ranking = Array.from(byUser.values())
+      .map((bucket) => {
+        const avgGrade = bucket.grades.reduce((sum, g) => sum + g, 0) / bucket.grades.length;
+        const avgPoints = bucket.points.reduce((sum, p) => sum + p, 0) / bucket.points.length;
+        const isMe = currentUser ? currentUser.id === bucket.userId : false;
+        const anon = getAnonymousHandle(bucket.userId, bucket.alias);
+        const moduleLabel = moduleFilter === 'ALL'
+          ? `Gesamt (${bucket.modules.size} Module)`
+          : Array.from(bucket.modules)[0];
+        return {
+          userId: bucket.userId,
+          isCurrentUser: isMe,
+          displayName: isMe ? `Du (${bucket.alias || anon.name})` : anon.name,
+          avatar: isMe ? '⭐' : anon.avatar,
+          moduleCode: moduleFilter === 'ALL' ? 'GESAMT' : moduleFilter,
+          moduleName: moduleLabel,
+          examCount: bucket.grades.length,
+          atlPoints: Number(avgPoints.toFixed(1)),
+          grade: Number(avgGrade.toFixed(2)),
+        };
+      })
+      .sort((a, b) => b.grade - a.grade || b.atlPoints - a.atlPoints)
+      .map((row, index) => ({ ...row, rank: index + 1, id: row.userId }));
 
-    const count = rows.length;
+    const count = ranking.length;
+    const totalGrade = ranking.reduce((sum, row) => sum + row.grade, 0);
+    const totalPoints = ranking.reduce((sum, row) => sum + row.atlPoints, 0);
     const avgGrade = count > 0 ? (totalGrade / count).toFixed(2) : 0;
     const avgPoints = count > 0 ? (totalPoints / count).toFixed(1) : 0;
-    const highestGrade = count > 0 ? rows[0].grade : 0;
+    const highestGrade = count > 0 ? ranking[0].grade : 0;
 
-    // Available modules for filter dropdown
-    const modulesRes = await pool.query('SELECT DISTINCT module_code, module_name FROM module_scores ORDER BY module_code');
+    const modulesRes = await pool.query(
+      `SELECT code AS module_code, name AS module_name, catalog
+       FROM modules
+       WHERE catalog = true
+          OR code IN (SELECT DISTINCT module_code FROM exams)
+       ORDER BY catalog DESC, code`
+    );
 
     res.json({
       leaderboard: ranking,
@@ -393,9 +401,9 @@ app.get('/api/leaderboard', async (req, res) => {
         totalEntries: count,
         averageGrade: avgGrade,
         averagePoints: avgPoints,
-        highestGrade: highestGrade
+        highestGrade,
       },
-      modules: modulesRes.rows
+      modules: modulesRes.rows,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -412,7 +420,7 @@ app.get('/', async (req, res) => {
   try {
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
     const insertRes = await pool.query(
-      'INSERT INTO visitors (ip_address) VALUES ($1) RETURNING id',
+      'INSERT INTO visits (ip_address) VALUES ($1) RETURNING id',
       [clientIp.toString()]
     );
     visitorNr = insertRes.rows[0].id;
@@ -435,7 +443,7 @@ app.get('/', async (req, res) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WInf ATL Benchmark & Punkterechner | Modul 042</title>
+  <title>ATL-Arena | HFWI-2504-AA</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
@@ -771,8 +779,8 @@ app.get('/', async (req, res) => {
       <a href="/" class="logo">
         <div class="logo-badge">WINF</div>
         <div>
-          <h1>ATL Punkterechner & Benchmark</h1>
-          <p style="font-size: 13px; color: var(--text-muted);">Wirtschaftsinformatik HF / Studium • HKV Aarau</p>
+          <h1>ATL-Arena Punkterechner</h1>
+          <p style="font-size: 13px; color: var(--text-muted);">HFWI-2504-AA • 2. Studienjahr • HKV Aarau</p>
         </div>
       </a>
       <div id="authNav">
@@ -807,48 +815,64 @@ app.get('/', async (req, res) => {
       <div class="card">
         <div class="card-header">
           <div class="card-title">🧮 Schweizer ATL-Notenrechner</div>
-          <span style="font-size: 12px; color: var(--text-muted);">Formel: (Pkt / Max * 5) + 1</span>
+          <span style="font-size: 12px; color: var(--text-muted);">Formel: Note = Pkt / Max × 5 + 1 (Schritt ${GRADE_ROUNDING_STEP})</span>
         </div>
 
         <div class="calc-display">
-          <div class="calc-grade" id="calcGradeDisplay">5.8</div>
-          <div class="calc-label" id="calcDetailsDisplay">96 von 100 Punkten (96%)</div>
+          <div class="calc-grade" id="calcGradeDisplay">4.8</div>
+          <div class="calc-label" id="calcDetailsDisplay">60 von 80 Punkten (75%)</div>
           <div class="calc-status status-pass" id="calcStatusBadge">Bestanden • Sehr Gut</div>
         </div>
 
         <div class="slider-group">
           <div class="slider-label">
             <span>Erreichte ATL-Punkte:</span>
-            <span><strong id="sliderPointsValue">96</strong> Pkt</span>
+            <span><strong id="sliderPointsValue">60</strong> Pkt</span>
           </div>
-          <input type="range" id="ptsSlider" min="0" max="100" step="0.5" value="96" oninput="updateCalculator()">
+          <input type="range" id="ptsSlider" min="0" max="80" step="0.5" value="60" oninput="updateCalculator()">
         </div>
 
         <form id="scoreForm" onsubmit="submitScore(event)">
           <div class="form-group">
-            <label>Modul auswählen oder eingeben</label>
-            <select class="form-control" id="moduleCodeSelect" onchange="handleModuleSelect(this)">
-              <option value="Modul 042" data-name="Applications Engineering">Modul 042 - Applications Engineering</option>
-              <option value="Modul 114" data-name="Datenkompression & Codierung">Modul 114 - Datenkompression & Codierung</option>
-              <option value="Modul 120" data-name="Benutzerschnittstellen">Modul 120 - Benutzerschnittstellen</option>
-              <option value="Modul 122" data-name="Abläufe mit Skripten automatisieren">Modul 122 - Automatisierung mit Skripten</option>
-              <option value="Modul 151" data-name="Web-Applikationen mit DB einbinden">Modul 151 - Web-Applikationen mit DB</option>
-              <option value="CUSTOM">Eigenes Modul eingeben...</option>
+            <label>Modul</label>
+            <select class="form-control" id="moduleCodeSelect" required>
+              ${HFWI_MODULES.map((m) => `<option value="${m.code}" ${m.code === 'CHMG' ? 'selected' : ''}>${m.code} – ${m.name} (${m.lektionen} Lekt.)</option>`).join('')}
             </select>
           </div>
 
-          <div class="form-group" id="customModuleGroup" style="display: none;">
-            <label>Eigenes Modul / Fach</label>
-            <input type="text" class="form-control" id="customModuleName" placeholder="z.B. Modul 306 - Kleinprojekte">
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label>Typ</label>
+              <select class="form-control" id="examTypeSelect">
+                <option value="ATL" selected>ATL</option>
+                <option value="Mastery Test">Mastery Test</option>
+                <option value="Jahresprüfung">Jahresprüfung</option>
+              </select>
+            </div>
+            <div>
+              <label>Nummer</label>
+              <input type="number" class="form-control" id="examNumberInput" value="1" min="1" step="1" required>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>Maximale Punktzahl</label>
-            <input type="number" class="form-control" id="maxPointsInput" value="100" min="10" max="500" oninput="updateCalculator()">
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>
+              <label>Maximale Punktzahl</label>
+              <input type="number" class="form-control" id="maxPointsInput" value="80" min="1" max="500" step="0.5" oninput="updateCalculator()">
+            </div>
+            <div>
+              <label>Datum</label>
+              <input type="date" class="form-control" id="examDateInput">
+            </div>
           </div>
 
-          <button type="submit" class="btn btn-accent" style="width: 100%; padding: 12px; margin-top: 10px;">
-            ✦ Mein Ergebnis im Klassen-Ranking speichern
+          <div id="neededPointsBox" style="background: rgba(15,23,42,0.6); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;">
+            <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 8px;">Was brauche ich?</div>
+            <div id="neededPointsGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; font-size: 13px;"></div>
+          </div>
+
+          <button type="submit" class="btn btn-accent" style="width: 100%; padding: 12px; margin-top: 4px;">
+            ✦ Prüfung in der Rangliste speichern
           </button>
         </form>
       </div>
@@ -885,8 +909,8 @@ app.get('/', async (req, res) => {
         </div>
         <div>
           <select class="form-control" id="leaderboardFilter" onchange="loadLeaderboard()" style="width: auto;">
-            <option value="ALL">Alle Module</option>
-            <option value="Modul 042" selected>Modul 042 (Applications Engineering)</option>
+            <option value="ALL" selected>Gesamt (Ø aller Prüfungen)</option>
+            ${HFWI_MODULES.map((m) => `<option value="${m.code}">${m.code} – ${m.name}</option>`).join('')}
           </select>
         </div>
       </div>
@@ -896,10 +920,10 @@ app.get('/', async (req, res) => {
           <thead>
             <tr>
               <th style="width: 60px;">Rang</th>
-              <th>Student / Pseudonym</th>
+              <th>Alias</th>
               <th>Modul</th>
-              <th>Erreichte ATL</th>
-              <th>Schweizer Note</th>
+              <th>Prüfungen / Ø Pkt</th>
+              <th>Ø Note</th>
             </tr>
           </thead>
           <tbody id="leaderboardBody">
@@ -913,7 +937,7 @@ app.get('/', async (req, res) => {
 
     <!-- Footer -->
     <footer style="margin-top: 40px; text-align: center; font-size: 13px; color: var(--text-muted); border-top: 1px solid var(--card-border); padding-top: 20px;">
-      Entwickelt von <strong>Alban</strong> für Modul 042 Applications Engineering • HKV Aarau • Continuous Deployment via GitHub Actions & Docker Compose
+      Entwickelt von <strong>Alban</strong> für ATL-Arena • Klasse HFWI-2504-AA • Modul 042 • Continuous Deployment via GitHub Actions & Docker Compose
     </footer>
 
   </div>
@@ -961,11 +985,18 @@ app.get('/', async (req, res) => {
     let authMode = 'register';
 
     // Calculation logic
+    const GRADE_ROUNDING_STEP = ${GRADE_ROUNDING_STEP};
+    const TARGET_GRADES = [4.0, 5.0, 5.5, 6.0];
+
     function calculateSwissGrade(pts, max) {
       if (!max || max <= 0 || isNaN(pts)) return 1.0;
       const g = (pts / max) * 5 + 1;
       const clamped = Math.max(1.0, Math.min(6.0, g));
-      return Math.round(clamped * 10) / 10;
+      return Math.round(clamped / GRADE_ROUNDING_STEP) * GRADE_ROUNDING_STEP;
+    }
+
+    function pointsNeededForGrade(target, max) {
+      return Math.max(0, ((target - 1) / 5) * max);
     }
 
     function updateCalculator() {
@@ -975,13 +1006,14 @@ app.get('/', async (req, res) => {
       const max = parseFloat(maxInput.value) || 100;
 
       slider.max = max;
-      document.getElementById('sliderPointsValue').textContent = points.toFixed(1);
+      if (parseFloat(slider.value) > max) slider.value = max;
+      document.getElementById('sliderPointsValue').textContent = parseFloat(slider.value).toFixed(1);
 
-      const grade = calculateSwissGrade(points, max);
-      const pct = Math.round((points / max) * 100);
+      const grade = calculateSwissGrade(parseFloat(slider.value), max);
+      const pct = Math.round((parseFloat(slider.value) / max) * 100);
 
       document.getElementById('calcGradeDisplay').textContent = grade.toFixed(1);
-      document.getElementById('calcDetailsDisplay').textContent = \`\${points} von \${max} Punkten (\${pct}%)\`;
+      document.getElementById('calcDetailsDisplay').textContent = \`\${slider.value} von \${max} Punkten (\${pct}%)\`;
 
       const badge = document.getElementById('calcStatusBadge');
       if (grade >= 5.5) {
@@ -994,15 +1026,14 @@ app.get('/', async (req, res) => {
         badge.className = 'calc-status status-fail';
         badge.textContent = 'Ungenügend';
       }
-    }
 
-    function handleModuleSelect(sel) {
-      const customGroup = document.getElementById('customModuleGroup');
-      if (sel.value === 'CUSTOM') {
-        customGroup.style.display = 'block';
-      } else {
-        customGroup.style.display = 'none';
-      }
+      document.getElementById('neededPointsGrid').innerHTML = TARGET_GRADES.map((target) => {
+        const need = pointsNeededForGrade(target, max);
+        return '<div style="background: rgba(10,15,26,0.7); border-radius: 8px; padding: 8px; text-align: center;">'
+          + '<div style="color: var(--text-muted); font-size: 11px;">Note ' + target.toFixed(1) + '</div>'
+          + '<div style="font-weight: 700; font-family: JetBrains Mono, monospace;">' + need.toFixed(1) + ' Pkt</div>'
+          + '</div>';
+      }).join('');
     }
 
     // Auth functions
@@ -1080,11 +1111,12 @@ app.get('/', async (req, res) => {
       const nav = document.getElementById('authNav');
       const profileBadge = document.getElementById('profileStatusBadge');
       if (currentUser) {
-        profileBadge.textContent = 'Eingeloggt als ' + currentUser.display_name;
+        const label = currentUser.alias || currentUser.display_name;
+        profileBadge.textContent = 'Eingeloggt als ' + label;
         profileBadge.style.color = '#34d399';
         nav.innerHTML = \`
           <div class="user-pill">
-            <span>👋 <strong>\${currentUser.display_name}</strong></span>
+            <span>👋 <strong>\${label}</strong></span>
             <button class="btn btn-outline" style="padding: 4px 10px; font-size: 12px;" onclick="logout()">Abmelden</button>
           </div>
         \`;
@@ -1117,22 +1149,12 @@ app.get('/', async (req, res) => {
         return;
       }
 
-      const sel = document.getElementById('moduleCodeSelect');
-      let moduleCode = sel.value;
-      let moduleName = sel.options[sel.selectedIndex].getAttribute('data-name') || moduleCode;
-
-      if (moduleCode === 'CUSTOM') {
-        const customName = document.getElementById('customModuleName').value.trim();
-        if (!customName) {
-          alert('Bitte Modul-Name eingeben.');
-          return;
-        }
-        moduleCode = customName.split(' ')[0] || 'Eigenes';
-        moduleName = customName;
-      }
-
+      const moduleCode = document.getElementById('moduleCodeSelect').value;
+      const typ = document.getElementById('examTypeSelect').value;
+      const nummer = parseInt(document.getElementById('examNumberInput').value, 10) || 1;
       const points = parseFloat(document.getElementById('ptsSlider').value);
       const maxPoints = parseFloat(document.getElementById('maxPointsInput').value) || 100;
+      const datum = document.getElementById('examDateInput').value || new Date().toISOString().slice(0, 10);
 
       try {
         const res = await fetch('/api/scores', {
@@ -1140,9 +1162,11 @@ app.get('/', async (req, res) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             module_code: moduleCode,
-            module_name: moduleName,
-            atl_points: points,
-            max_points: maxPoints
+            typ,
+            nummer,
+            punkte: points,
+            max_punkte: maxPoints,
+            datum
           })
         });
         if (res.ok) {
@@ -1203,8 +1227,8 @@ app.get('/', async (req, res) => {
           html += \`
             <div style="background: rgba(15,23,42,0.6); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <div style="font-weight: 700; color: white;">\${s.module_code} - \${s.module_name}</div>
-                <div style="font-size: 12px; color: var(--text-muted);">\${s.atl_points} / \${s.max_points} Pkt • \${s.semester || 'HS26'}</div>
+                <div style="font-weight: 700; color: white;">\${s.module_code} – \${s.module_name}</div>
+                <div style="font-size: 12px; color: var(--text-muted);">\${s.typ} \${s.nummer} • \${s.punkte} / \${s.max_punkte} Pkt • \${s.datum || ''}</div>
               </div>
               <div style="display: flex; align-items: center; gap: 10px;">
                 <span class="grade-badge \${s.grade >= 5.0 ? 'grade-top' : s.grade >= 4.0 ? 'grade-mid' : 'grade-low'}">\${parseFloat(s.grade).toFixed(1)}</span>
@@ -1231,10 +1255,23 @@ app.get('/', async (req, res) => {
 
     // Load leaderboard
     async function loadLeaderboard() {
-      const mod = document.getElementById('leaderboardFilter').value;
+      const filter = document.getElementById('leaderboardFilter');
+      const mod = filter.value;
       try {
         const res = await fetch('/api/leaderboard?module=' + encodeURIComponent(mod));
         const data = await res.json();
+
+        if (data.modules) {
+          const existing = new Set(Array.from(filter.options).map((o) => o.value));
+          data.modules.forEach((m) => {
+            if (!existing.has(m.module_code)) {
+              const opt = document.createElement('option');
+              opt.value = m.module_code;
+              opt.textContent = m.module_code + ' – ' + m.module_name;
+              filter.appendChild(opt);
+            }
+          });
+        }
 
         // Update stats
         document.getElementById('statEntries').textContent = data.stats.totalEntries;
@@ -1271,10 +1308,10 @@ app.get('/', async (req, res) => {
                 <span style="font-size: 12px; color: var(--text-muted); display: block;">\${item.moduleName}</span>
               </td>
               <td>
-                <span style="font-family: monospace;">\${item.atlPoints}</span> / \${item.maxPoints} Pkt
+                <span style="font-family: monospace;">\${item.examCount || 1}</span> • Ø \${item.atlPoints} Pkt
               </td>
               <td>
-                <span class="grade-badge \${gradeClass}">\${item.grade.toFixed(1)}</span>
+                <span class="grade-badge \${gradeClass}">\${Number(item.grade).toFixed(2)}</span>
               </td>
             </tr>
           \`;
@@ -1286,7 +1323,10 @@ app.get('/', async (req, res) => {
       }
     }
 
-    // Initial load
+    const dateInput = document.getElementById('examDateInput');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = new Date().toISOString().slice(0, 10);
+    }
     updateCalculator();
     checkAuth();
     loadLeaderboard();

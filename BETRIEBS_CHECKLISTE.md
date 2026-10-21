@@ -11,7 +11,7 @@ Diese Checkliste dokumentiert alle betriebsrelevanten Aspekte für den produktiv
 | **Persistente Datenspeicherung** | `umgesetzt` | Über das Docker-Volume `postgres_data` gemountet auf `/var/lib/postgresql/data`. Ein Container-Neustart oder -Update führt zu keinem Datenverlust. |
 | **Automatische Datenbank-Backups** | `geplant` | **Wie:** Cronjob auf dem Host oder dedizierter Backup-Container, der täglich `pg_dump` ausführt, komprimiert (`.sql.gz`) und verschlüsselt in einen S3-kompatiblen Objektspeicher ablegt. |
 | **Desaster Recovery & Restore-Tests** | `geplant` | **Wie:** Quartalsweises Testen des DB-Restores in einer isolierten Staging-Umgebung zur Verifikation der RTO (Recovery Time Objective) und RPO (Recovery Point Objective). |
-| **Datenbank-Migrationen** | `umgesetzt` | **Wie:** Idempotentes Schema-Init (`CREATE TABLE IF NOT EXISTS visitors`) beim Start der Node.js Applikation. Für komplexe Versionen sind Tools wie Prisma Migrate oder Flyway vorgesehen. |
+| **Datenbank-Migrationen** | `umgesetzt` | **Wie:** Idempotentes Schema-Init beim Start (`visits`, `users`, `modules`, `exams`). Bestehende `visitors`/`module_scores` werden übernommen, nicht gelöscht. |
 | **Datenschutz & DSGVO / DSG** | `umgesetzt` | Es werden keine personenbezogenen Klardaten gespeichert. Lediglich ein Zähler und anonymisierte Request-Metadaten. |
 
 ---
