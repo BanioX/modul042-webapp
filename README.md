@@ -66,4 +66,4 @@ Sobald auf `main` gepusht wird, startet GitHub Actions automatisch den Build.
 ---
 
 ## Betriebs-Checkliste
-Siehe [BETRIEBS_CHECKLISTE.md](file:///C:/Users/hysen/.gemini/antigravity/scratch/devops-webapp/BETRIEBS_CHECKLISTE.md) für die vollständige Dokumentation der 6 Kernbereiche (Daten, Sicherheit, Betrieb, Deployment, Infrastruktur, Organisatorisches).
+Siehe [BETRIEBS_CHECKLISTE.md](BETRIEBS_CHECKLISTE.md) für die vollständige Dokumentation der 6 Kernbereiche (Daten, Sicherheit, Betrieb, Deployment, Infrastruktur, Organisatorisches).

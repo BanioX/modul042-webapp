@@ -2,22 +2,60 @@ const express = require('express');
 const { Pool } = require('pg');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const USER_NAME = process.env.APP_NAME || 'Alban';
 const APP_VERSION = process.env.APP_VERSION || 'dev-local';
+const SESSION_SECRET = process.env.SESSION_SECRET;
+const BCRYPT_ROUNDS = 10;
+const SESSION_COOKIE = 'user_session';
+const SESSION_COOKIE_OPTS = {
+  httpOnly: true,
+  sameSite: 'lax',
+  signed: true,
+  maxAge: 30 * 24 * 3600 * 1000,
+};
 
+if (!SESSION_SECRET) {
+  throw new Error('SESSION_SECRET fehlt');
+}
+if (!process.env.DB_PASSWORD) {
+  throw new Error('DB_PASSWORD fehlt');
+}
+
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:'],
+      connectSrc: ["'self'"],
+    },
+  },
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser('devops-secret-salt-2026'));
+app.use(cookieParser(SESSION_SECRET));
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Zu viele Versuche. Bitte später erneut versuchen.' },
+});
 
 const pool = new Pool({
   host: process.env.DB_HOST || 'db',
   port: parseInt(process.env.DB_PORT || '5432', 10),
   database: process.env.DB_NAME || 'webapp_db',
   user: process.env.DB_USER || 'webapp_user',
-  password: process.env.DB_PASSWORD || 'SecurePass123!456',
+  password: process.env.DB_PASSWORD,
   connectionTimeoutMillis: 5000,
   max: 15,
 });
@@ -84,7 +122,7 @@ async function initDb() {
       const existingUsers = await pool.query('SELECT COUNT(*) FROM users');
       if (parseInt(existingUsers.rows[0].count, 10) === 0) {
         console.log('Seeding initial Wirtschaftsinformatik benchmark cohort...');
-        const pwHash = await bcrypt.hash('DemoPassword123!', 8);
+        const pwHash = await bcrypt.hash('DemoPassword123!', BCRYPT_ROUNDS);
         
         // Seed primary user (Alban)
         const albanRes = await pool.query(
@@ -137,7 +175,7 @@ async function initDb() {
 
 // Session helper
 async function getCurrentUser(req) {
-  const userId = req.cookies.user_session;
+  const userId = req.signedCookies[SESSION_COOKIE];
   if (!userId) return null;
   try {
     const res = await pool.query('SELECT id, email, display_name FROM users WHERE id = $1', [userId]);
@@ -181,13 +219,13 @@ app.get('/api/me', async (req, res) => {
   res.json({ user });
 });
 
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', authLimiter, async (req, res) => {
   const { email, password, display_name } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: 'E-Mail und Passwort erforderlich' });
   }
   try {
-    const hash = await bcrypt.hash(password, 8);
+    const hash = await bcrypt.hash(password, BCRYPT_ROUNDS);
     const name = display_name && display_name.trim() ? display_name.trim() : email.split('@')[0];
     const result = await pool.query(
       `INSERT INTO users (email, display_name, password_hash)
@@ -195,7 +233,7 @@ app.post('/api/register', async (req, res) => {
       [email.toLowerCase().trim(), name, hash]
     );
     const user = result.rows[0];
-    res.cookie('user_session', user.id, { httpOnly: true, maxAge: 30 * 24 * 3600 * 1000 });
+    res.cookie(SESSION_COOKIE, user.id, SESSION_COOKIE_OPTS);
     res.status(201).json({ user });
   } catch (err) {
     if (err.code === '23505') {
@@ -205,7 +243,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ error: 'E-Mail und Passwort erforderlich' });
@@ -220,7 +258,7 @@ app.post('/api/login', async (req, res) => {
     if (!match) {
       return res.status(401).json({ error: 'Ungültige Anmeldedaten' });
     }
-    res.cookie('user_session', user.id, { httpOnly: true, maxAge: 30 * 24 * 3600 * 1000 });
+    res.cookie(SESSION_COOKIE, user.id, SESSION_COOKIE_OPTS);
     res.json({ user: { id: user.id, email: user.email, display_name: user.display_name } });
   } catch (err) {
     res.status(500).json({ error: 'Loginfehler: ' + err.message });
@@ -228,7 +266,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/logout', (req, res) => {
-  res.clearCookie('user_session');
+  res.clearCookie(SESSION_COOKIE, { httpOnly: true, sameSite: 'lax', signed: true });
   res.json({ success: true });
 });
 

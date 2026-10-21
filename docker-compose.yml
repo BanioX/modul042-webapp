@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: ${DB_NAME:-webapp_db}
       POSTGRES_USER: ${DB_USER:-webapp_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-SecurePass123!456}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD fehlt}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -36,7 +36,14 @@ services:
       DB_PORT: 5432
       DB_NAME: ${DB_NAME:-webapp_db}
       DB_USER: ${DB_USER:-webapp_user}
-      DB_PASSWORD: ${DB_PASSWORD:-SecurePass123!456}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD fehlt}
+      SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET fehlt}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      PUBLIC_URL: ${PUBLIC_URL:-}
     depends_on:
       db:
         condition: service_healthy
