@@ -1,0 +1,79 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: webapp_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-webapp_db}
+      POSTGRES_USER: ${DB_USER:-webapp_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-SecurePass123!456}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-webapp_user} -d ${DB_NAME:-webapp_db}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - webapp_net
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GIT_COMMIT: ${APP_VERSION:-dev}
+    image: webapp-app:latest
+    container_name: webapp_server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      APP_NAME: ${APP_NAME:-Alban}
+      APP_VERSION: ${APP_VERSION:-dev}
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-webapp_db}
+      DB_USER: ${DB_USER:-webapp_user}
+      DB_PASSWORD: ${DB_PASSWORD:-SecurePass123!456}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - webapp_net
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: webapp_cloudflare_tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://app:3000
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - webapp_net
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: webapp_watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 --cleanup
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  webapp_net:
+    driver: bridge
