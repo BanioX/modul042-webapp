@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
       args:
         GIT_COMMIT: ${APP_VERSION:-dev}
-    image: webapp-app:latest
+    image: ghcr.io/baniox/modul042-webapp:latest
     container_name: webapp_server
     restart: unless-stopped
     ports:
