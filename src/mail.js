@@ -1,12 +1,29 @@
 const nodemailer = require('nodemailer');
 
-function getSmtpConfig() {
+function getPublicBaseUrl(req) {
+  if (req) {
+    const forwardedProto = req.headers['x-forwarded-proto'];
+    const proto = forwardedProto ? forwardedProto.split(',')[0].trim() : (req.protocol || 'http');
+    const forwardedHost = req.headers['x-forwarded-host'];
+    const host = forwardedHost ? forwardedHost.split(',')[0].trim() : (req.get ? req.get('host') : req.headers.host);
+    if (host) {
+      return `${proto}://${host}`;
+    }
+  }
+  const envUrl = process.env.PUBLIC_URL;
+  if (envUrl && !envUrl.includes('example.trycloudflare.com')) {
+    return envUrl.replace(/\/$/, '');
+  }
+  return 'http://localhost:3000';
+}
+
+function getSmtpConfig(req) {
   const host = process.env.SMTP_HOST || '';
   const port = parseInt(process.env.SMTP_PORT || '587', 10);
   const user = process.env.SMTP_USER || '';
   const pass = process.env.SMTP_PASS || '';
   const from = process.env.MAIL_FROM || user || 'noreply@atl-arena.local';
-  const publicUrl = process.env.PUBLIC_URL || 'http://localhost:3000';
+  const publicUrl = getPublicBaseUrl(req);
 
   const isConfigured = Boolean(host && user && pass);
 
@@ -50,9 +67,9 @@ function getTransporter() {
   return transporter;
 }
 
-async function sendVerificationEmail({ email, alias, token }) {
-  const cfg = getSmtpConfig();
-  const verifyUrl = `${cfg.publicUrl.replace(/\/$/, '')}/verify?token=${encodeURIComponent(token)}`;
+async function sendVerificationEmail({ email, alias, token, req }) {
+  const baseUrl = getPublicBaseUrl(req);
+  const verifyUrl = `${baseUrl.replace(/\/$/, '')}/verify?token=${encodeURIComponent(token)}`;
 
   const subject = 'ATL-Arena: E-Mail-Adresse bestätigen';
   const text = `Hallo ${alias || 'Student'},\n\n`
@@ -83,17 +100,16 @@ async function sendVerificationEmail({ email, alias, token }) {
   if (transport) {
     try {
       await transport.sendMail({
-        from: cfg.from,
+        from: (process.env.MAIL_FROM || process.env.SMTP_USER || 'noreply@atl-arena.local'),
         to: email,
         subject,
         text,
         html,
       });
       console.log(`[MAIL-BOT] Bestätigungs-E-Mail an ${email} via SMTP versendet.`);
-      return { sent: true, mode: 'smtp' };
+      return { sent: true, mode: 'smtp', devLink: verifyUrl };
     } catch (err) {
       console.error('[MAIL-BOT] SMTP-Fehler beim Versand:', err.message);
-      // Fallback to console
       console.log(`[MAIL-BOT-FALLBACK] Aktivierungslink für ${email}: ${verifyUrl}`);
       return { sent: false, mode: 'fallback-error', devLink: verifyUrl, error: err.message };
     }
@@ -106,6 +122,7 @@ async function sendVerificationEmail({ email, alias, token }) {
 }
 
 module.exports = {
+  getPublicBaseUrl,
   getSmtpConfig,
   getMailStatus,
   sendVerificationEmail,

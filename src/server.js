@@ -290,12 +290,15 @@ app.post('/api/register', authLimiter, async (req, res) => {
       email: user.email,
       alias: user.alias,
       token: verifyToken,
+      req,
     });
 
+    const verifyPath = `/verify?token=${encodeURIComponent(verifyToken)}`;
     res.status(201).json({
       success: true,
       message: 'Registrierung erfolgreich! Bitte überprüfe deine E-Mails, um deinen Account zu aktivieren.',
-      devLink: mailRes.devLink || null,
+      devLink: mailRes.devLink || verifyPath,
+      verifyPath,
       mode: mailRes.mode,
       alias: user.alias,
     });
@@ -1735,11 +1738,12 @@ app.get('/', async (req, res) => {
         document.getElementById('level3Box').style.display = 'none';
         document.getElementById('level3Success').style.display = 'block';
 
-        if (data.devLink) {
+        if (data.devLink || data.verifyPath) {
           const devBox = document.getElementById('devActivationLinkBox');
           const devLink = document.getElementById('devActivationLink');
-          devLink.href = data.devLink;
-          devLink.textContent = data.devLink;
+          const link = data.verifyPath || data.devLink;
+          devLink.href = link;
+          devLink.textContent = 'Hier klicken zur sofortigen Aktivierung (' + link + ')';
           devBox.style.display = 'block';
         }
       } catch (err) {
