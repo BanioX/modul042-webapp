@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const { publicUrl, qrSvg } = require('../publicurl');
 const {
   normalizeEmail, isValidEmail, isAllowedDomain, parseParticipantLines,
+  buildRoster,
 } = require('../access');
 const {
   sendInvitationEmail, sendWelcomeEmail, sendTestEmail, getMailStatus,
@@ -38,6 +39,8 @@ module.exports = function adminRoutes(app, ctx) {
       isAdmin: req.user.role === 'admin',
       domains: config.domains,
       configured: { admins: config.admins, dozenten: config.dozenten },
+      // Klassenliste aus der .env für die Auswahl beim Hinzufügen
+      roster: buildRoster(config).map((p) => ({ ...p, onList: result.rows.some((r) => r.email === p.email) })),
     });
   }));
 
@@ -45,16 +48,28 @@ module.exports = function adminRoutes(app, ctx) {
     const role = req.body.role || 'student';
     if (!roleAllowed(req, role)) return res.status(403).json({ error: 'Diese Rolle darfst du nicht vergeben.' });
     const { rows, errors } = parseParticipantLines(req.body.text);
+    // Ist eine Klassenliste in der .env hinterlegt, sind nur diese Personen erlaubt (Rolle aus der Liste)
+    const roster = buildRoster(config);
     let added = 0;
     for (const row of rows) {
       if (!isValidEmail(row.email) || !isAllowedDomain(row.email, config.domains)) {
         errors.push(`${row.email}: keine erlaubte HKV-Adresse`);
         continue;
       }
+      const entry = roster.find((p) => p.email === row.email);
+      if (roster.length && !entry) {
+        errors.push(`${row.email}: nicht auf der Klassenliste`);
+        continue;
+      }
+      const rowRole = entry ? entry.role : role;
+      if (!roleAllowed(req, rowRole)) {
+        errors.push(`${row.email}: diese Rolle darfst du nicht vergeben`);
+        continue;
+      }
       const result = await pool.query(
         `INSERT INTO participants (email, full_name, role) VALUES ($1, $2, $3)
          ON CONFLICT (email) DO UPDATE SET active = true RETURNING (xmax = 0) AS inserted`,
-        [row.email, row.full_name.slice(0, 150), role]
+        [row.email, (row.full_name || (entry && entry.name) || '').slice(0, 150), rowRole]
       );
       if (result.rows[0].inserted) added += 1;
     }

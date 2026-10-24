@@ -49,3 +49,15 @@ test('Nur Admins und Dozierende verwalten', () => {
   assert.equal(canManage({ role: 'student' }), false);
   assert.equal(canManage(null), false);
 });
+
+test('Klassenliste: Namen aus der Adresse, höchste Rolle gewinnt, sortiert', () => {
+  const { buildRoster } = require('../src/access');
+  const roster = buildRoster({
+    admins: ['max.muster@stud.hkv.ch'],
+    dozenten: ['erika.beispiel@hkv.ch'],
+    students: ['Max.Muster@stud.hkv.ch', 'anna-lena.probe@stud.hkv.ch'],
+  });
+  assert.deepEqual(roster.map((p) => [p.name, p.role]), [
+    ['Anna Lena Probe', 'student'], ['Erika Beispiel', 'dozent'], ['Max Muster', 'admin'],
+  ]);
+});

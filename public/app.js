@@ -2335,6 +2335,27 @@
     : '<p style="margin:0;font-size:14px;color:var(--muted)">Keine öffentliche Adresse gefunden. Läuft der Tunnel-Container? (<code>docker compose ps</code>)</p>'}
     </div>`;
 
+    // Auswahl nur aus der Klassenliste (.env auf dem Server), damit niemand Fremdes auf die Liste kommt
+    const ROLE_LABEL = { student: 'Studierende*r', dozent: 'Dozent*in', admin: 'Admin' };
+    const missing = (data.roster || []).filter((p) => !p.onList);
+    const addCard = !(data.roster || []).length
+      ? `<p style="margin:0;font-size:14px;color:var(--muted)">Keine Klassenliste hinterlegt. Auf dem Server in der <code>.env</code> die Adressen bei
+          <code>TEILNEHMER_EMAILS</code> (Studierende) und <code>DOZENT_EMAILS</code> (Dozent) eintragen, mit Komma getrennt, dann <code>docker compose up -d app</code>.</p>`
+      : missing.length === 0
+        ? `<p style="margin:0;font-size:14px">✅ Alle ${data.roster.length} Personen der Klassenliste stehen auf der Teilnehmerliste.</p>`
+        : `<form id="add-form">
+            <div class="field"><label for="add-name">Vorname Nachname</label>
+              <select class="input" id="add-name"><option value="">– Person wählen –</option>
+                ${missing.map((p) => `<option value="${esc(p.email)}">${esc(p.name)}</option>`).join('')}</select></div>
+            <div class="field"><label for="add-mail">Mailadresse</label>
+              <select class="input" id="add-mail"><option value="">– Adresse wählen –</option>
+                ${missing.map((p) => `<option value="${esc(p.email)}">${esc(p.email)}</option>`).join('')}</select></div>
+            <p class="hint" id="add-role" style="margin:-4px 0 12px">Rolle: –</p>
+            <div class="row" style="gap:8px"><button class="btn" type="submit" id="add-one" disabled>Hinzufügen</button>
+              <button class="btn secondary" type="button" id="add-all">Alle ${missing.length} fehlenden hinzufügen</button></div>
+          </form>
+          <p style="margin:12px 0 0;font-size:12px;color:var(--muted)">Auswahl aus der Klassenliste in der <code>.env</code> des Servers (${data.roster.length} Personen). Andere Adressen nimmt der Server nicht an.</p>`;
+
     shell('admin', `
       <div class="eyebrow">Verwaltung</div>
       <h1 class="page-title">Teilnehmerliste &amp; Einstellungen</h1>
@@ -2350,11 +2371,7 @@
       </div>
       <div class="grid grid-2" style="margin-top:16px">
         <div class="card"><div class="card-title">Personen hinzufügen</div>
-          <form id="add-form">
-            <div class="field"><label>Eine Person pro Zeile</label><textarea class="input" name="text" placeholder="Vorname Nachname; vorname.nachname@stud.hkv.ch"></textarea></div>
-            <div class="field"><label>Rolle</label><select class="input" name="role"><option value="student">Studierende*r</option><option value="dozent">Dozent*in</option>${isAdmin ? '<option value="admin">Admin</option>' : ''}</select></div>
-            <button class="btn" type="submit">Hinzufügen</button>
-          </form>
+          ${addCard}
         </div>
         <div class="card"><div class="card-title">Schuljahre</div>
           <div class="table-wrap"><table class="table"><thead><tr><th>Schuljahr</th><th>Klasse</th><th>Zeitraum</th></tr></thead><tbody>${years}</tbody></table></div>
@@ -2416,14 +2433,35 @@
         mailTest.disabled = false;
       });
     }
-    document.getElementById('add-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      try {
-        const res = await api('/api/admin/participants', { method: 'POST', body: formData(e.target) });
-        toast(`${res.added} hinzugefügt${res.errors.length ? ` · ${res.errors.join(', ')}` : ''}`, res.errors.length > 0);
-        refresh();
-      } catch (err) { toast(err.message, true); }
-    });
+    const addForm = document.getElementById('add-form');
+    if (addForm) {
+      const nameSel = document.getElementById('add-name');
+      const mailSel = document.getElementById('add-mail');
+      // Beide Dropdowns sind gekoppelt: Name wählen setzt die Adresse und umgekehrt
+      const sync = (value) => {
+        nameSel.value = value;
+        mailSel.value = value;
+        const person = missing.find((p) => p.email === value);
+        document.getElementById('add-role').textContent = `Rolle: ${person ? ROLE_LABEL[person.role] : '–'}`;
+        document.getElementById('add-one').disabled = !person;
+      };
+      nameSel.addEventListener('change', () => sync(nameSel.value));
+      mailSel.addEventListener('change', () => sync(mailSel.value));
+      const add = async (people) => {
+        try {
+          const text = people.map((p) => `${p.name}; ${p.email}`).join('\n');
+          const res = await api('/api/admin/participants', { method: 'POST', body: { text } });
+          toast(`${res.added} hinzugefügt${res.errors.length ? ` · ${res.errors.join(', ')}` : ''}`, res.errors.length > 0);
+          refresh();
+        } catch (err) { toast(err.message, true); }
+      };
+      addForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const person = missing.find((p) => p.email === mailSel.value);
+        if (person) add([person]);
+      });
+      document.getElementById('add-all').addEventListener('click', () => add(missing));
+    }
     document.getElementById('year-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       try { await api('/api/admin/years', { method: 'POST', body: formData(e.target) }); await loadMeta(); toast('Schuljahr angelegt'); refresh(); } catch (err) { toast(err.message, true); }

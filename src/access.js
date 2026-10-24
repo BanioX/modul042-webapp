@@ -57,6 +57,18 @@ function nameFromEmail(email) {
     .join(' ');
 }
 
+// Klassenliste aus der .env: Admins, Dozierende, Studierende (höchste Rolle gewinnt)
+function buildRoster({ admins = [], dozenten = [], students = [] }) {
+  const roster = new Map();
+  for (const [role, list] of [['student', students], ['dozent', dozenten], ['admin', admins]]) {
+    for (const raw of list) {
+      const email = normalizeEmail(raw);
+      if (email) roster.set(email, { email, name: nameFromEmail(email), role });
+    }
+  }
+  return [...roster.values()].sort((a, b) => a.name.localeCompare(b.name, 'de'));
+}
+
 /** Teilnehmerliste aus eingefügtem Text: "Vorname Nachname; email" oder nur "email" pro Zeile. */
 function parseParticipantLines(text) {
   const rows = [];
@@ -92,7 +104,8 @@ module.exports = {
   isValidEmail,
   isAllowedDomain,
   checkRegistrationAccess,
-  nameFromEmail,
   parseParticipantLines,
+  nameFromEmail,
+  buildRoster,
   canManage,
 };

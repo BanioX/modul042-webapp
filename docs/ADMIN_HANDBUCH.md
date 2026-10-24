@@ -48,7 +48,7 @@ Wann? Sicherheitsproblem, Missbrauch, Beschwerde der Schule oder eines Mitglieds
 | :--- | :--- |
 | Neue Konten annehmen, sperren, Passwort zurücksetzen | in der App → **Verwaltung** |
 | Link/QR für die Klasse | Verwaltung → „Link für die Klasse“ → **Gross zeigen** |
-| Teilnehmer ergänzen, sperren, entfernen | App → **Verwaltung** → „Personen hinzufügen“ (eine Person pro Zeile: `Vorname Nachname; vorname.nachname@stud.hkv.ch`) bzw. in der Tabelle. Gilt sofort, gespeichert in der Datenbank. `TEILNEHMER_EMAILS` in der `.env` ist nur die Startliste für eine Neuinstallation |
+| Teilnehmer ergänzen, sperren, entfernen | App → **Verwaltung** → „Personen hinzufügen“: Name oder Mailadresse im Dropdown wählen (oder „Alle fehlenden hinzufügen“); sperren/entfernen in der Tabelle. Die Dropdowns zeigen nur die **Klassenliste** aus der `.env` (`TEILNEHMER_EMAILS`, `DOZENT_EMAILS`), andere Adressen nimmt der Server nicht an. Neue Person in die Klasse? Erst in der `.env` ergänzen, dann `docker compose up -d app` |
 | App-Update | passiert automatisch nach Push auf `main`. Prüfen: Fusszeile „Version: …“ = neuester Commit auf GitHub |
 | Änderung an `docker-compose.yml`, Skripten, Tailscale-Konfiguration | Server: `~/hub-042/scripts/admin.sh update` |
 | Notfall-Passwort-Reset ohne Login | Server: `cd ~/hub-042 && docker compose exec app node src/cli/reset-password.js <mail>` |
