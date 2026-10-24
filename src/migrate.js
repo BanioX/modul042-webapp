@@ -206,6 +206,52 @@ async function migrate(pool, { admins = [], dozenten = [], students = [] } = {})
     await seed(pool);
     await pool.query("INSERT INTO app_meta (key, value) VALUES ('seed_v1', $1)", [new Date().toISOString()]);
   }
+
+  const tasksV2 = await pool.query("SELECT value FROM app_meta WHERE key = 'tasks_v2'");
+  if (tasksV2.rows.length === 0) {
+    await syncTeamsTasksV2(pool);
+    await pool.query("INSERT INTO app_meta (key, value) VALUES ('tasks_v2', $1)", [new Date().toISOString()]);
+  }
+}
+
+async function insertTeamsTask(pool, yearIds, [module, title, kind, maxPoints, due]) {
+  const yearKey = module && MODULE_YEAR[module] ? MODULE_YEAR[module] : (due && due < '2026-04-22' ? '1' : '2');
+  await pool.query(
+    `INSERT INTO tasks (school_year_id, module_code, title, kind, max_points, due_at, counts_for_ranking)
+     VALUES ($1, $2, $3, $4, $5, ($6 || ' 23:59')::timestamp AT TIME ZONE 'Europe/Zurich', $7)`,
+    [yearIds[yearKey], module, title, kind, maxPoints, due, maxPoints !== null]
+  );
+}
+
+/**
+ * Einmalige Ergänzung bestehender Installationen (Abgleich mit MS Teams, 24.10.2026):
+ * fehlende Aufgaben einfügen, fehlende Maximalpunkte und Fristen nachtragen.
+ * Von Hand geänderte Werte bleiben erhalten (nur leere Maximalpunkte werden gesetzt).
+ */
+async function syncTeamsTasksV2(pool) {
+  const years = await pool.query('SELECT id, label FROM school_years');
+  const yearIds = {};
+  for (const year of SCHOOL_YEARS) {
+    const row = years.rows.find((y) => y.label === year.label);
+    if (row) yearIds[year.key] = row.id;
+  }
+  for (const task of TEAMS_TASKS) {
+    const [module, title, , maxPoints] = task;
+    const found = await pool.query(
+      'SELECT id, max_points FROM tasks WHERE module_code IS NOT DISTINCT FROM $1 AND title = $2 LIMIT 1',
+      [module, title]
+    );
+    if (!found.rows[0]) {
+      await insertTeamsTask(pool, yearIds, task);
+    } else if (found.rows[0].max_points === null && maxPoints !== null) {
+      await pool.query('UPDATE tasks SET max_points = $2, counts_for_ranking = true WHERE id = $1', [found.rows[0].id, maxPoints]);
+    }
+  }
+  await pool.query(
+    `UPDATE tasks SET due_at = ('2026-03-26 23:59')::timestamp AT TIME ZONE 'Europe/Zurich'
+     WHERE module_code IS NULL AND title = 'Jahresprüfung 1: Präsentation'
+       AND due_at = ('2026-03-19 23:59')::timestamp AT TIME ZONE 'Europe/Zurich'`
+  );
 }
 
 function nameFromLocalPart(email) {
@@ -261,14 +307,7 @@ async function seed(pool) {
   }
 
   // Aufgaben aus MS Teams (HFWI-2504-AA), fällig jeweils 23:59 Schweizer Zeit
-  for (const [module, title, kind, maxPoints, due] of TEAMS_TASKS) {
-    const yearKey = module && MODULE_YEAR[module] ? MODULE_YEAR[module] : (due && due < '2026-04-22' ? '1' : '2');
-    await pool.query(
-      `INSERT INTO tasks (school_year_id, module_code, title, kind, max_points, due_at, counts_for_ranking)
-       VALUES ($1, $2, $3, $4, $5, ($6 || ' 23:59')::timestamp AT TIME ZONE 'Europe/Zurich', $7)`,
-      [yearIds[yearKey], module, title, kind, maxPoints, due, maxPoints !== null]
-    );
-  }
+  for (const task of TEAMS_TASKS) await insertTeamsTask(pool, yearIds, task);
 
   await pool.query(
     `INSERT INTO forum_threads (school_year_id, category, title, body, pinned)
@@ -298,7 +337,7 @@ const TEAMS_TASKS = [
   ['PROJ', 'ATL 2.1', 'ATL', 10, '2025-09-14'],
   ['MAMON', 'Mastery Test 2', 'Mastery Test', null, '2025-09-17'],
   ['PROJ', 'ATL 2.2', 'ATL', 18, '2025-10-05'],
-  ['UNTF', 'ATL 1', 'Mastery Test', null, '2025-10-12'],
+  ['UNTF', 'ATL 1', 'Mastery Test', 30, '2025-10-12'],
   ['PROJ', 'ATL 2.3', 'ATL', 6, '2025-10-26'],
   ['PROJ', 'ATL 2.4', 'ATL', 8, '2025-11-09'],
   ['PROJ', 'ATL 1, Simultrain', 'ATL', 20, '2025-11-16'],
@@ -314,9 +353,13 @@ const TEAMS_TASKS = [
   ['RECT', 'Mastery Test 1', 'Mastery Test', 20, '2026-02-25'],
   ['SPMA', 'Mastery Test 1 | BPMN 2.0', 'Mastery Test', 16, '2026-02-25'],
   ['InfSys', 'ATL 1', 'ATL', 50, '2026-03-08'],
-  [null, 'Jahresprüfung 1: Präsentation', 'Jahresprüfung', 50, '2026-03-19'],
+  ['SPMA', 'Mastery Test 2', 'Mastery Test', 16, '2026-03-11'],
+  ['PROJ', 'ATL 2.5 (Unterlagen Jahresprüfung)', 'ATL', 8, '2026-03-15'],
+  ['UNTF', 'ATL 2', 'ATL', 56, '2026-03-15'],
+  [null, 'Jahresprüfung 1: Präsentation', 'Jahresprüfung', 50, '2026-03-26'],
   [null, 'Jahresprüfung 1: Gruppengespräch', 'Jahresprüfung', 50, '2026-03-26'],
   [null, 'Jahresprüfung 1: Einzelgespräch', 'Jahresprüfung', 100, '2026-03-26'],
+  ['RECT', 'Mastery Test 2', 'Mastery Test', 21, '2026-03-25'],
   ['SPMA', 'ATL', 'ATL', 70, '2026-04-05'],
   ['InfSys', 'ATL 2', 'ATL', 40, '2026-04-05'],
   ['NWSE', 'ATL 2', 'ATL', 35, '2026-04-19'],
