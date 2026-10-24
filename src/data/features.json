@@ -66,8 +66,8 @@
   },
   {
     "id": "verwaltung", "icon": "⚙️", "title": "Verwaltung (Admin)",
-    "text": "Demo-Modus ohne Mails: Der Admin nimmt neue Konten an, sperrt sie und setzt Passwörter zurück. Dazu Audit-Protokoll und Schuljahre.",
-    "faq": { "keywords": ["verwaltung", "admin", "annehmen", "freischalten", "demo-modus", "demo"], "answer": "HUB-042 läuft im Demo-Modus ohne Mailversand: Die Mailadresse dient nur zur Identifikation. Nach der Registrierung nimmt der Admin dein Konto in der Verwaltung an. Er kann auch Passwörter auf das Werkspasswort zurücksetzen." }
+    "text": "Demo-Modus ohne Mails: Der Admin nimmt neue Konten an, sperrt sie und setzt Passwörter zurück. Dazu Link mit QR-Code für die Klasse, Audit-Protokoll und Schuljahre.",
+    "faq": { "keywords": ["verwaltung", "admin", "annehmen", "freischalten", "demo-modus", "demo", "qr", "qr-code", "link teilen", "adresse"], "answer": "HUB-042 läuft im Demo-Modus ohne Mailversand: Die Mailadresse dient nur zur Identifikation. Nach der Registrierung nimmt der Admin dein Konto in der Verwaltung an. Er kann auch Passwörter auf das Werkspasswort zurücksetzen. Den aktuellen Link zur Seite teilt der Admin als QR-Code aus der Verwaltung." }
   },
   {
     "id": "app", "icon": "📱", "title": "Als App aufs Handy",

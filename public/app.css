@@ -485,3 +485,8 @@ details.card summary::marker { color: var(--green-dark); }
 .curtain-bar { width: 120px; height: 5px; border-radius: 99px; background: rgba(255, 255, 255, .6); margin-bottom: 12px; }
 @keyframes curtain-bounce { 0%, 100% { transform: translateY(0); opacity: .6; } 50% { transform: translateY(-8px); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .chat-curtain { transition: none; } .curtain-chevron { animation: none; } }
+/* Link für die Klasse (QR-Code in der Verwaltung) */
+.link-share { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.link-share .qr { width: 150px; height: 150px; flex-shrink: 0; border: 1px solid var(--line); border-radius: 8px; padding: 6px; background: #fff; }
+.link-share .qr svg { width: 100%; height: 100%; display: block; }
+.link-url { font-family: ui-monospace, Consolas, monospace; font-weight: 700; color: var(--petrol); word-break: break-all; }

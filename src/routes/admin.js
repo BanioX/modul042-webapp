@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const { publicUrl, qrSvg } = require('../publicurl');
 const {
   normalizeEmail, isValidEmail, isAllowedDomain, parseParticipantLines,
 } = require('../access');
@@ -141,6 +142,12 @@ module.exports = function adminRoutes(app, ctx) {
         ? `Passwort und Wiederherstellungs-ID von ${result.rows[0].email} zurückgesetzt. Login jetzt nur mit Werkspasswort, danach neue ID.`
         : `Passwort von ${result.rows[0].email} zurückgesetzt. Login mit Werkspasswort und persönlicher ID.`,
     });
+  }));
+
+  // Aktuelle öffentliche Adresse + QR-Code (zum Weitergeben an die Klasse)
+  app.get('/api/admin/public-url', ...adminOnly, asyncRoute(async (req, res) => {
+    const info = await publicUrl();
+    res.json({ ...info, qr: info.url ? await qrSvg(info.url) : null });
   }));
 
   // Test-Mail an sich selbst, um die SMTP-Einstellungen zu prüfen

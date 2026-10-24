@@ -1,6 +1,6 @@
 # Datenschutz-Audit HUB-042
 
-Selbst-Audit nach dem Schweizer Datenschutzgesetz (DSG, in Kraft seit 1.9.2023). Stand: 24.10.2026, Datenschutzerklärung Version `2026-10-24` (`src/access.js` → `PRIVACY_VERSION`).
+Selbst-Audit nach dem Schweizer Datenschutzgesetz (DSG, in Kraft seit 1.9.2023). Stand: 24.10.2026, Datenschutzerklärung Version `2026-10-24b` (neu: Tailscale Funnel und Oracle Cloud Zürich als Hosting-Option) (`src/access.js` → `PRIVACY_VERSION`).
 
 > HUB-042 ist ein nicht-kommerzielles **Schulprojekt im Modul 042 „Applications Engineering“** der HKV Aarau und kein offizielles Angebot der Schule. Dieses Dokument ersetzt keine Rechtsberatung, zeigt aber nachvollziehbar, welche Daten warum bearbeitet werden und wie sie geschützt sind.
 
@@ -68,6 +68,8 @@ Es werden **keine** besonders schützenswerten Personendaten (Art. 5 lit. c DSG)
 | Cloudflare Inc. (Tunnel) | HTTPS-Zugang; verarbeitet technisch IP und Verbindungsdaten | USA | Swiss-U.S. Data Privacy Framework (Angemessenheit durch den Bundesrat seit 15.9.2024) |
 | Microsoft 365 (HKV-Konto) **oder** Gmail des Betreibers | Versand von Bestätigungs-, Einladungs-, Willkommens- und Reset-Mails (nur Mailadresse und Anzeigename) | CH/EU (HKV-Tenant) bzw. USA (Google) | Schulkonto der HKV bzw. Swiss-U.S. DPF |
 | Google Gemini (optional) | Hilfe-Bot, **nur** wenn ein API-Key gesetzt ist und jemand fragt | USA | Swiss-U.S. DPF; gesendet wird nur die geschwärzte Frage plus allgemeiner/klassenweiter Kontext |
+| Tailscale Inc. (Funnel, optional) | feste HTTPS-Adresse; verarbeitet technisch IP und Verbindungsdaten | Kanada/USA | Kanada: angemessenes Schutzniveau (Anhang 1 DSV); USA: Swiss-U.S. DPF |
+| Oracle Cloud (Always-Free-VM, optional) | Hosting von App und Datenbank für den Dauerbetrieb | **Schweiz** (Region Zürich) | Auftragsbearbeitung (Art. 9 DSG), Oracle Cloud Agreement inkl. DPA |
 | GitHub (Quellcode, Images) | Code und Container-Images | USA | enthält **keine** Personendaten |
 
 Hinweis zum Bot: Beim kostenlosen Gemini-Kontingent kann Google Eingaben zur Verbesserung der Dienste verwenden. Deshalb schwärzt der Server E-Mails und Telefonnummern (`redact()` in `src/routes/assistant.js`), schickt nie Namen, Punkte oder Noten mit, speichert Fragen nicht und zeigt im Chat einen Hinweis „keine persönlichen Daten eingeben“. Ohne Key bleibt alles lokal (FAQ).
@@ -76,7 +78,7 @@ Hinweis zum Bot: Beim kostenlosen Gemini-Kontingent kann Google Eingaben zur Ver
 
 | Massnahme | Status |
 | :--- | :--- |
-| HTTPS über Cloudflare Tunnel, HSTS (Helmet) | umgesetzt |
+| HTTPS über Cloudflare Tunnel bzw. Tailscale Funnel, HSTS (Helmet) | umgesetzt |
 | Strikte Content-Security-Policy, nur eigene Skripte | umgesetzt |
 | Passwörter bcrypt (10 Runden), 8–20 Zeichen | umgesetzt |
 | Signierte httpOnly-Session-Cookies (`sameSite=lax`) | umgesetzt |

@@ -76,7 +76,31 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: hub042_tunnel
     restart: unless-stopped
-    command: tunnel --no-autoupdate --url http://app:3000
+    # Metrics-Endpunkt (nur im internen Netz), damit HUB-042 die aktuelle Adresse samt QR-Code anzeigen kann
+    command: tunnel --no-autoupdate --metrics 0.0.0.0:2000 --url http://app:3000
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - hub042_net
+
+  # Optional: feste Gratis-Adresse https://hub-042.<tailnet>.ts.net über Tailscale Funnel
+  # Start: docker compose --profile tailscale up -d   (braucht TS_AUTHKEY in .env, siehe README)
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: hub042_tailscale
+    profiles: ["tailscale"]
+    restart: unless-stopped
+    hostname: hub-042
+    environment:
+      TS_AUTHKEY: ${TS_AUTHKEY:-}
+      TS_HOSTNAME: hub-042
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_USERSPACE: "true"
+      TS_SERVE_CONFIG: /config/serve.json
+    volumes:
+      - tailscale_state:/var/lib/tailscale
+      - ./config/tailscale-serve.json:/config/serve.json:ro
     depends_on:
       app:
         condition: service_healthy
@@ -101,6 +125,9 @@ volumes:
     # Fester Name, damit die bestehende Datenbank auch nach der Umbenennung
     # (Projekt/Ordner hub-042) weiterverwendet wird. Anderes Volume: DB_VOLUME in .env
     name: ${DB_VOLUME:-modul042-webapp_postgres_data}
+
+  tailscale_state:
+    driver: local
 
 networks:
   hub042_net:

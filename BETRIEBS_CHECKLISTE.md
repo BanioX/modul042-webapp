@@ -72,7 +72,9 @@ Diese Checkliste dokumentiert alle betriebsrelevanten Aspekte für den produktiv
 | **Öffentliche Bereitstellung ohne Portweiterleitung** | `umgesetzt` | Cloudflare Tunnel baut einen ausgehenden verschlüsselten Tunnel zur Cloudflare-Edge auf. Keine Router-Freigaben oder öffentliche IPv4-Adressen erforderlich. |
 | **Kostenfreiheit** | `umgesetzt` | Sämtliche Komponenten (GitHub Free Tier, GitHub Container Registry, Cloudflare Quick Tunnel, PostgreSQL, Node.js) sind zu 100% kostenlos nutzbar. |
 | **Ressourcen-Limits (CPU/RAM)** | `geplant` | **Wie:** `deploy.resources.limits` in `docker-compose.yml` setzen, um Denial-of-Service durch Ressourcenerschöpfung zu verhindern. |
-| **Dauerbetrieb 24/7** | `geplant` | **Wie:** Gleicher Compose-Stack auf einer kostenlosen Oracle-Cloud-VM (Region Zürich) oder einem Raspberry Pi; feste Adresse über Cloudflare Named Tunnel oder Tailscale Funnel (siehe README). |
+| **Dauerbetrieb 24/7** | `geplant` | **Wie:** Gleicher Compose-Stack auf einer kostenlosen Oracle-Cloud-VM (Always Free, Region Zürich), Schritt-für-Schritt im README „Dauerhaft online“, Abschnitt B. |
+| **Feste öffentliche Adresse (gratis)** | `umgesetzt` | Optionaler Compose-Dienst `tailscale` (Profil `tailscale`) mit Tailscale Funnel: `https://hub-042.<tailnet>.ts.net`. Aktivierung über `TS_AUTHKEY` und `PUBLIC_URL` in der `.env`. |
+| **Link mit QR-Code für die Klasse** | `umgesetzt` | Verwaltung → „Link für die Klasse“: `PUBLIC_URL` oder aktuelle Quick-Tunnel-Adresse (cloudflared-Metrics, nur intern), QR-Code serverseitig als SVG (`qrcode`), nur für Admins (`GET /api/admin/public-url`). |
 | **Mobile / PWA** | `umgesetzt` | Responsive Layout mit Tab-Leiste unten, Web-App-Manifest und Apple-Touch-Icon: auf dem iPhone als App auf dem Homescreen nutzbar. |
 | **Multi-Host Clustering** | `bewusst weggelassen` | **Warum:** Ein verteiltes Kubernetes- oder Swarm-Cluster übersteigt den Rahmen des lokalen Betriebs und verursacht unnötigen Overhead. |
 

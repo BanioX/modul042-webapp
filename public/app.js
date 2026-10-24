@@ -459,7 +459,7 @@
 
   function privacyHtml() {
     return `
-      <div class="eyebrow">Version ${esc(state.meta ? state.meta.privacyVersion : '2026-10-24')}</div>
+      <div class="eyebrow">Version ${esc(state.meta ? state.meta.privacyVersion : '2026-10-24b')}</div>
       <h1 class="page-title">Datenschutzerklärung</h1>
       <div class="card legal">
         <div class="info-box"><strong>Kurz gesagt:</strong> Der HUB-042 ist ein nicht-kommerzielles Schulprojekt. Registrieren können sich nur
@@ -521,9 +521,10 @@
         <h3>7. Hosting und Empfänger</h3>
         <ul>
           <li>Die Applikation und die Datenbank laufen in Docker-Containern auf einem Rechner des Betreibers in der Schweiz.</li>
-          <li>Öffentlich erreichbar ist sie über einen <strong>Cloudflare Tunnel</strong> (Cloudflare Inc., USA). Die Verbindung ist per HTTPS verschlüsselt,
-            Cloudflare verarbeitet dabei technisch bedingt IP-Adressen und Verbindungsdaten. Cloudflare ist unter dem Swiss-U.S. Data Privacy Framework zertifiziert,
-            das die Schweiz als angemessenes Datenschutzniveau anerkennt. Inhalte wie Punkte werden dort nicht gespeichert.</li>
+          <li>Für den Dauerbetrieb kann derselbe Stack auf einer virtuellen Maschine von <strong>Oracle Cloud</strong> (Rechenzentrum Zürich, Schweiz) laufen. Die Datenbank liegt dann verschlüsselt auf dem Speicher dieser VM; Oracle hat keinen Zweck, auf die Inhalte zuzugreifen.</li>
+          <li>Öffentlich erreichbar ist sie über einen <strong>Cloudflare Tunnel</strong> (Cloudflare Inc., USA) und/oder <strong>Tailscale Funnel</strong> (Tailscale Inc., Kanada/USA). Die Verbindung ist per HTTPS verschlüsselt,
+            die Anbieter verarbeiten dabei technisch bedingt IP-Adressen und Verbindungsdaten. Beide sind unter dem Swiss-U.S. Data Privacy Framework zertifiziert bzw. in einem Land mit angemessenem Datenschutzniveau (Kanada).
+            Inhalte wie Punkte werden dort nicht gespeichert.</li>
           <li>Bestätigungs-, Einladungs-, Willkommens- und Passwort-Mails werden über das HKV-Microsoft-365-Konto ${CONTACT} oder über ein Gmail-Konto des Betreibers (Google LLC, USA, Swiss-U.S. Data Privacy Framework) versendet. Dabei werden nur deine Mailadresse und dein Anzeigename übermittelt.</li>
           <li><strong>Hilfe-Bot (freiwillig):</strong> Nur wenn du dem Bot eine Frage stellst und er mit KI läuft, wird der Fragetext an
             <strong>Google Gemini</strong> (Google LLC, USA, zertifiziert unter dem Swiss-U.S. Data Privacy Framework) übermittelt, zusammen mit allgemeinen Infos
@@ -2236,9 +2237,26 @@
         </tbody></table></div></div>`;
     }
 
+    let linkInfo = { url: null, kind: 'keine', qr: null };
+    try { linkInfo = await api('/api/admin/public-url'); } catch (e) { /* Tunnel nicht erreichbar */ }
+    const linkCard = `<div class="card" style="margin-bottom:16px"><div class="card-title">📱 Link für die Klasse</div>
+      ${linkInfo.url ? `<div class="link-share">
+          <div class="qr">${linkInfo.qr}</div>
+          <div style="min-width:0">
+            <div class="link-url">${esc(linkInfo.url)}</div>
+            <div class="row" style="margin:10px 0"><button class="btn small" id="copy-link">Link kopieren</button>
+              <a class="btn secondary small" href="${esc(linkInfo.url)}" target="_blank" rel="noopener">Öffnen</a></div>
+            <p style="font-size:13px;color:var(--muted);margin:0">${linkInfo.kind === 'fest'
+    ? '✅ Feste Adresse (PUBLIC_URL). Sie bleibt nach Neustarts gleich.'
+    : '⚠️ Zufallsadresse des Gratis-Tunnels. Sie <strong>ändert sich bei jedem Neustart</strong>, dann hier neu teilen. Für eine feste Adresse siehe README „Dauerhaft online“ (Tailscale Funnel).'}</p>
+          </div></div>`
+    : '<p style="margin:0;font-size:14px;color:var(--muted)">Keine öffentliche Adresse gefunden. Läuft der Tunnel-Container? (<code>docker compose ps</code>)</p>'}
+    </div>`;
+
     shell('admin', `
       <div class="eyebrow">Verwaltung</div>
       <h1 class="page-title">Teilnehmerliste &amp; Einstellungen</h1>
+      ${linkCard}
       <div class="info-box">
         ${data.mail.configured ? '' : '<strong>Demo-Modus:</strong> Neue Konten erscheinen hier als „Bestätigung offen“ → <strong>Annehmen</strong>. Passwort vergessen → <strong>Passwort zurücksetzen</strong> (Werkspasswort aus RESET_PASSWORD in der .env' + (data.resetConfigured ? '' : ', <strong>noch nicht gesetzt</strong>') + ').<br>'}
         Mailversand: ${data.mail.configured ? `eingerichtet über ${esc(data.mail.host)} als ${esc(data.mail.from)}` : 'aus (Demo-Modus). Optional später über SMTP_* in der .env einschalten.'}
@@ -2272,6 +2290,12 @@
     `);
 
     const refresh = () => viewAdmin();
+    const copyLink = document.getElementById('copy-link');
+    if (copyLink) {
+      copyLink.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(linkInfo.url); toast('Link kopiert'); } catch (e) { toast('Bitte manuell kopieren', true); }
+      });
+    }
     const mailTest = document.getElementById('mail-test');
     if (mailTest) {
       mailTest.addEventListener('click', async () => {

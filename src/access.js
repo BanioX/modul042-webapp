@@ -1,6 +1,6 @@
 /** Zugangsregeln: nur HKV-Adressen, die auf der Teilnehmerliste stehen. */
 /** Version der Datenschutzerklärung; bei Änderung müssen alle neu zustimmen. */
-const PRIVACY_VERSION = '2026-10-24';
+const PRIVACY_VERSION = '2026-10-24b';
 const DEFAULT_DOMAINS = ['stud.hkv.ch', 'hkv.ch'];
 const DEFAULT_ADMINS = ['alban.hyseni@stud.hkv.ch'];
 // Dozierende nur über DOZENT_EMAILS in der .env (keine Namen im öffentlichen Repo)

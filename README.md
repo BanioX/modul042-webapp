@@ -164,6 +164,34 @@ Für die Übung läuft HUB-042 auf dem Laptop. Damit die Klasse die Seite jederz
 
 Wichtig: Der **Quick Tunnel** (`trycloudflare.com`) bekommt bei jedem Neustart eine neue Adresse. Für eine feste Adresse braucht es einen Cloudflare *Named Tunnel* (gratis, aber mit eigener Domain, ca. CHF 10–15 pro Jahr) oder **Tailscale Funnel** (gratis, Adresse wie `https://hub-042.<tailnet>.ts.net`).
 
+**Link teilen:** In der Verwaltung zeigt die Karte „📱 Link für die Klasse“ die aktuelle Adresse samt **QR-Code** und Kopier-Knopf. Quelle: `PUBLIC_URL` aus der `.env`, sonst die aktuelle Quick-Tunnel-Adresse (Metrics-Endpunkt von `cloudflared`, nur im internen Docker-Netz).
+
+### A) Feste Adresse gratis: Tailscale Funnel
+
+1. Gratis-Konto auf [tailscale.com](https://tailscale.com) (Anmeldung mit Google, Microsoft oder GitHub).
+2. Admin-Konsole → **DNS**: *MagicDNS* und *HTTPS Certificates* aktivieren.
+3. Admin-Konsole → **Access controls**: Funnel erlauben (Tailscale bietet den Knopf „Enable Funnel“ an, oder in der Policy `"nodeAttrs": [{"target": ["autogroup:member"], "attr": ["funnel"]}]`).
+4. **Settings → Keys → Generate auth key** (wiederverwendbar), in die `.env` als `TS_AUTHKEY=tskey-auth-…`.
+5. `docker compose --profile tailscale up -d`
+6. Die Adresse steht in der Admin-Konsole bei der Maschine `hub-042`, z. B. `https://hub-042.tail1234.ts.net`. In die `.env` als `PUBLIC_URL=…` eintragen und `docker compose up -d app` ausführen. Der QR-Code in der Verwaltung zeigt danach die feste Adresse.
+
+Der Quick Tunnel kann parallel weiterlaufen. Die feste Adresse bleibt nach Neustarts gleich.
+
+### B) 24/7 gratis: Oracle Cloud Always Free
+
+1. Konto auf [oracle.com/cloud/free](https://www.oracle.com/cloud/free/). Als Heimatregion **Switzerland North (Zürich)** wählen. Eine Kreditkarte wird nur zur Identitätsprüfung verlangt; Always-Free-Ressourcen kosten nichts.
+2. **Compute → Instance erstellen:** Image *Ubuntu 24.04*, Shape *VM.Standard.A1.Flex* (ARM, z. B. 2 OCPU / 12 GB). Meldet Oracle „Out of capacity“, später nochmals versuchen oder *VM.Standard.E2.1.Micro* nehmen. SSH-Schlüssel herunterladen.
+3. Per SSH verbinden und Docker installieren:
+   ```bash
+   curl -fsSL https://get.docker.com | sudo sh && sudo usermod -aG docker ubuntu   # danach neu einloggen
+   git clone https://github.com/BanioX/hub-042.git && cd hub-042
+   nano .env            # Inhalt der lokalen .env einfügen
+   docker compose --profile tailscale up -d
+   ```
+4. Eingehende Ports müssen **nicht** geöffnet werden: Tunnel und Funnel bauen ausgehende Verbindungen auf.
+5. Daten vom Laptop mitnehmen (optional): lokal `docker compose exec db pg_dump -U webapp_user webapp_db > backup.sql`, auf die VM kopieren (`scp`) und dort `docker compose exec -T db psql -U webapp_user webapp_db < backup.sql`.
+6. Watchtower holt neue Versionen nach jedem Push auf `main` automatisch. Den Laptop-Stack danach mit `docker compose stop` anhalten (nicht `down -v`!).
+
 ## Für KI-Assistenten
 
 [`AGENTS.md`](AGENTS.md) (dazu `CLAUDE.md` und `GEMINI.md`) beschreibt Projekt, Datenschutz-Regeln und die **Checkliste nach jeder neuen Funktion**: Funktionskatalog, Bot, Produktblatt, README, Datenschutz, Betriebs-Checkliste, Tests. `test/consistency.test.js` lässt den Build scheitern, wenn Produktblatt oder Bot nicht zum Funktionsumfang passen.
