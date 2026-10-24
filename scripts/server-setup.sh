@@ -12,6 +12,14 @@ ask_secret() { local v; read -r -s -p "$1" v < /dev/tty; echo >&2; printf '%s' "
 
 echo "== HUB-042 Server-Einrichtung =="
 
+# 0. Kleine Server (z. B. VM.Standard.E2.1.Micro mit 1 GB RAM): 2 GB Swap anlegen
+if [ "$(awk '/MemTotal/ {print $2}' /proc/meminfo)" -lt 3000000 ] && [ "$(awk 'NR>1' /proc/swaps | wc -l)" -eq 0 ]; then
+  echo "-> Wenig Arbeitsspeicher: 2 GB Swap werden angelegt …"
+  sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile
+  sudo mkswap /swapfile >/dev/null && sudo swapon /swapfile
+  grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null
+fi
+
 # 1. Docker
 if ! command -v docker >/dev/null 2>&1; then
   echo "-> Docker wird installiert …"
