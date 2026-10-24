@@ -1,7 +1,9 @@
 const {
   normalizeEmail, isValidEmail, isAllowedDomain, parseParticipantLines,
 } = require('../access');
-const { sendInvitationEmail, sendWelcomeEmail, getMailStatus } = require('../mail');
+const {
+  sendInvitationEmail, sendWelcomeEmail, sendTestEmail, getMailStatus,
+} = require('../mail');
 const { PRODUCT_SHEET } = require('./downloads');
 
 const ROLES = ['student', 'dozent', 'admin'];
@@ -102,6 +104,18 @@ module.exports = function adminRoutes(app, ctx) {
       });
     }
     res.json({ success: true });
+  }));
+
+  // Test-Mail an sich selbst, um die SMTP-Einstellungen zu prüfen
+  app.post('/api/admin/mail-test', ...guard, asyncRoute(async (req, res) => {
+    const result = await sendTestEmail({ email: req.user.email, name: req.user.display_name, req });
+    await audit(req, 'mail_test', null, { sent: result.sent });
+    if (result.sent) return res.json({ success: true, message: `Test-Mail an ${req.user.email} versendet.` });
+    return res.status(502).json({
+      error: result.mode === 'dev-fallback'
+        ? 'SMTP ist nicht eingerichtet (SMTP_HOST, SMTP_USER, SMTP_PASS in der .env).'
+        : `Versand fehlgeschlagen: ${result.error}`,
+    });
   }));
 
   // Manuell freischalten, falls die Bestätigungs-Mail nicht ankommt

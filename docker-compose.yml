@@ -45,6 +45,7 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
       MAIL_FROM: ${MAIL_FROM:-}
+      MAIL_REPLY_TO: ${MAIL_REPLY_TO:-}
       PUBLIC_URL: ${PUBLIC_URL:-}
       # Zugang: Teilnehmerliste nur in .env (nicht im öffentlichen Repo)
       ADMIN_EMAILS: ${ADMIN_EMAILS:-}

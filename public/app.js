@@ -456,7 +456,7 @@
           <li>Öffentlich erreichbar ist sie über einen <strong>Cloudflare Tunnel</strong> (Cloudflare Inc., USA). Die Verbindung ist per HTTPS verschlüsselt,
             Cloudflare verarbeitet dabei technisch bedingt IP-Adressen und Verbindungsdaten. Cloudflare ist unter dem Swiss-U.S. Data Privacy Framework zertifiziert,
             das die Schweiz als angemessenes Datenschutzniveau anerkennt. Inhalte wie Punkte werden dort nicht gespeichert.</li>
-          <li>Bestätigungs-, Einladungs-, Willkommens- und Passwort-Mails werden über das HKV-Microsoft-365-Konto ${CONTACT} versendet.</li>
+          <li>Bestätigungs-, Einladungs-, Willkommens- und Passwort-Mails werden über das HKV-Microsoft-365-Konto ${CONTACT} oder über ein Gmail-Konto des Betreibers (Google LLC, USA, Swiss-U.S. Data Privacy Framework) versendet. Dabei werden nur deine Mailadresse und dein Anzeigename übermittelt.</li>
           <li><strong>Hilfe-Bot (freiwillig):</strong> Nur wenn du dem Bot eine Frage stellst und er mit KI läuft, wird der Fragetext an
             <strong>Google Gemini</strong> (Google LLC, USA, zertifiziert unter dem Swiss-U.S. Data Privacy Framework) übermittelt, zusammen mit allgemeinen Infos
             zum HUB-042 und klassenweiten Terminen. Nie mitgesendet werden dein Name, deine E-Mail, Punkte oder Noten. E-Mail-Adressen und Telefonnummern in der Frage
@@ -1756,7 +1756,7 @@
         password_changed: 'Passwort geändert', profile_updated: 'Profil geändert', data_export: 'Datenexport', account_deleted: 'Konto gelöscht',
         participants_added: 'Teilnehmende hinzugefügt', participant_updated: 'Teilnehmende*r geändert', participant_removed: 'Teilnehmende*r entfernt',
         invitation_sent: 'Einladung versendet', user_verified_manually: 'Manuell freigeschaltet', task_created: 'Aufgabe erstellt',
-        task_updated: 'Aufgabe geändert', task_deleted: 'Aufgabe gelöscht', lessons_imported: 'Stundenplan importiert',
+        task_updated: 'Aufgabe geändert', mail_test: 'Test-Mail', task_deleted: 'Aufgabe gelöscht', lessons_imported: 'Stundenplan importiert',
       };
       auditHtml = `<div class="card" style="margin-top:16px"><div class="card-title">Audit-Protokoll <span class="tag muted">${auditData.consent.with_consent}/${auditData.consent.total} Konten mit Zustimmung</span></div>
         <p style="margin-top:0;font-size:13px;color:var(--muted)">Letzte 300 Ereignisse · automatische Löschung nach 365 Tagen · keine Punkte oder Passwörter.</p>
@@ -1770,7 +1770,8 @@
       <div class="eyebrow">Verwaltung</div>
       <h1 class="page-title">Teilnehmerliste &amp; Einstellungen</h1>
       <div class="${data.mail.configured ? 'info-box' : 'error-box'}">
-        Mailversand: ${data.mail.configured ? `aktiv über ${esc(data.mail.host)} als ${esc(data.mail.from)}` : 'nicht eingerichtet. Einladungen und Bestätigungslinks erscheinen nur im Server-Log (SMTP_* in .env setzen).'}
+        Mailversand: ${data.mail.configured ? `eingerichtet über ${esc(data.mail.host)} als ${esc(data.mail.from)}` : 'nicht eingerichtet. Einladungen und Bestätigungslinks erscheinen nur im Server-Log (SMTP_* in .env setzen).'}
+        ${data.mail.configured ? '<button class="btn secondary small" id="mail-test" style="margin-left:8px">Test-Mail an mich senden</button>' : ''}
       </div>
       <div class="card"><div class="card-title">Teilnehmende (${data.participants.filter((p) => p.active).length} aktiv)</div>
         <p style="margin-top:0;font-size:14px;color:var(--muted)">Nur Adressen auf dieser Liste mit der Endung ${data.domains.map((d) => `@${esc(d)}`).join(' oder ')} können sich registrieren und anmelden.</p>
@@ -1800,6 +1801,14 @@
     `);
 
     const refresh = () => viewAdmin();
+    const mailTest = document.getElementById('mail-test');
+    if (mailTest) {
+      mailTest.addEventListener('click', async () => {
+        mailTest.disabled = true;
+        try { toast((await api('/api/admin/mail-test', { method: 'POST' })).message); } catch (err) { toast(err.message, true); }
+        mailTest.disabled = false;
+      });
+    }
     document.getElementById('add-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       try {

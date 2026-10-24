@@ -56,7 +56,7 @@ Es werden **keine** besonders schützenswerten Personendaten (Art. 5 lit. c DSG)
 | Empfänger | Zweck | Land | Grundlage |
 | :--- | :--- | :--- | :--- |
 | Cloudflare Inc. (Tunnel) | HTTPS-Zugang; verarbeitet technisch IP und Verbindungsdaten | USA | Swiss-U.S. Data Privacy Framework (Angemessenheit durch den Bundesrat seit 15.9.2024) |
-| Microsoft 365 (HKV-Konto) | Versand von Bestätigungs-, Einladungs-, Willkommens- und Reset-Mails | gemäss HKV-Tenant | Schulkonto der HKV |
+| Microsoft 365 (HKV-Konto) **oder** Gmail des Betreibers | Versand von Bestätigungs-, Einladungs-, Willkommens- und Reset-Mails (nur Mailadresse und Anzeigename) | CH/EU (HKV-Tenant) bzw. USA (Google) | Schulkonto der HKV bzw. Swiss-U.S. DPF |
 | Google Gemini (optional) | Hilfe-Bot, **nur** wenn ein API-Key gesetzt ist und jemand fragt | USA | Swiss-U.S. DPF; gesendet wird nur die geschwärzte Frage plus allgemeiner/klassenweiter Kontext |
 | GitHub (Quellcode, Images) | Code und Container-Images | USA | enthält **keine** Personendaten |
 

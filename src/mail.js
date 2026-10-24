@@ -23,8 +23,10 @@ function getSmtpConfig() {
   const user = process.env.SMTP_USER || '';
   const pass = process.env.SMTP_PASS || '';
   const from = process.env.MAIL_FROM || (user ? `${APP_TITLE} <${user}>` : `noreply@hub-042.local`);
+  // Antworten landen z. B. im Schulpostfach, auch wenn über Gmail versendet wird
+  const replyTo = process.env.MAIL_REPLY_TO || '';
   return {
-    host, port, user, pass, from, isConfigured: Boolean(host && user && pass),
+    host, port, user, pass, from, replyTo, isConfigured: Boolean(host && user && pass),
   };
 }
 
@@ -93,8 +95,9 @@ async function deliver({
   const transport = getTransporter();
   if (transport) {
     try {
+      const cfg = getSmtpConfig();
       await transport.sendMail({
-        from: getSmtpConfig().from, to, subject, text, html, attachments,
+        from: cfg.from, replyTo: cfg.replyTo || undefined, to, subject, text, html, attachments,
       });
       console.log(`[MAIL] ${logLabel} an ${to} versendet.`);
       return { sent: true, mode: 'smtp' };
@@ -208,7 +211,25 @@ async function sendWelcomeEmail({
   });
 }
 
+async function sendTestEmail({ email, name, req }) {
+  const url = `${getPublicBaseUrl(req)}/#/admin`;
+  return deliver({
+    to: email,
+    subject: `${APP_TITLE}: Test-Mail ✅`,
+    text: `Hallo ${name}\n\nDer Mailversand von ${APP_TITLE} funktioniert.\n\n${url}`,
+    html: layout({
+      heading: 'Mailversand funktioniert ✅',
+      paragraphs: [`Hallo <strong>${escapeHtml(name)}</strong>,`, `diese Test-Mail kommt von ${APP_TITLE}. Bestätigungen, Einladungen und Willkommens-Mails können jetzt verschickt werden.`],
+      buttonLabel: 'Zur Verwaltung',
+      url,
+    }),
+    logLabel: 'Test-Mail',
+    url,
+  });
+}
+
 module.exports = {
+  sendTestEmail,
   sendWelcomeEmail,
   getPublicBaseUrl,
   getSmtpConfig,
