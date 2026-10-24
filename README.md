@@ -32,7 +32,8 @@ Ein Hub mit der Antwort auf (fast) alle Fragen der Klasse also. 🚀
 | **Infos** | Downloads, Eckdaten, Lehrplan aller 3 Jahre, Handlungskompetenzen, Englisch/IELTS, Kontakte, optionale Zertifikate (IPMA, IREB, ITIL, COBIT), Weg zum Bachelor nach dem HF (Kalaidos, ZHAW, FHNW, FFHS, BFH …) |
 | **Hilfe-Bot** | Beantwortet ohne KI direkt aus den App-Daten: nächste Prüfungen und Lektionen (auch pro Modul), Ferien, Notenrechner („45 von 60“, „was brauche ich für eine 5“), eigener Schnitt und LLP, Module, Zertifikate, Bachelor, Kontakte, Zimmer. Optional ergänzt `GEMINI_API_KEY` offene Fragen über Google Gemini (ohne Namen, Mails, Punkte, Noten) |
 | **Gamification** | XP, Level, Streak, Abzeichen |
-| **Verwaltung** | Teilnehmerliste, Rollen, Einladungen, manuelles Freischalten, Schuljahre, Audit-Protokoll |
+| **Verwaltung** | Teilnehmerliste, Rollen, Einladungen, manuelles Freischalten, Link mit QR-Code für die Klasse, Schuljahre, Audit-Protokoll |
+| **Onboarding** (`#/willkommen`) | Ziel des QR-Codes: 3 Schritte (Was dich im Dashboard erwartet → So registrierst du dich → Wiederherstellungs-ID sofort speichern, mit Warnung und Bestätigungs-Häkchen), wischbar auf dem Handy, ohne Login erreichbar |
 | **Datenschutz** | Einwilligung bei der Registrierung, Datenschutzerklärung, Impressum, Datenexport, Konto löschen. Siehe [DATENSCHUTZ.md](DATENSCHUTZ.md) |
 | **Mobile / PWA** | Responsive mit Tab-Leiste unten; auf dem iPhone über Safari → Teilen → „Zum Home-Bildschirm“ als App nutzbar |
 
@@ -164,7 +165,7 @@ Für die Übung läuft HUB-042 auf dem Laptop. Damit die Klasse die Seite jederz
 
 Wichtig: Der **Quick Tunnel** (`trycloudflare.com`) bekommt bei jedem Neustart eine neue Adresse. Für eine feste Adresse braucht es einen Cloudflare *Named Tunnel* (gratis, aber mit eigener Domain, ca. CHF 10–15 pro Jahr) oder **Tailscale Funnel** (gratis, Adresse wie `https://hub-042.<tailnet>.ts.net`).
 
-**Link teilen:** In der Verwaltung zeigt die Karte „📱 Link für die Klasse“ die aktuelle Adresse samt **QR-Code** und Kopier-Knopf. Quelle: `PUBLIC_URL` aus der `.env`, sonst die aktuelle Quick-Tunnel-Adresse (Metrics-Endpunkt von `cloudflared`, nur im internen Docker-Netz).
+**Link teilen:** In der Verwaltung zeigt die Karte „📱 Link für die Klasse“ die aktuelle Adresse samt **QR-Code** und Kopier-Knopf. Der Code führt auf `#/willkommen`, das 3-Schritte-Onboarding für Neue. Quelle: `PUBLIC_URL` aus der `.env`, sonst die aktuelle Quick-Tunnel-Adresse (Metrics-Endpunkt von `cloudflared`, nur im internen Docker-Netz).
 
 ### A) Feste Adresse gratis: Tailscale Funnel
 

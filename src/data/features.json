@@ -65,6 +65,11 @@
     "faq": { "keywords": ["wiederherstellung", "recovery", "id verloren", "persoenliche id", "werkspasswort"], "answer": "Die Wiederherstellungs-ID ist ein persönlicher Code wie K7Q2-M9XA, den du beim ersten Login einmal angezeigt bekommst. Nur du kennst ihn, auch der Admin nicht. Setzt der Admin dein Passwort zurück, meldest du dich mit Werkspasswort und ID an und wählst ein neues Passwort. ID verloren? Im Profil eine neue erzeugen oder den Admin um „Passwort + ID zurücksetzen“ bitten." }
   },
   {
+    "id": "willkommen", "icon": "👋", "title": "Onboarding nach QR-Scan",
+    "text": "Der QR-Code aus der Verwaltung führt Neue in 3 Schritten durch HUB-042: was im Dashboard wartet, wie die Registrierung läuft und die Warnung, die Wiederherstellungs-ID sofort zu speichern.",
+    "faq": { "keywords": ["onboarding", "willkommen", "erste schritte", "neu hier", "wie registriere", "registrieren"], "answer": "Neu hier? Unter „Neu hier? So funktioniert's“ (oder nach dem Scan des QR-Codes) erklären dir 3 Schritte alles: 1. Im Dashboard siehst du Stundenplan, ATL-Aufgaben, Noten, LLP und dein anonymes Ranking. 2. Registrieren mit vorname.nachname@stud.hkv.ch und einem Passwort mit 8 bis 20 Zeichen, dann nimmt der Admin dein Konto an. 3. Beim ersten Login erscheint deine Wiederherstellungs-ID nur einmal: sofort kopieren oder aufschreiben!" }
+  },
+  {
     "id": "verwaltung", "icon": "⚙️", "title": "Verwaltung (Admin)",
     "text": "Demo-Modus ohne Mails: Der Admin nimmt neue Konten an, sperrt sie und setzt Passwörter zurück. Dazu Link mit QR-Code für die Klasse, Audit-Protokoll und Schuljahre.",
     "faq": { "keywords": ["verwaltung", "admin", "annehmen", "freischalten", "demo-modus", "demo", "qr", "qr-code", "link teilen", "adresse"], "answer": "HUB-042 läuft im Demo-Modus ohne Mailversand: Die Mailadresse dient nur zur Identifikation. Nach der Registrierung nimmt der Admin dein Konto in der Verwaltung an. Er kann auch Passwörter auf das Werkspasswort zurücksetzen. Den aktuellen Link zur Seite teilt der Admin als QR-Code aus der Verwaltung." }

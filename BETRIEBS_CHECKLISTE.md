@@ -74,6 +74,7 @@ Diese Checkliste dokumentiert alle betriebsrelevanten Aspekte für den produktiv
 | **Ressourcen-Limits (CPU/RAM)** | `geplant` | **Wie:** `deploy.resources.limits` in `docker-compose.yml` setzen, um Denial-of-Service durch Ressourcenerschöpfung zu verhindern. |
 | **Dauerbetrieb 24/7** | `geplant` | **Wie:** Gleicher Compose-Stack auf einer kostenlosen Oracle-Cloud-VM (Always Free, Region Zürich), Schritt-für-Schritt im README „Dauerhaft online“, Abschnitt B. |
 | **Feste öffentliche Adresse (gratis)** | `umgesetzt` | Optionaler Compose-Dienst `tailscale` (Profil `tailscale`) mit Tailscale Funnel: `https://hub-042.<tailnet>.ts.net`. Aktivierung über `TS_AUTHKEY` und `PUBLIC_URL` in der `.env`. |
+| **Onboarding nach QR-Scan** | `umgesetzt` | Öffentliche Seite `#/willkommen` mit 3 Schritten (Dashboard, Registrierung, Warnung zur Wiederherstellungs-ID). Keine Datenbearbeitung, nur statische Erklärung. |
 | **Link mit QR-Code für die Klasse** | `umgesetzt` | Verwaltung → „Link für die Klasse“: `PUBLIC_URL` oder aktuelle Quick-Tunnel-Adresse (cloudflared-Metrics, nur intern), QR-Code serverseitig als SVG (`qrcode`), nur für Admins (`GET /api/admin/public-url`). |
 | **Mobile / PWA** | `umgesetzt` | Responsive Layout mit Tab-Leiste unten, Web-App-Manifest und Apple-Touch-Icon: auf dem iPhone als App auf dem Homescreen nutzbar. |
 | **Multi-Host Clustering** | `bewusst weggelassen` | **Warum:** Ein verteiltes Kubernetes- oder Swarm-Cluster übersteigt den Rahmen des lokalen Betriebs und verursacht unnötigen Overhead. |

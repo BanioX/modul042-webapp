@@ -2,6 +2,18 @@
 
 Dieses Dokument hält eigene Ideen aus HUB-042 mit Datum fest. Die Git-Historie dieses öffentlichen Repositories (Commit-Zeitstempel auf GitHub) belegt zusätzlich, wann sie veröffentlicht wurden.
 
+## Onboarding nach dem Scan des QR-Codes
+
+**Idee von:** Alban Hyseni (Klasse HFWI-2504-AA, HKV Aarau)
+**Entstanden am:** 24. Oktober 2026
+**Umsetzung:** `public/app.js` (`viewOnboarding`, `ONBOARDING_STEPS`), `src/routes/admin.js` (`/api/admin/public-url`)
+
+Der Admin zeigt der Klasse einen QR-Code aus der Verwaltung. Wer ihn scannt, landet nicht direkt im Login, sondern in einem kurzen Onboarding mit genau drei Schritten:
+
+1. **Das erwartet dich:** was im Dashboard steht (Lektionen, ATL-Aufgaben, Noten/LLP, anonymes Ranking, Chat/Forum).
+2. **So registrierst du dich:** HKV-Adresse, Passwort 8–20 Zeichen, Zustimmung, Annahme durch den Admin.
+3. **Wiederherstellungs-ID:** deutliche Warnung, dass die ID nur einmal erscheint und sofort kopiert oder notiert werden muss. Erst nach dem Häkchen „Verstanden“ geht es weiter zur Registrierung.
+
 ## Chat-Sperrvorhang mit Wisch-/Scroll-Entsperrung
 
 **Idee von:** Alban Hyseni (Klasse HFWI-2504-AA, HKV Aarau)

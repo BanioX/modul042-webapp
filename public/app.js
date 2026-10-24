@@ -304,10 +304,10 @@
     es werden <strong>keine Mails verschickt</strong>. Der Admin nimmt neue Konten an und schaltet sie frei. Passwort vergessen? Der Admin setzt es auf das Werkspasswort zurück.
     Einloggen kannst du dich danach nur mit Werkspasswort <strong>und</strong> deiner persönlichen Wiederherstellungs-ID, dann wählst du ein neues Passwort.</div>`;
 
-  function authLayout(inner) {
+  function authLayout(inner, wrapClass = '') {
     app.className = '';
     app.innerHTML = `
-      <div class="auth-wrap">
+      <div class="auth-wrap ${wrapClass}">
         <section class="auth-hero">
           <div class="boot-logo" style="color:#fff"><span class="logo-box">HUB</span> 042</div>
           <h1>Die Antwort auf alle Fragen<br><span>deiner Klasse: 042.</span></h1>
@@ -342,7 +342,7 @@
           <span class="hint">Die ID hast du beim ersten Login notiert. Verloren? Dann kann dir nur der Admin weiterhelfen.</span></div>
         <button class="btn" style="width:100%" type="submit">Anmelden</button>
       </form>
-      <div class="auth-links"><a href="#/registrieren">Konto erstellen</a>${cfg.mailEnabled ? '<a href="#/passwort-vergessen">Passwort vergessen?</a>' : '<span style="color:var(--muted)">Passwort vergessen? → Admin fragen</span>'}</div>
+      <div class="auth-links"><a href="#/willkommen">Neu hier? So funktioniert's</a><a href="#/registrieren">Konto erstellen</a>${cfg.mailEnabled ? '<a href="#/passwort-vergessen">Passwort vergessen?</a>' : '<span style="color:var(--muted)">Passwort vergessen? → Admin fragen</span>'}</div>
       ${cfg.mailEnabled ? '' : `<div style="margin-top:16px">${DEMO_NOTE}</div>`}`);
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -358,6 +358,83 @@
         btn.disabled = false;
       }
     });
+  }
+
+  // Onboarding nach dem Scan des QR-Codes: drei Schritte bis zum eigenen Konto
+  const ONBOARDING_STEPS = [
+    {
+      icon: '🚀', title: 'Das erwartet dich',
+      body: `<p class="lead" style="margin-bottom:12px">HUB-042 ist die Klassen-App der HFWI-2504-AA. Im <strong>Dashboard</strong> siehst du auf einen Blick:</p>
+        <ul class="onb-list">
+          <li>📅 die nächste Lektion mit Raum und den Stundenplan</li>
+          <li>📝 fällige ATL-Aufgaben wie in Teams, Punkte eintragen (z. B. 45/60)</li>
+          <li>🧮 deine Noten, den Leistungsausweis und deine LLP</li>
+          <li>🏆 dein Ranking, die anderen bleiben <strong>anonym</strong></li>
+          <li>💬 Klassenchat (nie gespeichert), Forum und Lerngruppen</li>
+        </ul>
+        <p style="font-size:13px;color:var(--muted);margin:10px 0 0">Deine Punkte und Noten sieht nur du.</p>`,
+    },
+    {
+      icon: '📝', title: 'So registrierst du dich',
+      body: `<ol class="onb-list onb-num">
+          <li>Auf <strong>„Konto erstellen“</strong> tippen.</li>
+          <li>Deine HKV-Adresse eingeben: <strong>vorname.nachname@stud.hkv.ch</strong></li>
+          <li>Ein Passwort mit <strong>8 bis 20 Zeichen</strong> wählen und der Datenschutzerklärung zustimmen.</li>
+          <li>Warten, bis der Admin dein Konto <strong>annimmt</strong>. Es kommt keine Mail, frag kurz im Unterricht nach.</li>
+          <li>Danach mit Mail und Passwort anmelden.</li>
+        </ol>
+        <p style="font-size:13px;color:var(--muted);margin:10px 0 0">Nur wer auf der Teilnehmerliste steht, kommt rein.</p>`,
+    },
+    {
+      icon: '🔑', title: 'Deine Wiederherstellungs-ID',
+      body: `<p class="lead" style="margin-bottom:12px">Beim <strong>ersten Login</strong> zeigt HUB-042 dir eine persönliche ID, z. B. <code>K7Q2-M9XA</code>.</p>
+        <div class="warn-box"><strong>⚠️ Wichtig: Die ID wird nur ein einziges Mal angezeigt!</strong><br>
+          Kopiere sie sofort in deinen Passwort-Manager oder deine Notizen, oder schreib sie auf.
+          Auch der Admin kennt sie nicht. Vergisst du dein Passwort, brauchst du beim Zurücksetzen das Werkspasswort <strong>und</strong> diese ID.</div>
+        <p style="font-size:13px;color:var(--muted);margin:10px 0 0">Verloren? Im Profil kannst du eine neue erzeugen, solange du eingeloggt bist.</p>`,
+    },
+  ];
+
+  function viewOnboarding() {
+    let step = 0;
+    const render = () => {
+      const s = ONBOARDING_STEPS[step];
+      const last = step === ONBOARDING_STEPS.length - 1;
+      authLayout(`
+        <div class="onb-top"><span class="eyebrow" style="margin:0">Willkommen bei HUB-042</span>
+          <span class="onb-count">Schritt ${step + 1} von ${ONBOARDING_STEPS.length}</span></div>
+        <div class="onb-dots">${ONBOARDING_STEPS.map((_, i) => `<span class="${i === step ? 'on' : ''}${i < step ? ' done' : ''}"></span>`).join('')}</div>
+        <div class="onb-step" id="onb-step">
+          <div class="onb-icon">${s.icon}</div>
+          <h2>${s.title}</h2>
+          ${s.body}
+        </div>
+        ${last ? `<label class="check" style="margin:16px 0 6px"><input type="checkbox" id="onb-ok"> Verstanden: Ich speichere meine ID beim ersten Login.</label>` : ''}
+        <div class="row" style="margin-top:16px;gap:10px">
+          ${step > 0 ? '<button class="btn secondary" id="onb-back">Zurück</button>' : '<a class="btn secondary" href="#/anmelden">Überspringen</a>'}
+          ${last ? '<button class="btn" id="onb-go" style="flex:1" disabled>Konto erstellen</button>' : '<button class="btn" id="onb-next" style="flex:1">Weiter</button>'}
+        </div>
+        <div class="auth-links"><a href="#/anmelden">Ich habe schon ein Konto</a><a href="#/datenschutz">Datenschutz</a></div>`, 'onboarding');
+      const next = () => { if (step < ONBOARDING_STEPS.length - 1) { step += 1; render(); } };
+      const back = () => { if (step > 0) { step -= 1; render(); } };
+      const el = (id) => document.getElementById(id);
+      if (el('onb-next')) el('onb-next').addEventListener('click', next);
+      if (el('onb-back')) el('onb-back').addEventListener('click', back);
+      if (el('onb-ok')) el('onb-ok').addEventListener('change', (e) => { el('onb-go').disabled = !e.target.checked; });
+      if (el('onb-go')) el('onb-go').addEventListener('click', () => go('/registrieren'));
+      // Wischen nach links/rechts wechselt den Schritt
+      let startX = null;
+      const card = el('onb-step');
+      card.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+      card.addEventListener('touchend', (e) => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        startX = null;
+        if (dx < -50) next(); else if (dx > 50) back();
+      });
+      window.scrollTo(0, 0);
+    };
+    render();
   }
 
   async function viewRegister(params) {
@@ -390,7 +467,8 @@
       btn.disabled = true;
       try {
         const res = await api('/api/auth/register', { method: 'POST', body: formData(e.target) });
-        document.getElementById('auth-msg').innerHTML = `<div class="info-box">${esc(res.message)}</div>`;
+        document.getElementById('auth-msg').innerHTML = `<div class="info-box">${esc(res.message)}</div>
+          <div class="warn-box">🔑 Denk daran: Beim ersten Login erscheint deine Wiederherstellungs-ID nur <strong>ein einziges Mal</strong>. Sofort kopieren oder aufschreiben!</div>`;
         e.target.reset();
       } catch (err) {
         document.getElementById('auth-msg').innerHTML = `<div class="error-box">${esc(err.message)}</div>`;
@@ -609,7 +687,8 @@
       body: `<p style="margin-top:0">${isNew ? 'Willkommen! ' : ''}Diese ID kennst <strong>nur du</strong>. Auch der Admin sieht sie nie.
           Setzt der Admin dein Passwort zurück, brauchst du beim Login das Werkspasswort <strong>und</strong> diese ID.</p>
         <div style="font-family:ui-monospace,Consolas,monospace;font-size:30px;font-weight:800;text-align:center;letter-spacing:3px;background:var(--mint);color:var(--petrol);border-radius:8px;padding:14px;margin:10px 0">${esc(res.recovery_id)}</div>
-        <p style="font-size:13px;color:var(--muted)">Notiere sie z. B. im Passwort-Manager oder auf Papier. Sie wird nur jetzt angezeigt. Im Profil kannst du jederzeit eine neue erzeugen, dann gilt die alte nicht mehr.</p>
+        <div class="warn-box"><strong>⚠️ Wird nur jetzt angezeigt!</strong> Kopiere sie in deinen Passwort-Manager oder deine Notizen, oder schreib sie auf. Ohne ID kann dein Passwort nicht sicher zurückgesetzt werden.</div>
+        <p style="font-size:13px;color:var(--muted)">Im Profil kannst du jederzeit eine neue erzeugen, dann gilt die alte nicht mehr.</p>
         <label class="check"><input type="checkbox" id="rec-ok"> Ich habe die ID notiert</label>`,
       foot: '<button class="btn secondary" id="rec-copy">Kopieren</button><button class="btn" id="rec-done" disabled>Fertig</button>',
       onMount(modal) {
@@ -2243,9 +2322,10 @@
       ${linkInfo.url ? `<div class="link-share">
           <div class="qr">${linkInfo.qr}</div>
           <div style="min-width:0">
-            <div class="link-url">${esc(linkInfo.url)}</div>
+            <div class="link-url">${esc(linkInfo.shareUrl)}</div>
             <div class="row" style="margin:10px 0"><button class="btn small" id="copy-link">Link kopieren</button>
-              <a class="btn secondary small" href="${esc(linkInfo.url)}" target="_blank" rel="noopener">Öffnen</a></div>
+              <a class="btn secondary small" href="${esc(linkInfo.shareUrl)}" target="_blank" rel="noopener">Öffnen</a></div>
+            <p style="font-size:13px;color:var(--muted);margin:0 0 6px">Nach dem Scan erklärt HUB-042 in 3 Schritten, was im Dashboard wartet, wie die Registrierung läuft und warum die Wiederherstellungs-ID gespeichert werden muss.</p>
             <p style="font-size:13px;color:var(--muted);margin:0">${linkInfo.kind === 'fest'
     ? '✅ Feste Adresse (PUBLIC_URL). Sie bleibt nach Neustarts gleich.'
     : '⚠️ Zufallsadresse des Gratis-Tunnels. Sie <strong>ändert sich bei jedem Neustart</strong>, dann hier neu teilen. Für eine feste Adresse siehe README „Dauerhaft online“ (Tailscale Funnel).'}</p>
@@ -2293,7 +2373,7 @@
     const copyLink = document.getElementById('copy-link');
     if (copyLink) {
       copyLink.addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText(linkInfo.url); toast('Link kopiert'); } catch (e) { toast('Bitte manuell kopieren', true); }
+        try { await navigator.clipboard.writeText(linkInfo.shareUrl); toast('Link kopiert'); } catch (e) { toast('Bitte manuell kopieren', true); }
       });
     }
     const mailTest = document.getElementById('mail-test');
@@ -2421,7 +2501,7 @@
     }
   }
 
-  const PUBLIC_ROUTES = ['anmelden', 'registrieren', 'passwort-vergessen', 'passwort-neu'];
+  const PUBLIC_ROUTES = ['willkommen', 'anmelden', 'registrieren', 'passwort-vergessen', 'passwort-neu'];
 
   async function route() {
     closeModal();
@@ -2438,7 +2518,7 @@
       if (!state.meta) renderBot();
       if (state.meta && page !== 'passwort-neu') { go('/dashboard'); return; }
       ({
-        anmelden: viewLogin, registrieren: viewRegister, 'passwort-vergessen': viewForgot, 'passwort-neu': viewReset,
+        willkommen: viewOnboarding, anmelden: viewLogin, registrieren: viewRegister, 'passwort-vergessen': viewForgot, 'passwort-neu': viewReset,
       })[page](params);
       return;
     }

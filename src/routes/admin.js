@@ -147,7 +147,9 @@ module.exports = function adminRoutes(app, ctx) {
   // Aktuelle öffentliche Adresse + QR-Code (zum Weitergeben an die Klasse)
   app.get('/api/admin/public-url', ...adminOnly, asyncRoute(async (req, res) => {
     const info = await publicUrl();
-    res.json({ ...info, qr: info.url ? await qrSvg(info.url) : null });
+    // Der QR-Code führt direkt zum Onboarding (3 Schritte bis zum Konto)
+    const shareUrl = info.url ? `${info.url}/#/willkommen` : null;
+    res.json({ ...info, shareUrl, qr: shareUrl ? await qrSvg(shareUrl) : null });
   }));
 
   // Test-Mail an sich selbst, um die SMTP-Einstellungen zu prüfen
