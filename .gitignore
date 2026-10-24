@@ -25,3 +25,10 @@ Thumbs.db
 downloads/*
 !downloads/HUB-042_Produktblatt.pdf
 hub-042-downloads.zip
+
+# SSH-Schlüssel und Zertifikate nie committen (z. B. Oracle-Server-Schlüssel)
+*.key
+*.pem
+*.ppk
+id_*
+ssh-key-*
