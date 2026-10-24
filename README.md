@@ -182,7 +182,11 @@ Der Quick Tunnel kann parallel weiterlaufen. Die feste Adresse bleibt nach Neust
 
 1. Konto auf [oracle.com/cloud/free](https://www.oracle.com/cloud/free/). Als Heimatregion **Switzerland North (Zürich)** wählen. Eine Kreditkarte wird nur zur Identitätsprüfung verlangt; Always-Free-Ressourcen kosten nichts.
 2. **Compute → Instance erstellen:** Image *Ubuntu 24.04*, Shape *VM.Standard.A1.Flex* (ARM, z. B. 2 OCPU / 12 GB). Meldet Oracle „Out of capacity“, später nochmals versuchen oder *VM.Standard.E2.1.Micro* nehmen. SSH-Schlüssel herunterladen.
-3. Per SSH verbinden und Docker installieren:
+3. **Schnellweg:** Per SSH verbinden und das Einrichtungs-Skript starten. Es installiert Docker, holt HUB-042, erzeugt neue Geheimwerte, fragt nach Tailscale-Schlüssel, Werkspasswort und Teilnehmerliste, startet alles und trägt die feste Adresse als `PUBLIC_URL` ein:
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/BanioX/hub-042/main/scripts/server-setup.sh | bash
+   ```
+   Oder von Hand, Docker installieren:
    ```bash
    curl -fsSL https://get.docker.com | sudo sh && sudo usermod -aG docker ubuntu   # danach neu einloggen
    git clone https://github.com/BanioX/hub-042.git && cd hub-042
