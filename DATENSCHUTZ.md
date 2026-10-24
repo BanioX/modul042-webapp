@@ -21,6 +21,7 @@ Alban Hyseni (Klasse HFWI-2504-AA), alban.hyseni@stud.hkv.ch. Datenschutzerklär
 | Aktivitätstage (nur Datum) | Streak | nur die Person selbst | 400 Tage für die Berechnung, sonst bis Konto gelöscht |
 | Forumsbeiträge, Likes | Austausch in der Klasse | eingeloggte Mitglieder (mit Anzeigename) | bis gelöscht; beim Konto-Löschen anonymisiert |
 | Audit-Protokoll (Login, Einwilligung, Verwaltung) | Sicherheit, Nachvollziehbarkeit | nur Admins | 365 Tage; fehlgeschlagene Logins 30 Tage |
+| Chat-Nachrichten | Austausch während der Sitzung | Mitglieder des jeweiligen Chats | **nie gespeichert**: nur Arbeitsspeicher; beim Abmelden oder 5 min offline verlassen, gelöscht sobald niemand mehr im Chat ist oder beim Neustart |
 | Besucherzähler | Pflicht-Statuszeile Übung 1 | öffentlich (nur Zahl) | unbegrenzt, **ohne IP** |
 | Teilnehmerliste | Zugangskontrolle | Admins/Dozierende | nur in `.env` und DB, **nicht im Repo** |
 
@@ -51,6 +52,14 @@ Es werden **keine** besonders schützenswerten Personendaten (Art. 5 lit. c DSG)
 - Die API liefert für andere Personen nur `name: "Anonym"`, Rang und Schnitt, **keine User-ID** (Test `ranking.test.js`).
 - **k-Anonymität:** Andere werden erst ab **3 Personen** mit Einträgen angezeigt. Darunter gibt die API nur die eigene Zeile **ohne Rang** zurück, damit niemand den Schnitt einer bestimmten Person zurückrechnen kann.
 - Dozierende erscheinen nicht im Ranking und sehen keine Punkte.
+
+## 5a. Flüchtiger Chat
+
+- Nachrichten existieren nur im Arbeitsspeicher des Node-Prozesses (`src/chat.js`), nie in PostgreSQL, im Audit-Log oder im Datenexport.
+- Sitzungsende (Abmelden, Konto gesperrt oder gelöscht, 5 min ohne Lebenszeichen) entfernt die Person aus allen Chats. Ohne Einladung sieht sie den alten Verlauf nicht mehr.
+- Ein Chat ohne Mitglieder wird samt Verlauf sofort gelöscht; ein Neustart löscht alles.
+- Direktnachrichten sind serverseitig auf die zwei Beteiligten beschränkt (Test `chat.test.js`).
+- Abschreckung gegen Weitergabe: Sperrvorhang nach 60 s Inaktivität, schwarzer Schutzschild bei Fokusverlust, Print-Taste oder Drucken, Wasserzeichen mit dem eigenen Namen, kein Kopieren. Ein Browser kann Screenshots technisch nicht vollständig verhindern; darauf weist die App hin.
 
 ## 6. Bekanntgabe an Dritte / ins Ausland (Art. 16 DSG)
 

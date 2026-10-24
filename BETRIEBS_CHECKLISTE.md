@@ -27,6 +27,7 @@ Diese Checkliste dokumentiert alle betriebsrelevanten Aspekte für den produktiv
 | **Keine Indexierung** | `umgesetzt` | `robots.txt` (Disallow /), Header `X-Robots-Tag: noindex, nofollow, noarchive` und Meta-Tag. |
 | **Passwort-Sicherheit & Sessions** | `umgesetzt` | Passwörter 8–20 Zeichen, `bcrypt` (10 Runden). Session-Cookies mit `SESSION_SECRET` signiert, `httpOnly`, `sameSite: 'lax'`. Passwort-Reset per Mail (1 Stunde gültig). |
 | **Passwort-Reset ohne Mail** | `umgesetzt` | Demo-Modus: Admin setzt auf das Werkspasswort (`RESET_PASSWORD`, nur `.env`) zurück; Login danach nur mit persönlicher Wiederherstellungs-ID (bcrypt-Hash); Pflichtwechsel, bis dahin sperrt der Server alle anderen APIs. |
+| **Flüchtiger Chat** | `umgesetzt` | Nur Arbeitsspeicher, keine Persistenz; Sitzungsregeln und Löschung wie in `DATENSCHUTZ.md`. Bewusst ohne Persistenz (Datenschutz): Ein Neustart oder Watchtower-Update löscht alle Chats. |
 | **Audit-Protokoll** | `umgesetzt` | Logins, fehlgeschlagene Logins, Einwilligungen, Datenexporte, Verwaltungsaktionen. Nur für Admins sichtbar; 365 Tage, Fehlversuche 30 Tage. |
 | **HTTP-Sicherheitsheader (Helmet)** | `umgesetzt` | `helmet` setzt eine strikte CSP (nur eigene Skripte, keine externen Quellen), Frameguard und HSTS. Google Fonts und CDNs wurden entfernt. |
 | **Ende-zu-Ende Verschlüsselung (HTTPS/TLS)** | `umgesetzt` | Der Cloudflare Tunnel stellt automatische SSL/TLS-Terminierung am Cloudflare Edge bereit. Kein unverschlüsselter HTTP-Datenverkehr im öffentlichen Netz. |

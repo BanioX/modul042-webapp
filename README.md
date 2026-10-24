@@ -26,10 +26,11 @@ Ein Hub mit der Antwort auf (fast) alle Fragen der Klasse also. 🚀
 | **Stundenplan** | Beide Studienjahre aus den offiziellen Excel-Plänen, Ferien und Feiertage, Raum-Hinweise (Stockwerk, Treppe), Kalender-Abo (ICS) für Outlook/Teams/Google/Apple |
 | **Check-in** | Präsenz pro Lektion bestätigen: 0.5 LLP pro Lektion (4 Lektionen = 2 LLP, Schultag mit 8 Lektionen = 4 LLP) |
 | **Ranking** | Podest pro Schuljahr nach Notenschnitt oder XP. Nur der eigene Name ist sichtbar, alle anderen sind „Anonym“. Andere erscheinen erst ab 3 Personen (k-Anonymität) |
+| **Chat** | Gruppenchat „Klasse“ und Direktnachrichten. **Nie gespeichert** (nur Arbeitsspeicher): Abmelden oder 5 min offline = alle Chats verlassen, alter Verlauf weg; Mitglieder können per Einladung den Verlauf wieder freigeben; sind alle draussen, wird gelöscht. **Sperrvorhang** nach 60 s Inaktivität, entsperren durch Hochwischen/-scrollen ([Idee vom 24.10.2026](IDEEN.md)). Screenshot-Schutzschild, Wasserzeichen, kein Kopieren |
 | **Gruppen** | Zufalls-Gruppengenerator: Anwesende anhaken, Gruppengrösse wählen (2er–6er), auslosen, Ergebnis für Teams kopieren. Läuft nur im Browser, nichts wird gespeichert |
 | **Forum** | Fragen, Wissenswertes, Zusammenfassungen, Lerngruppen, Off-Topic; Likes, „gelöst“, Anheften |
 | **Infos** | Downloads, Eckdaten, Lehrplan aller 3 Jahre, Handlungskompetenzen, Englisch/IELTS, Kontakte, optionale Zertifikate (IPMA, IREB, ITIL, COBIT), Weg zum Bachelor nach dem HF (Kalaidos, ZHAW, FHNW, FFHS, BFH …) |
-| **Hilfe-Bot** | Kontextbezogen zur aktuellen Seite. Mit `GEMINI_API_KEY` über Google Gemini, sonst lokale FAQ. Sendet nie Namen, E-Mails, Punkte oder Noten |
+| **Hilfe-Bot** | Beantwortet ohne KI direkt aus den App-Daten: nächste Prüfungen und Lektionen (auch pro Modul), Ferien, Notenrechner („45 von 60“, „was brauche ich für eine 5“), eigener Schnitt und LLP, Module, Zertifikate, Bachelor, Kontakte, Zimmer. Optional ergänzt `GEMINI_API_KEY` offene Fragen über Google Gemini (ohne Namen, Mails, Punkte, Noten) |
 | **Gamification** | XP, Level, Streak, Abzeichen |
 | **Verwaltung** | Teilnehmerliste, Rollen, Einladungen, manuelles Freischalten, Schuljahre, Audit-Protokoll |
 | **Datenschutz** | Einwilligung bei der Registrierung, Datenschutzerklärung, Impressum, Datenexport, Konto löschen. Siehe [DATENSCHUTZ.md](DATENSCHUTZ.md) |
@@ -42,7 +43,7 @@ Nur registrierte Mitglieder, und registrieren können sich nur Adressen auf der 
 - Studierende mit `vorname.nachname@stud.hkv.ch`
 - Dozent Applications Engineering mit `vorname.nachname@hkv.ch`
 
-Andere Adressen werden abgewiesen. Die Adresse wird per Bestätigungslink geprüft, Passwörter haben 8–20 Zeichen. Ohne Login liefert der Server keine Inhalte aus (alle APIs und Downloads geben `401`). Suchmaschinen werden über `robots.txt`, den Header `X-Robots-Tag: noindex` und ein Meta-Tag ausgesperrt.
+Andere Adressen werden abgewiesen. Im **Demo-Modus ohne Mailversand** (Standard) nimmt der Admin neue Konten in der Verwaltung an; mit SMTP prüft ein Bestätigungslink die Adresse. Passwörter haben 8–20 Zeichen. Abmelden geht jederzeit oben rechts. Ohne Login liefert der Server keine Inhalte aus (alle APIs und Downloads geben `401`). Suchmaschinen werden über `robots.txt`, den Header `X-Robots-Tag: noindex` und ein Meta-Tag ausgesperrt.
 
 ### Demo-Modus: ohne Mailversand
 
@@ -117,7 +118,8 @@ docker compose logs tunnel    # öffentliche https://….trycloudflare.com-Adres
 
 - Downloads-Bereich: HKV-Dokumente (Broschüre, Factsheet, Merkblatt Englisch, Ferienplan, Zimmer- und Lageplan, Excel-Stundenpläne) in den Ordner `downloads/` legen. Sie sind bewusst **nicht im Repo**, weil das Repo öffentlich ist; die App zeigt nur vorhandene Dateien und nur eingeloggten Mitgliedern. Dateinamen siehe `src/routes/downloads.js`.
 - Lokal: <http://localhost:3000> · Healthcheck: <http://localhost:3000/health>
-- Erste Anmeldung: mit der Adresse aus `ADMIN_EMAILS` registrieren. Ohne SMTP steht der Bestätigungslink im Log: `docker compose logs app | grep verify`.
+- Erste Anmeldung: mit der Adresse aus `ADMIN_EMAILS` registrieren. Im Demo-Modus den Bestätigungslink aus dem Log holen (`docker compose logs app | findstr verify` unter Windows, `grep` unter Mac/Linux) oder den Notfall-Reset nutzen: `docker compose exec app node src/cli/reset-password.js <adresse>`.
+- Danach nimmst du in der **Verwaltung** alle weiteren Konten an.
 
 ### Wichtige Einstellungen in `.env`
 
@@ -126,7 +128,8 @@ docker compose logs tunnel    # öffentliche https://….trycloudflare.com-Adres
 | `ADMIN_EMAILS` / `DOZENT_EMAILS` | fest berechtigte Admins und Dozierende |
 | `TEILNEHMER_EMAILS` | Teilnehmerliste (kommagetrennt). **Nicht ins Repo**, Namen der Klasse sind Personendaten |
 | `ALLOWED_EMAIL_DOMAINS` | Standard `stud.hkv.ch,hkv.ch` |
-| `SMTP_*`, `MAIL_FROM` | Versand über das HKV-Microsoft-365-Konto (`smtp.office365.com:587`) |
+| `RESET_PASSWORD` | Werkspasswort für Passwort-Resets durch den Admin (8–20 Zeichen, **nur in der `.env`**) |
+| `SMTP_*`, `MAIL_FROM`, `MAIL_REPLY_TO` | **Optional.** Ohne Werte läuft der Demo-Modus ohne Mails. Mit Werten (Gmail-App-Passwort oder Microsoft 365, falls die Schule es erlaubt) gibt es Bestätigung, Willkommens-Mail und „Passwort vergessen“. Test: Verwaltung → „Test-Mail an mich senden“ |
 | `GEMINI_API_KEY` | optional, für den KI-Hilfe-Bot ([Key holen](https://aistudio.google.com/apikey)) |
 | `COOKIE_SECURE` | `true`, wenn nur noch über HTTPS genutzt |
 
@@ -134,7 +137,7 @@ docker compose logs tunnel    # öffentliche https://….trycloudflare.com-Adres
 
 ```bash
 npm ci
-npm test     # 33 Unit-Tests: Zugang, Ranking-Anonymität, LLP, Noten, Gamification, Stundenplan-Import, ICS, Bot
+npm test     # 52 Unit-Tests: Zugang, Ranking-Anonymität, LLP, Noten, Gamification, Stundenplan-Import, ICS, Bot, Wiederherstellungs-ID, Gruppen, flüchtiger Chat
 ```
 
 ### Produktblatt neu erzeugen
@@ -160,6 +163,24 @@ Für die Übung läuft HUB-042 auf dem Laptop. Damit die Klasse die Seite jederz
 | Render / Koyeb / Fly.io Free Tier | 0 CHF | ja | schlafen bei Inaktivität ein, Gratis-Datenbanken sind befristet; Watchtower und Compose nicht nutzbar |
 
 Wichtig: Der **Quick Tunnel** (`trycloudflare.com`) bekommt bei jedem Neustart eine neue Adresse. Für eine feste Adresse braucht es einen Cloudflare *Named Tunnel* (gratis, aber mit eigener Domain, ca. CHF 10–15 pro Jahr) oder **Tailscale Funnel** (gratis, Adresse wie `https://hub-042.<tailnet>.ts.net`).
+
+## Ideen & Urheberschaft
+
+Eigene Ideen sind mit Datum in [IDEEN.md](IDEEN.md) festgehalten, z. B. der **Chat-Sperrvorhang mit Wisch-/Scroll-Entsperrung (Alban Hyseni, 24.10.2026)**.
+
+## Für Dozierende: Code ansehen und bewerten
+
+Das Repository ist öffentlich. Code, Git-Historie und GitHub-Actions-Läufe sind ohne zusätzliche Rechte einsehbar. Einstiegspunkte:
+
+| Thema | Datei |
+| :--- | :--- |
+| Übung 1–3 (Statuszeile, Healthcheck, Container, CI/CD) | `src/server.js`, `docker-compose.yml`, `Dockerfile`, `.github/workflows/deploy.yml` |
+| Betriebs-Checkliste | `BETRIEBS_CHECKLISTE.md` |
+| Datenschutz-Audit | `DATENSCHUTZ.md` |
+| Zugang, Rollen, Passwort-Reset, Wiederherstellungs-ID | `src/access.js`, `src/routes/auth.js`, `src/routes/admin.js`, `src/recovery.js` |
+| Noten, LLP, Ranking (k-Anonymität) | `src/grades.js`, `src/llp.js`, `src/ranking.js` |
+| Flüchtiger Chat und Sperrvorhang | `src/chat.js`, `src/routes/chat.js`, `public/app.js` (`viewChat`) |
+| Tests | `test/` (`npm test`) |
 
 ## Mitwirkende
 
