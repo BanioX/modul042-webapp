@@ -46,6 +46,17 @@ module.exports = function hubRoutes(app, ctx) {
     });
   });
 
+  // Klassenliste für den Gruppengenerator: nur Namen, keine Mailadressen
+  app.get('/api/groups/people', requireAuth, asyncRoute(async (req, res) => {
+    const result = await pool.query(
+      `SELECT COALESCE(u.display_name, p.full_name) AS name
+       FROM participants p LEFT JOIN users u ON u.email = p.email
+       WHERE p.active AND p.role <> 'dozent'
+       ORDER BY 1`
+    );
+    res.json({ people: result.rows.map((r) => r.name) });
+  }));
+
   app.get('/api/grades/needed', (req, res) => {
     res.json({ table: neededPointsTable(parseFloat(req.query.max) || 0) });
   });

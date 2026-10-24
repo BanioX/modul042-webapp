@@ -26,6 +26,7 @@ Ein Hub mit der Antwort auf (fast) alle Fragen der Klasse also. 🚀
 | **Stundenplan** | Beide Studienjahre aus den offiziellen Excel-Plänen, Ferien und Feiertage, Raum-Hinweise (Stockwerk, Treppe), Kalender-Abo (ICS) für Outlook/Teams/Google/Apple |
 | **Check-in** | Präsenz pro Lektion bestätigen: 0.5 LLP pro Lektion (4 Lektionen = 2 LLP, Schultag mit 8 Lektionen = 4 LLP) |
 | **Ranking** | Podest pro Schuljahr nach Notenschnitt oder XP. Nur der eigene Name ist sichtbar, alle anderen sind „Anonym“. Andere erscheinen erst ab 3 Personen (k-Anonymität) |
+| **Gruppen** | Zufalls-Gruppengenerator: Anwesende anhaken, Gruppengrösse wählen (2er–6er), auslosen, Ergebnis für Teams kopieren. Läuft nur im Browser, nichts wird gespeichert |
 | **Forum** | Fragen, Wissenswertes, Zusammenfassungen, Lerngruppen, Off-Topic; Likes, „gelöst“, Anheften |
 | **Infos** | Downloads, Eckdaten, Lehrplan aller 3 Jahre, Handlungskompetenzen, Englisch/IELTS, Kontakte, optionale Zertifikate (IPMA, IREB, ITIL, COBIT), Weg zum Bachelor nach dem HF (Kalaidos, ZHAW, FHNW, FFHS, BFH …) |
 | **Hilfe-Bot** | Kontextbezogen zur aktuellen Seite. Mit `GEMINI_API_KEY` über Google Gemini, sonst lokale FAQ. Sendet nie Namen, E-Mails, Punkte oder Noten |
@@ -50,6 +51,8 @@ Ohne SMTP-Einstellungen läuft HUB-042 im **Demo-Modus**. Die HKV-Adresse dient 
 - **Annehmen:** Neue Konten erscheinen in der Verwaltung als „Bestätigung offen“. Nur der Admin nimmt sie mit **Annehmen** an.
 - **Passwort vergessen:** Der Admin klickt **Passwort zurücksetzen**. Das Passwort wird auf das Werkspasswort `RESET_PASSWORD` aus der `.env` gesetzt, das **nie im Repo** steht.
 - **Persönliche Wiederherstellungs-ID:** Jede Person erhält beim ersten Login einmalig eine zufällige ID (z. B. `K7Q2-M9XA`). Gespeichert wird nur ein bcrypt-Hash, auch der Admin kennt sie nicht. Nach einem Reset braucht es **Werkspasswort und ID**. Danach muss die Person ein neues Passwort wählen, und bis dahin sperrt der Server alle anderen Funktionen.
+- **Passwort + ID zurücksetzen:** Hat jemand die ID verloren, löscht der Admin beides. Dann reicht einmalig das Werkspasswort, beim Login entsteht eine neue ID.
+- **Notfall (Admin selbst ausgesperrt):** `docker compose exec app node src/cli/reset-password.js vorname.nachname@stud.hkv.ch`
 - Admins und Dozierende sind getrennt: Nur der Admin verwaltet Personen und Passwörter, Dozierende pflegen Aufgaben und Stundenplan.
 
 ### Notenformel und LLP

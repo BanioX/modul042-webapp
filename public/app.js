@@ -171,6 +171,8 @@
     tag: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+    users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5a5 5 0 0 1 5.5 5"/>',
+    shuffle: '<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
     lock: '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   };
@@ -214,6 +216,7 @@
     ['stundenplan', 'Stundenplan', 'calendar'],
     ['ranking', 'Ranking', 'trophy'],
     ['forum', 'Forum', 'forum'],
+    ['gruppen', 'Gruppen', 'users'],
     ['infos', 'Infos', 'info'],
     ['profil', 'Profil', 'user'],
   ];
@@ -478,6 +481,7 @@
           <li><strong>Ranking:</strong> Du siehst deinen eigenen Platz. Alle anderen erscheinen nur als „Anonym“ mit Schnitt, ohne Namen oder Kennung.
             Andere werden erst angezeigt, wenn mindestens 3 Personen Einträge haben, damit niemand auf einzelne Noten zurückschliessen kann.</li>
           <li><strong>Forum:</strong> Beiträge sind für eingeloggte Klassenmitglieder mit deinem Anzeigenamen sichtbar.</li>
+          <li><strong>Gruppengenerator:</strong> Eingeloggte Klassenmitglieder sehen die Namen der Teilnehmenden (ohne Mailadressen), um Lerngruppen auszulosen. Die Auslosung wird nicht gespeichert.</li>
           <li><strong>Verwaltung:</strong> Klassen-Admins und Dozierende sehen die Teilnehmerliste mit Registrierungsstatus, aber keine Punkte.
             Der technische Betreiber hat Zugriff auf die Datenbank und nutzt ihn nur für Betrieb und Wartung.</li>
         </ul>
@@ -1634,6 +1638,84 @@
   }
 
   // ---------------------------------------------------------------
+  // Zufalls-Gruppengenerator (läuft nur im Browser, nichts wird gespeichert)
+  // ---------------------------------------------------------------
+  const groupState = { size: 3, rest: 'verteilen', unchecked: new Set(), extra: [], result: null };
+  async function viewGroups() {
+    loading('gruppen');
+    const data = await api('/api/groups/people');
+    const all = [...data.people, ...groupState.extra];
+    const selected = () => all.filter((n) => !groupState.unchecked.has(n));
+    const render = () => {
+      const sel = selected();
+      const preview = HubGroups.makeGroups(sel.map((_, i) => i), groupState.size, groupState.rest).map((g) => g.length);
+      document.getElementById('group-count').textContent = sel.length
+        ? `${sel.length} Personen → ${preview.length} Gruppe${preview.length === 1 ? '' : 'n'} (${preview.join(' / ')})`
+        : 'Niemand ausgewählt';
+      const out = document.getElementById('group-result');
+      out.innerHTML = groupState.result ? `<div class="grid grid-3">${groupState.result.map((g, i) => `
+        <div class="card accent" style="--accent:${['#2f7d5b', '#3d6f8e', '#b9783f', '#7a5c99', '#c0504d', '#2b6f74', '#9a7b2f'][i % 7]}">
+          <div class="card-title">Gruppe ${i + 1} <span class="tag muted">${g.length}</span></div>
+          <ul style="margin:0;padding-left:18px">${g.map((n) => `<li>${esc(n)}</li>`).join('')}</ul></div>`).join('')}</div>` : '';
+      document.getElementById('group-copy').style.display = groupState.result ? '' : 'none';
+    };
+    shell('gruppen', `
+      <div class="eyebrow">Lerngruppen</div>
+      <h1 class="page-title">Zufalls-Gruppen</h1>
+      <div class="grid grid-2">
+        <div class="card"><div class="card-title">Wer ist da?
+            <span><button class="btn ghost small" id="all-on">alle</button><button class="btn ghost small" id="all-off">keine</button></span></div>
+          <div id="people" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 12px">
+            ${all.map((n, i) => `<label class="check" style="margin:0"><input type="checkbox" data-person="${i}" ${groupState.unchecked.has(n) ? '' : 'checked'}> ${esc(n)}</label>`).join('') || '<div class="empty">Noch niemand auf der Teilnehmerliste.</div>'}
+          </div>
+          <form id="extra-form" class="row" style="margin-top:12px"><div class="field" style="margin:0"><label>Weitere Person (z. B. Gast)</label><input class="input" name="name" maxlength="60" placeholder="Name"></div>
+            <button class="btn secondary" type="submit">Hinzufügen</button></form>
+        </div>
+        <div class="card"><div class="card-title">Einstellungen</div>
+          <div class="field"><label>Gruppengrösse</label>
+            <div class="segmented">${[2, 3, 4, 5, 6].map((n) => `<button type="button" data-size="${n}" class="${n === groupState.size ? 'active' : ''}">${n}er</button>`).join('')}</div></div>
+          <div class="field"><label>Wenn es nicht aufgeht</label>
+            <select class="input" id="rest"><option value="verteilen" ${groupState.rest === 'verteilen' ? 'selected' : ''}>Übrige auf Gruppen verteilen (z. B. eine 4er-Gruppe)</option>
+              <option value="eigene" ${groupState.rest === 'eigene' ? 'selected' : ''}>Eigene kleinere Restgruppe</option></select></div>
+          <p id="group-count" style="font-weight:600;color:var(--petrol)"></p>
+          <div class="row"><button class="btn" id="generate">${icon('shuffle', 16)} Gruppen auslosen</button>
+            <button class="btn secondary" id="group-copy" style="display:none">Kopieren (für Teams)</button></div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:0">Die Auslosung passiert nur in deinem Browser mit echtem Zufall (Web Crypto) und wird nirgends gespeichert.</p>
+        </div>
+      </div>
+      <h2 class="section-title">Ergebnis</h2>
+      <div id="group-result"><div class="empty">Noch nicht ausgelost.</div></div>
+    `);
+    app.querySelectorAll('[data-person]').forEach((cb) => cb.addEventListener('change', () => {
+      const name = all[parseInt(cb.dataset.person, 10)];
+      if (cb.checked) groupState.unchecked.delete(name); else groupState.unchecked.add(name);
+      render();
+    }));
+    document.getElementById('all-on').addEventListener('click', () => { groupState.unchecked.clear(); viewGroups(); });
+    document.getElementById('all-off').addEventListener('click', () => { all.forEach((n) => groupState.unchecked.add(n)); viewGroups(); });
+    app.querySelectorAll('[data-size]').forEach((b) => b.addEventListener('click', () => { groupState.size = parseInt(b.dataset.size, 10); viewGroups(); }));
+    document.getElementById('rest').addEventListener('change', (e) => { groupState.rest = e.target.value; render(); });
+    document.getElementById('extra-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = e.target.name.value.trim();
+      if (name && !all.includes(name)) groupState.extra.push(name);
+      viewGroups();
+    });
+    document.getElementById('generate').addEventListener('click', () => {
+      const sel = selected();
+      if (sel.length < 2) { toast('Mindestens 2 Personen auswählen', true); return; }
+      groupState.result = HubGroups.makeGroups(sel, groupState.size, groupState.rest);
+      render();
+      document.getElementById('group-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    document.getElementById('group-copy').addEventListener('click', async () => {
+      const text = groupState.result.map((g, i) => `Gruppe ${i + 1}: ${g.join(', ')}`).join('\n');
+      try { await navigator.clipboard.writeText(text); toast('Gruppen kopiert'); } catch (e) { toast('Kopieren nicht möglich', true); }
+    });
+    render();
+  }
+
+  // ---------------------------------------------------------------
   // Infos zum Bildungsgang, Zertifikate, Weg zum Bachelor
   // ---------------------------------------------------------------
   async function viewInfos() {
@@ -1838,7 +1920,8 @@
         <td style="white-space:nowrap">
           ${!p.user_id && p.active ? `<button class="btn secondary small" data-invite="${esc(p.email)}">Einladen</button>` : ''}
           ${p.user_id && !p.email_verified ? `<button class="btn small" data-verify="${p.user_id}">Annehmen</button>` : ''}
-          ${p.user_id && p.email_verified && p.user_id !== state.meta.user.id ? `<button class="btn ghost small" data-reset="${p.user_id}" data-mail="${esc(p.email)}">Passwort zurücksetzen</button>` : ''}
+          ${p.user_id && p.email_verified && p.user_id !== state.meta.user.id ? `<button class="btn ghost small" data-reset="${p.user_id}" data-mail="${esc(p.email)}">Passwort zurücksetzen</button>
+            <button class="btn ghost small" data-reset-id="${p.user_id}" data-mail="${esc(p.email)}" title="Wenn die Person ihre Wiederherstellungs-ID verloren hat">Passwort + ID zurücksetzen</button>` : ''}
           ${fixed ? '' : `<button class="btn ghost small" data-toggle="${esc(p.email)}" data-active="${p.active}">${p.active ? 'Sperren' : 'Aktivieren'}</button>`}
         </td></tr>`;
     }).join('');
@@ -1854,7 +1937,7 @@
         password_changed: 'Passwort geändert', profile_updated: 'Profil geändert', data_export: 'Datenexport', account_deleted: 'Konto gelöscht',
         participants_added: 'Teilnehmende hinzugefügt', participant_updated: 'Teilnehmende*r geändert', participant_removed: 'Teilnehmende*r entfernt',
         invitation_sent: 'Einladung versendet', user_verified_manually: 'Manuell freigeschaltet', task_created: 'Aufgabe erstellt',
-        task_updated: 'Aufgabe geändert', mail_test: 'Test-Mail', password_reset_by_admin: 'Passwort durch Admin zurückgesetzt',
+        task_updated: 'Aufgabe geändert', mail_test: 'Test-Mail', password_reset_by_admin: 'Passwort durch Admin zurückgesetzt', password_and_id_reset_by_admin: 'Passwort + ID durch Admin zurückgesetzt',
         recovery_id_created: 'Wiederherstellungs-ID erzeugt', recovery_id_failed: 'Wiederherstellungs-ID falsch', task_deleted: 'Aufgabe gelöscht', lessons_imported: 'Stundenplan importiert',
       };
       auditHtml = `<div class="card" style="margin-top:16px"><div class="card-title">Audit-Protokoll <span class="tag muted">${auditData.consent.with_consent}/${auditData.consent.total} Konten mit Zustimmung</span></div>
@@ -1932,6 +2015,10 @@
       btn.disabled = true;
       try { await api(`/api/admin/participants/${encodeURIComponent(btn.dataset.invite)}/invite`, { method: 'POST' }); toast(`Einladung an ${btn.dataset.invite} versendet`); } catch (err) { toast(err.message, true); }
       btn.disabled = false;
+    }));
+    app.querySelectorAll('[data-reset-id]').forEach((btn) => btn.addEventListener('click', async () => {
+      if (!window.confirm(`Passwort UND Wiederherstellungs-ID von ${btn.dataset.mail} zurücksetzen?\n\nDann kann sich die Person (oder wer das Werkspasswort kennt) einmalig nur mit dem Werkspasswort einloggen. Sag es ihr persönlich und lass sie sich sofort einloggen. Sie bekommt dabei eine neue ID und muss ein neues Passwort wählen.`)) return;
+      try { toast((await api(`/api/admin/users/${btn.dataset.resetId}/reset-password`, { method: 'POST', body: { withId: true } })).message); } catch (err) { toast(err.message, true); }
     }));
     app.querySelectorAll('[data-reset]').forEach((btn) => btn.addEventListener('click', async () => {
       if (!window.confirm(`Passwort von ${btn.dataset.mail} auf das Werkspasswort zurücksetzen? Die Person muss danach beim Login ein neues wählen.`)) return;
@@ -2049,6 +2136,7 @@
         case 'forum': if (parts[1]) await viewThread(parseInt(parts[1], 10)); else await viewForum(params); break;
         case 'profil': await viewProfile(); break;
         case 'infos': await viewInfos(); break;
+        case 'gruppen': await viewGroups(); break;
         case 'admin': await viewAdmin(); break;
         default: await viewDashboard(params);
       }

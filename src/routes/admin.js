@@ -120,15 +120,23 @@ module.exports = function adminRoutes(app, ctx) {
       return res.status(400).json({ error: 'Das eigene Passwort bitte im Profil ändern.' });
     }
     const hash = await bcrypt.hash(config.resetPassword, config.bcryptRounds);
+    // withId: auch die Wiederherstellungs-ID löschen (wenn die Person sie verloren hat).
+    // Dann reicht einmalig das Werkspasswort, und beim Login wird eine neue ID erzeugt.
+    const withId = req.body && req.body.withId === true;
     const result = await pool.query(
       `UPDATE users SET password_hash = $2, must_change_password = true, email_verified = true,
-              reset_token = NULL, verify_token = NULL
+              reset_token = NULL, verify_token = NULL${withId ? ', recovery_hash = NULL' : ''}
        WHERE id = $1 RETURNING email`,
       [req.params.id, hash]
     );
     if (!result.rows[0]) return res.status(404).json({ error: 'Konto nicht gefunden.' });
-    await audit(req, 'password_reset_by_admin', result.rows[0].email);
-    res.json({ success: true, message: `Passwort von ${result.rows[0].email} auf das Werkspasswort zurückgesetzt.` });
+    await audit(req, withId ? 'password_and_id_reset_by_admin' : 'password_reset_by_admin', result.rows[0].email);
+    res.json({
+      success: true,
+      message: withId
+        ? `Passwort und Wiederherstellungs-ID von ${result.rows[0].email} zurückgesetzt. Login jetzt nur mit Werkspasswort, danach neue ID.`
+        : `Passwort von ${result.rows[0].email} zurückgesetzt. Login mit Werkspasswort und persönlicher ID.`,
+    });
   }));
 
   // Test-Mail an sich selbst, um die SMTP-Einstellungen zu prüfen
