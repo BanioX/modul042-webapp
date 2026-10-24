@@ -32,3 +32,8 @@ hub-042-downloads.zip
 *.ppk
 id_*
 ssh-key-*
+
+# Lokaler Admin-Ordner (Server-IP, gesicherte Stände mit Datenbank-Backups)
+admin-config.txt
+Staende/
+*.sql.gz.enc

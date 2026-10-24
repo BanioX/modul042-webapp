@@ -199,6 +199,10 @@ Der Quick Tunnel kann parallel weiterlaufen. Die feste Adresse bleibt nach Neust
 5. Daten vom Laptop mitnehmen (optional): lokal `docker compose exec db pg_dump -U webapp_user webapp_db > backup.sql`, auf die VM kopieren (`scp`) und dort `docker compose exec -T db psql -U webapp_user webapp_db < backup.sql`.
 6. Watchtower holt neue Versionen nach jedem Push auf `main` automatisch. Den Laptop-Stack danach mit `docker compose stop` anhalten (nicht `down -v`!).
 
+## Betrieb, Killswitch und Abschalten
+
+Alles für den Admin steht im **[Admin-Handbuch](docs/ADMIN_HANDBUCH.md)**: was wo läuft, Killswitch (sofort offline), Backups und Wiederherstellung, endgültiges Abschalten nach dem Studium. Werkzeuge: `scripts/admin.sh` auf dem Server und Doppelklick-Knöpfe in `scripts/windows/` für den Laptop.
+
 ## Für KI-Assistenten
 
 [`AGENTS.md`](AGENTS.md) (dazu `CLAUDE.md` und `GEMINI.md`) beschreibt Projekt, Datenschutz-Regeln und die **Checkliste nach jeder neuen Funktion**: Funktionskatalog, Bot, Produktblatt, README, Datenschutz, Betriebs-Checkliste, Tests. `test/consistency.test.js` lässt den Build scheitern, wenn Produktblatt oder Bot nicht zum Funktionsumfang passen.

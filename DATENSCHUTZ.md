@@ -90,7 +90,7 @@ Hinweis zum Bot: Beim kostenlosen Gemini-Kontingent kann Google Eingaben zur Ver
 | Secrets nur in `.env`, nicht im Repo | umgesetzt |
 | Container läuft als unprivilegierter Benutzer (`USER node`) | umgesetzt |
 | Audit-Protokoll für Logins, Einwilligung und Verwaltung | umgesetzt |
-| Verschlüsselte Backups | geplant (siehe Betriebs-Checkliste) |
+| Verschlüsselte Backups (AES-256, `scripts/admin.sh backup`), nur lokal beim Betreiber, auf dem Server max. 10 | umgesetzt |
 
 ## 8. Cookies und lokaler Speicher
 
@@ -99,5 +99,5 @@ Ein technisch notwendiges Session-Cookie (`user_session`, 30 Tage). `localStorag
 ## 9. Offene Punkte
 
 - Teilnehmende vor dem Live-Gang über die Plattform informieren: QR-Aushang bzw. Onboarding `#/willkommen` mit Link zur Datenschutzerklärung (ohne Mailversand).
-- Nach Studienabschluss: Datenbank löschen (`docker compose down -v`) und Tunnel abschalten.
+- Nach Studienabschluss: Abschalten nach `docs/ADMIN_HANDBUCH.md` Kapitel 6 (Datenbank, Backups, Oracle-Instanz, Tailscale).
 - Bei Änderungen der Datenbearbeitung `PRIVACY_VERSION` erhöhen, dann müssen alle neu zustimmen.

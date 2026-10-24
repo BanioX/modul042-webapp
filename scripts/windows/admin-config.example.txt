@@ -1,0 +1,5 @@
+# HUB-042 Admin-Konfiguration (nur lokal, nie ins Repo!)
+# Öffentliche IP des Oracle-Servers (Oracle Console -> Compute -> Instances)
+SERVER_IP=DEINE.SERVER.IP
+# Pfad zum privaten SSH-Schlüssel des Servers
+SSH_KEY=%USERPROFILE%\.ssh\id_hub042
