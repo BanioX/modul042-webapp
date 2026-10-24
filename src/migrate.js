@@ -143,6 +143,8 @@ async function migrate(pool, { admins = [], dozenten = [], students = [] } = {})
 
     ALTER TABLE users ADD COLUMN IF NOT EXISTS consent_at TIMESTAMP WITH TIME ZONE;
     ALTER TABLE users ADD COLUMN IF NOT EXISTS consent_version VARCHAR(16);
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS must_change_password BOOLEAN NOT NULL DEFAULT false;
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS recovery_hash VARCHAR(255);
 
     CREATE TABLE IF NOT EXISTS audit_log (
       id SERIAL PRIMARY KEY,

@@ -5,6 +5,7 @@ const {
   sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail, getMailStatus,
 } = require('../mail');
 const { PRODUCT_SHEET } = require('./downloads');
+const { generateRecoveryId, normalizeRecoveryId } = require('../recovery');
 
 const MIN_PASSWORD = 8;
 const MAX_PASSWORD = 20;
@@ -111,7 +112,22 @@ module.exports = function authRoutes(app, ctx) {
       return res.status(403).json({ error: 'Diese Adresse steht nicht (mehr) auf der Teilnehmerliste.' });
     }
     if (!user.email_verified) {
-      return res.status(403).json({ error: 'Bitte bestätige zuerst deine E-Mail-Adresse (Link in deinem HKV-Postfach).' });
+      return res.status(403).json({
+        error: getMailStatus().configured
+          ? 'Bitte bestätige zuerst deine E-Mail-Adresse (Link in deinem HKV-Postfach).'
+          : 'Dein Konto wartet noch auf die Freischaltung durch den Admin.',
+      });
+    }
+    // Nach einem Admin-Reset: Werkspasswort allein reicht nicht, die persönliche ID muss stimmen
+    if (user.must_change_password && user.recovery_hash) {
+      const given = normalizeRecoveryId(req.body.recovery_id);
+      if (!given) {
+        return res.status(428).json({ needRecovery: true, error: 'Dein Passwort wurde zurückgesetzt. Bitte zusätzlich deine persönliche Wiederherstellungs-ID eingeben.' });
+      }
+      if (!await bcrypt.compare(given, user.recovery_hash)) {
+        await audit(req, 'recovery_id_failed', email);
+        return res.status(401).json({ needRecovery: true, error: 'Die Wiederherstellungs-ID stimmt nicht.' });
+      }
     }
     if (user.role !== participant.role) {
       await pool.query('UPDATE users SET role = $2 WHERE id = $1', [user.id, participant.role]);
@@ -128,6 +144,9 @@ module.exports = function authRoutes(app, ctx) {
   }));
 
   app.post('/api/auth/forgot', authLimiter, asyncRoute(async (req, res) => {
+    if (!getMailStatus().configured) {
+      return res.status(400).json({ error: 'Demo-Modus ohne Mailversand: Bitte den Admin bitten, dein Passwort zurückzusetzen.' });
+    }
     const email = normalizeEmail(req.body.email);
     const result = await pool.query(
       `SELECT u.id, u.display_name FROM users u
@@ -186,13 +205,26 @@ module.exports = function authRoutes(app, ctx) {
       if (!await bcrypt.compare(String(currentPassword || ''), row.rows[0].password_hash)) {
         return res.status(400).json({ error: 'Aktuelles Passwort ist falsch.' });
       }
-      await pool.query('UPDATE users SET password_hash = $2 WHERE id = $1', [
+      if (newPassword === config.resetPassword) {
+        return res.status(400).json({ error: 'Bitte ein eigenes Passwort wählen, nicht das Werkspasswort.' });
+      }
+      await pool.query('UPDATE users SET password_hash = $2, must_change_password = false WHERE id = $1', [
         req.user.id, await bcrypt.hash(newPassword, config.bcryptRounds),
       ]);
       await audit(req, 'password_changed');
     }
     if (displayName !== undefined) await audit(req, 'profile_updated');
     res.json({ success: true });
+  }));
+
+  // Neue persönliche Wiederherstellungs-ID: wird genau einmal im Klartext angezeigt
+  app.post('/api/me/recovery-id', requireAuth, asyncRoute(async (req, res) => {
+    const id = generateRecoveryId();
+    await pool.query('UPDATE users SET recovery_hash = $2 WHERE id = $1', [
+      req.user.id, await bcrypt.hash(normalizeRecoveryId(id), config.bcryptRounds),
+    ]);
+    await audit(req, 'recovery_id_created');
+    res.json({ recovery_id: id });
   }));
 
   app.post('/api/me/calendar-token', requireAuth, asyncRoute(async (req, res) => {

@@ -14,6 +14,7 @@ Alban Hyseni (Klasse HFWI-2504-AA), alban.hyseni@stud.hkv.ch. Datenschutzerklär
 | :--- | :--- | :--- | :--- |
 | HKV-Mail, Anzeigename, Rolle | Konto, Zugangskontrolle | Person selbst; Admins/Dozierende in der Teilnehmerliste | bis Konto gelöscht |
 | Passwort | Anmeldung | niemand (nur bcrypt-Hash) | bis Konto gelöscht |
+| Persönliche Wiederherstellungs-ID | Absicherung von Passwort-Resets durch den Admin | niemand (nur bcrypt-Hash, Klartext nur einmal für die Person) | bis Konto gelöscht oder neu erzeugt |
 | Zeitpunkt + Version der Einwilligung | Nachweis der Einwilligung | Admins (Anzahl) | bis Konto gelöscht |
 | Eigene Punkte, Maximalpunkte, Notizen | Notenrechner, Leistungsausweis | **nur die Person selbst**; im Ranking anonym aggregiert | bis Konto gelöscht |
 | Check-ins (Lektion) | Präsenz-LLP | nur die Person selbst | bis Konto gelöscht |

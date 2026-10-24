@@ -70,7 +70,7 @@
       "reset",
       "login"
     ],
-    "answer": "Auf der Anmeldeseite „Passwort vergessen?“ wählen. Der Link kommt an deine HKV-Adresse und ist eine Stunde gültig. Passwörter müssen 8 bis 20 Zeichen lang sein."
+    "answer": "Im Demo-Modus gibt es kein „Passwort vergessen“ per Mail. Melde dich beim Admin (Alban): Er setzt dein Passwort auf das Werkspasswort zurück und teilt es dir persönlich mit. Beim nächsten Login wählst du sofort ein eigenes Passwort (8–20 Zeichen)."
   },
   {
     "keywords": [
@@ -91,7 +91,7 @@
       "freischalt",
       "mail"
     ],
-    "answer": "Registrieren können sich nur Personen auf der Teilnehmerliste: Studierende mit vorname.nachname@stud.hkv.ch und der Dozent Applications Engineering mit vorname.nachname@hkv.ch."
+    "answer": "Registrieren können sich nur Personen auf der Teilnehmerliste: Studierende mit vorname.nachname@stud.hkv.ch und der Dozent Applications Engineering mit vorname.nachname@hkv.ch. Im Demo-Modus werden keine Mails verschickt: Der Admin nimmt dein Konto in der Verwaltung an."
   },
   {
     "keywords": [

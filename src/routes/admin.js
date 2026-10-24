@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const {
   normalizeEmail, isValidEmail, isAllowedDomain, parseParticipantLines,
 } = require('../access');
@@ -10,16 +11,18 @@ const ROLES = ['student', 'dozent', 'admin'];
 
 module.exports = function adminRoutes(app, ctx) {
   const {
-    pool, config, requireAuth, requireManager, asyncRoute, audit,
+    pool, config, requireAuth, requireManager, requireAdmin, asyncRoute, audit,
   } = ctx;
   const guard = [requireAuth, requireManager];
+  // Leute aufnehmen, freischalten, sperren und Passwörter zurücksetzen: nur Admin
+  const adminOnly = [requireAuth, requireAdmin];
 
   function roleAllowed(req, role) {
     // Nur Admins dürfen andere zu Admins machen
     return ROLES.includes(role) && (role !== 'admin' || req.user.role === 'admin');
   }
 
-  app.get('/api/admin/participants', ...guard, asyncRoute(async (req, res) => {
+  app.get('/api/admin/participants', ...adminOnly, asyncRoute(async (req, res) => {
     const result = await pool.query(
       `SELECT p.email, p.full_name, p.role, p.active, p.added_at,
               u.id AS user_id, u.email_verified, u.created_at AS registered_at,
@@ -30,12 +33,14 @@ module.exports = function adminRoutes(app, ctx) {
     res.json({
       participants: result.rows,
       mail: getMailStatus(),
+      resetConfigured: Boolean(config.resetPassword),
+      isAdmin: req.user.role === 'admin',
       domains: config.domains,
       configured: { admins: config.admins, dozenten: config.dozenten },
     });
   }));
 
-  app.post('/api/admin/participants', ...guard, asyncRoute(async (req, res) => {
+  app.post('/api/admin/participants', ...adminOnly, asyncRoute(async (req, res) => {
     const role = req.body.role || 'student';
     if (!roleAllowed(req, role)) return res.status(403).json({ error: 'Diese Rolle darfst du nicht vergeben.' });
     const { rows, errors } = parseParticipantLines(req.body.text);
@@ -56,7 +61,7 @@ module.exports = function adminRoutes(app, ctx) {
     res.json({ added, errors });
   }));
 
-  app.patch('/api/admin/participants/:email', ...guard, asyncRoute(async (req, res) => {
+  app.patch('/api/admin/participants/:email', ...adminOnly, asyncRoute(async (req, res) => {
     const email = normalizeEmail(req.params.email);
     if ([...config.admins, ...config.dozenten].includes(email)) {
       return res.status(400).json({ error: 'Diese Adresse ist fest in der Konfiguration (.env) hinterlegt.' });
@@ -77,7 +82,7 @@ module.exports = function adminRoutes(app, ctx) {
     res.json({ success: true });
   }));
 
-  app.delete('/api/admin/participants/:email', ...guard, asyncRoute(async (req, res) => {
+  app.delete('/api/admin/participants/:email', ...adminOnly, asyncRoute(async (req, res) => {
     const email = normalizeEmail(req.params.email);
     if ([...config.admins, ...config.dozenten].includes(email)) {
       return res.status(400).json({ error: 'Diese Adresse ist fest in der Konfiguration (.env) hinterlegt.' });
@@ -88,7 +93,7 @@ module.exports = function adminRoutes(app, ctx) {
     res.json({ success: true });
   }));
 
-  app.post('/api/admin/participants/:email/invite', ...guard, asyncRoute(async (req, res) => {
+  app.post('/api/admin/participants/:email/invite', ...adminOnly, asyncRoute(async (req, res) => {
     const email = normalizeEmail(req.params.email);
     const p = await pool.query('SELECT * FROM participants WHERE email = $1 AND active', [email]);
     if (!p.rows[0]) return res.status(404).json({ error: 'Nicht auf der Teilnehmerliste.' });
@@ -106,8 +111,28 @@ module.exports = function adminRoutes(app, ctx) {
     res.json({ success: true });
   }));
 
+  // Passwort auf das Werkspasswort (RESET_PASSWORD in .env) zurücksetzen; beim nächsten Login Pflichtwechsel
+  app.post('/api/admin/users/:id/reset-password', ...adminOnly, asyncRoute(async (req, res) => {
+    if (!config.resetPassword || config.resetPassword.length < 8 || config.resetPassword.length > 20) {
+      return res.status(400).json({ error: 'RESET_PASSWORD (8–20 Zeichen) ist in der .env nicht gesetzt.' });
+    }
+    if (String(req.params.id) === String(req.user.id)) {
+      return res.status(400).json({ error: 'Das eigene Passwort bitte im Profil ändern.' });
+    }
+    const hash = await bcrypt.hash(config.resetPassword, config.bcryptRounds);
+    const result = await pool.query(
+      `UPDATE users SET password_hash = $2, must_change_password = true, email_verified = true,
+              reset_token = NULL, verify_token = NULL
+       WHERE id = $1 RETURNING email`,
+      [req.params.id, hash]
+    );
+    if (!result.rows[0]) return res.status(404).json({ error: 'Konto nicht gefunden.' });
+    await audit(req, 'password_reset_by_admin', result.rows[0].email);
+    res.json({ success: true, message: `Passwort von ${result.rows[0].email} auf das Werkspasswort zurückgesetzt.` });
+  }));
+
   // Test-Mail an sich selbst, um die SMTP-Einstellungen zu prüfen
-  app.post('/api/admin/mail-test', ...guard, asyncRoute(async (req, res) => {
+  app.post('/api/admin/mail-test', ...adminOnly, asyncRoute(async (req, res) => {
     const result = await sendTestEmail({ email: req.user.email, name: req.user.display_name, req });
     await audit(req, 'mail_test', null, { sent: result.sent });
     if (result.sent) return res.json({ success: true, message: `Test-Mail an ${req.user.email} versendet.` });
@@ -119,7 +144,7 @@ module.exports = function adminRoutes(app, ctx) {
   }));
 
   // Manuell freischalten, falls die Bestätigungs-Mail nicht ankommt
-  app.post('/api/admin/users/:id/verify', ...guard, asyncRoute(async (req, res) => {
+  app.post('/api/admin/users/:id/verify', ...adminOnly, asyncRoute(async (req, res) => {
     const result = await pool.query(
       'UPDATE users SET email_verified = true, verify_token = NULL WHERE id = $1 RETURNING email, display_name',
       [req.params.id]

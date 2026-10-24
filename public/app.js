@@ -32,7 +32,11 @@
       go('/anmelden');
       throw new Error(data.error || 'Bitte anmelden');
     }
-    if (!res.ok) throw new Error(data.error || `Fehler ${res.status}`);
+    if (!res.ok) {
+      const error = new Error(data.error || `Fehler ${res.status}`);
+      error.data = data;
+      throw error;
+    }
     return data;
   }
 
@@ -217,7 +221,7 @@
   function shell(active, content, progress) {
     const { user } = state.meta;
     const nav = [...NAV];
-    if (user.canManage) nav.push(['admin', 'Verwaltung', 'settings']);
+    if (user.role === 'admin') nav.push(['admin', 'Verwaltung', 'settings']);
     const years = state.meta.years.map((y) => `<option value="${y.id}" ${y.id === state.yearId ? 'selected' : ''}>${esc(y.label)}</option>`).join('');
     const chips = progress ? `
         <span class="chip hide-sm"><span class="ico">${icon('flame', 16)}</span>${progress.streak} Tag${progress.streak === 1 ? '' : 'e'} Streak</span>
@@ -260,6 +264,18 @@
   // ---------------------------------------------------------------
   // Auth-Seiten
   // ---------------------------------------------------------------
+  let publicConfig = null;
+  async function loadPublicConfig() {
+    if (!publicConfig) {
+      try { publicConfig = await api('/api/public-config'); } catch (e) { publicConfig = { mailEnabled: false }; }
+    }
+    return publicConfig;
+  }
+
+  const DEMO_NOTE = `<div class="info-box" style="font-size:13px">🧪 <strong>Demo-Modus (Schulprojekt):</strong> Deine HKV-Mailadresse dient nur zur Identifikation,
+    es werden <strong>keine Mails verschickt</strong>. Der Admin nimmt neue Konten an und schaltet sie frei. Passwort vergessen? Der Admin setzt es auf das Werkspasswort zurück.
+    Einloggen kannst du dich danach nur mit Werkspasswort <strong>und</strong> deiner persönlichen Wiederherstellungs-ID, dann wählst du ein neues Passwort.</div>`;
+
   function authLayout(inner) {
     app.className = '';
     app.innerHTML = `
@@ -280,8 +296,9 @@
       </div>`;
   }
 
-  function viewLogin(params) {
+  async function viewLogin(params) {
     const status = params.get('status');
+    const cfg = await loadPublicConfig();
     authLayout(`
       <h2>Anmelden</h2>
       <p class="lead">Mit deiner HKV-Adresse und deinem Passwort.</p>
@@ -292,9 +309,13 @@
           <input class="input" id="email" name="email" type="email" autocomplete="username" placeholder="vorname.nachname@stud.hkv.ch" required></div>
         <div class="field"><label for="password">Passwort</label>
           <input class="input" id="password" name="password" type="password" autocomplete="current-password" required></div>
+        <div class="field" id="recovery-field" style="display:none"><label for="recovery_id">Persönliche Wiederherstellungs-ID</label>
+          <input class="input" id="recovery_id" name="recovery_id" autocomplete="off" placeholder="z. B. K7Q2-M9XA" style="text-transform:uppercase">
+          <span class="hint">Die ID hast du beim ersten Login notiert. Verloren? Dann kann dir nur der Admin weiterhelfen.</span></div>
         <button class="btn" style="width:100%" type="submit">Anmelden</button>
       </form>
-      <div class="auth-links"><a href="#/registrieren">Konto erstellen</a><a href="#/passwort-vergessen">Passwort vergessen?</a></div>`);
+      <div class="auth-links"><a href="#/registrieren">Konto erstellen</a>${cfg.mailEnabled ? '<a href="#/passwort-vergessen">Passwort vergessen?</a>' : '<span style="color:var(--muted)">Passwort vergessen? → Admin fragen</span>'}</div>
+      ${cfg.mailEnabled ? '' : `<div style="margin-top:16px">${DEMO_NOTE}</div>`}`);
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = e.target.querySelector('button');
@@ -304,16 +325,19 @@
         await loadMeta();
         go('/dashboard');
       } catch (err) {
+        if (err.data && err.data.needRecovery) document.getElementById('recovery-field').style.display = '';
         document.getElementById('auth-msg').innerHTML = `<div class="error-box">${esc(err.message)}</div>`;
         btn.disabled = false;
       }
     });
   }
 
-  function viewRegister(params) {
+  async function viewRegister(params) {
+    const cfg = await loadPublicConfig();
     authLayout(`
       <h2>Konto erstellen</h2>
       <p class="lead">Nur für die Teilnehmenden der HFWI-2504-AA und Dozierende, mit der HKV-Adresse.</p>
+      ${cfg.mailEnabled ? '' : DEMO_NOTE}
       <div id="auth-msg"></div>
       <form id="register-form">
         <div class="field"><label for="email">HKV-E-Mail</label>
@@ -347,7 +371,15 @@
     });
   }
 
-  function viewForgot() {
+  async function viewForgot() {
+    const cfg = await loadPublicConfig();
+    if (!cfg.mailEnabled) {
+      authLayout(`<h2>Passwort vergessen</h2>${DEMO_NOTE}
+        <p style="font-size:14px">Melde dich beim Admin (Alban, persönlich im Unterricht oder an alban.hyseni@stud.hkv.ch). Er setzt dein Passwort zurück.
+        Danach meldest du dich mit dem Werkspasswort, das er dir persönlich mitteilt, <strong>und</strong> deiner persönlichen Wiederherstellungs-ID an und wählst sofort ein eigenes Passwort.</p>
+        <div class="auth-links"><a href="#/anmelden">Zurück zur Anmeldung</a></div>`);
+      return;
+    }
     authLayout(`
       <h2>Passwort vergessen</h2>
       <p class="lead">Wir schicken dir einen Link an deine HKV-Adresse.</p>
@@ -435,6 +467,10 @@
           <li><strong>Besucherzähler:</strong> zählt nur Aufrufe, ohne IP-Adresse oder andere Merkmale.</li>
         </ul>
         <p>Es findet <strong>keine Datensammlung darüber hinaus</strong> statt: keine Analyse-Tools, keine Werbe- oder Tracking-Cookies, keine externen Schriften oder Skripte.</p>
+
+        <p><strong>Demo-Modus ohne Mailversand:</strong> Solange kein Mailversand eingerichtet ist, wird deine Adresse nur zur Identifikation verwendet,
+          es gehen keine Mails raus. Der Admin nimmt neue Konten an und kann Passwörter auf ein Werkspasswort zurücksetzen; er sieht dabei nie dein eigenes Passwort.
+          Nach einem Reset brauchst du beim Login zusätzlich deine persönliche Wiederherstellungs-ID, die nur du kennst (gespeichert wird nur ein bcrypt-Hash), und wählst dann ein neues Passwort.</p>
 
         <h3>5. Wer was sieht</h3>
         <ul>
@@ -533,6 +569,57 @@
       <main class="page" style="max-width:860px">${html}</main>`;
   }
 
+  async function showRecoveryId(isNew) {
+    const res = await api('/api/me/recovery-id', { method: 'POST' });
+    openModal({
+      title: 'Deine persönliche Wiederherstellungs-ID',
+      body: `<p style="margin-top:0">${isNew ? 'Willkommen! ' : ''}Diese ID kennst <strong>nur du</strong>. Auch der Admin sieht sie nie.
+          Setzt der Admin dein Passwort zurück, brauchst du beim Login das Werkspasswort <strong>und</strong> diese ID.</p>
+        <div style="font-family:ui-monospace,Consolas,monospace;font-size:30px;font-weight:800;text-align:center;letter-spacing:3px;background:var(--mint);color:var(--petrol);border-radius:8px;padding:14px;margin:10px 0">${esc(res.recovery_id)}</div>
+        <p style="font-size:13px;color:var(--muted)">Notiere sie z. B. im Passwort-Manager oder auf Papier. Sie wird nur jetzt angezeigt. Im Profil kannst du jederzeit eine neue erzeugen, dann gilt die alte nicht mehr.</p>
+        <label class="check"><input type="checkbox" id="rec-ok"> Ich habe die ID notiert</label>`,
+      foot: '<button class="btn secondary" id="rec-copy">Kopieren</button><button class="btn" id="rec-done" disabled>Fertig</button>',
+      onMount(modal) {
+        modal.querySelector('[data-close]').remove();
+        modal.parentElement.removeAttribute('data-close');
+        modal.querySelector('#rec-ok').addEventListener('change', (e) => { modal.querySelector('#rec-done').disabled = !e.target.checked; });
+        modal.querySelector('#rec-copy').addEventListener('click', async () => {
+          try { await navigator.clipboard.writeText(res.recovery_id); toast('ID kopiert'); } catch (e) { toast('Bitte abschreiben'); }
+        });
+        modal.querySelector('#rec-done').addEventListener('click', () => {
+          state.meta.user.needsRecoveryId = false;
+          closeModal();
+          if (state.meta.user.mustChangePassword) forcePasswordChange();
+        });
+      },
+    });
+  }
+
+  function forcePasswordChange() {
+    openModal({
+      title: 'Neues Passwort wählen',
+      body: `<p style="margin-top:0">Dein Passwort wurde vom Admin zurückgesetzt. Bitte wähle jetzt ein eigenes Passwort.</p>
+        <form id="force-pw">
+          <div class="field"><label>Aktuelles Passwort (Werkspasswort)</label><input class="input" type="password" name="current_password" autocomplete="current-password" required></div>
+          <div class="field"><label>Neues Passwort</label><input class="input" type="password" name="new_password" minlength="8" maxlength="20" autocomplete="new-password" required><span class="hint">8 bis 20 Zeichen</span></div>
+        </form>`,
+      foot: '<button class="btn" id="force-pw-save">Speichern</button>',
+      onMount(modal) {
+        modal.querySelector('[data-close]').remove();
+        modal.parentElement.removeAttribute('data-close');
+        modal.querySelector('#force-pw-save').addEventListener('click', async () => {
+          try {
+            await api('/api/me', { method: 'PATCH', body: formData(modal.querySelector('#force-pw')) });
+            state.meta.user.mustChangePassword = false;
+            closeModal();
+            toast('Neues Passwort gespeichert');
+            route();
+          } catch (err) { toast(err.message, true); }
+        });
+      },
+    });
+  }
+
   function askConsent() {
     openModal({
       title: 'Datenschutz: kurz bestätigen',
@@ -553,6 +640,8 @@
           state.meta.user.needsConsent = false;
           closeModal();
           toast('Danke!');
+          if (state.meta.user.needsRecoveryId) showRecoveryId(true);
+          else if (state.meta.user.mustChangePassword) forcePasswordChange();
         });
         modal.querySelector('#consent-no').addEventListener('click', async () => {
           await api('/api/auth/logout', { method: 'POST' });
@@ -1693,6 +1782,11 @@
           <p style="margin-top:0;font-size:14px;color:var(--muted)">Falls jemand deinen Kalender-Link kennt, kannst du einen neuen erzeugen. Der alte funktioniert dann nicht mehr.</p>
           <button class="btn secondary" id="new-cal">Neuen Kalender-Link erzeugen</button>
         </div>
+        <div class="card"><div class="card-title">Wiederherstellungs-ID</div>
+          <p style="margin-top:0;font-size:14px;color:var(--muted)">Brauchst du nach einem Passwort-Reset durch den Admin zusammen mit dem Werkspasswort. Nur du kennst sie.
+            Eine neue ID ersetzt die alte sofort.</p>
+          <button class="btn secondary" id="new-recovery">Neue Wiederherstellungs-ID erzeugen</button>
+        </div>
         <div class="card"><div class="card-title">Datenschutz</div>
           <p style="margin-top:0;font-size:14px;color:var(--muted)">Im Ranking sehen andere nur „Anonym“. Im Forum erscheint dein Anzeigename. Du kannst deine Daten jederzeit herunterladen oder dein Konto mit allen Punkten und Beiträgen löschen.
             <a href="#/datenschutz">Datenschutzerklärung</a></p>
@@ -1710,6 +1804,9 @@
       e.preventDefault();
       try { await api('/api/me', { method: 'PATCH', body: formData(e.target) }); e.target.reset(); toast('Passwort geändert'); } catch (err) { toast(err.message, true); }
     });
+    document.getElementById('new-recovery').addEventListener('click', () => {
+      if (window.confirm('Neue ID erzeugen? Die bisherige ist danach ungültig.')) showRecoveryId(false);
+    });
     document.getElementById('new-cal').addEventListener('click', async () => { await api('/api/me/calendar-token', { method: 'POST' }); toast('Neuer Kalender-Link erzeugt'); });
     document.getElementById('logout').addEventListener('click', async () => { await api('/api/auth/logout', { method: 'POST' }); state.meta = null; go('/anmelden'); });
     document.getElementById('delete-me').addEventListener('click', async () => {
@@ -1724,7 +1821,7 @@
   // Verwaltung (Dozierende & Admins)
   // ---------------------------------------------------------------
   async function viewAdmin() {
-    if (!state.meta.user.canManage) { go('/dashboard'); return; }
+    if (state.meta.user.role !== 'admin') { go('/dashboard'); return; }
     loading('admin');
     const data = await api('/api/admin/participants');
     const isAdmin = state.meta.user.role === 'admin';
@@ -1740,7 +1837,8 @@
         <td>${status}${p.last_active ? `<br><span style="font-size:12px;color:var(--muted)">zuletzt ${esc(fmt.date(fmt.day(p.last_active), { day: 'numeric', month: 'short' }))}</span>` : ''}</td>
         <td style="white-space:nowrap">
           ${!p.user_id && p.active ? `<button class="btn secondary small" data-invite="${esc(p.email)}">Einladen</button>` : ''}
-          ${p.user_id && !p.email_verified ? `<button class="btn secondary small" data-verify="${p.user_id}">Freischalten</button>` : ''}
+          ${p.user_id && !p.email_verified ? `<button class="btn small" data-verify="${p.user_id}">Annehmen</button>` : ''}
+          ${p.user_id && p.email_verified && p.user_id !== state.meta.user.id ? `<button class="btn ghost small" data-reset="${p.user_id}" data-mail="${esc(p.email)}">Passwort zurücksetzen</button>` : ''}
           ${fixed ? '' : `<button class="btn ghost small" data-toggle="${esc(p.email)}" data-active="${p.active}">${p.active ? 'Sperren' : 'Aktivieren'}</button>`}
         </td></tr>`;
     }).join('');
@@ -1756,7 +1854,8 @@
         password_changed: 'Passwort geändert', profile_updated: 'Profil geändert', data_export: 'Datenexport', account_deleted: 'Konto gelöscht',
         participants_added: 'Teilnehmende hinzugefügt', participant_updated: 'Teilnehmende*r geändert', participant_removed: 'Teilnehmende*r entfernt',
         invitation_sent: 'Einladung versendet', user_verified_manually: 'Manuell freigeschaltet', task_created: 'Aufgabe erstellt',
-        task_updated: 'Aufgabe geändert', mail_test: 'Test-Mail', task_deleted: 'Aufgabe gelöscht', lessons_imported: 'Stundenplan importiert',
+        task_updated: 'Aufgabe geändert', mail_test: 'Test-Mail', password_reset_by_admin: 'Passwort durch Admin zurückgesetzt',
+        recovery_id_created: 'Wiederherstellungs-ID erzeugt', recovery_id_failed: 'Wiederherstellungs-ID falsch', task_deleted: 'Aufgabe gelöscht', lessons_imported: 'Stundenplan importiert',
       };
       auditHtml = `<div class="card" style="margin-top:16px"><div class="card-title">Audit-Protokoll <span class="tag muted">${auditData.consent.with_consent}/${auditData.consent.total} Konten mit Zustimmung</span></div>
         <p style="margin-top:0;font-size:13px;color:var(--muted)">Letzte 300 Ereignisse · automatische Löschung nach 365 Tagen · keine Punkte oder Passwörter.</p>
@@ -1769,8 +1868,9 @@
     shell('admin', `
       <div class="eyebrow">Verwaltung</div>
       <h1 class="page-title">Teilnehmerliste &amp; Einstellungen</h1>
-      <div class="${data.mail.configured ? 'info-box' : 'error-box'}">
-        Mailversand: ${data.mail.configured ? `eingerichtet über ${esc(data.mail.host)} als ${esc(data.mail.from)}` : 'nicht eingerichtet. Einladungen und Bestätigungslinks erscheinen nur im Server-Log (SMTP_* in .env setzen).'}
+      <div class="info-box">
+        ${data.mail.configured ? '' : '<strong>Demo-Modus:</strong> Neue Konten erscheinen hier als „Bestätigung offen“ → <strong>Annehmen</strong>. Passwort vergessen → <strong>Passwort zurücksetzen</strong> (Werkspasswort aus RESET_PASSWORD in der .env' + (data.resetConfigured ? '' : ', <strong>noch nicht gesetzt</strong>') + ').<br>'}
+        Mailversand: ${data.mail.configured ? `eingerichtet über ${esc(data.mail.host)} als ${esc(data.mail.from)}` : 'aus (Demo-Modus). Optional später über SMTP_* in der .env einschalten.'}
         ${data.mail.configured ? '<button class="btn secondary small" id="mail-test" style="margin-left:8px">Test-Mail an mich senden</button>' : ''}
       </div>
       <div class="card"><div class="card-title">Teilnehmende (${data.participants.filter((p) => p.active).length} aktiv)</div>
@@ -1833,9 +1933,13 @@
       try { await api(`/api/admin/participants/${encodeURIComponent(btn.dataset.invite)}/invite`, { method: 'POST' }); toast(`Einladung an ${btn.dataset.invite} versendet`); } catch (err) { toast(err.message, true); }
       btn.disabled = false;
     }));
+    app.querySelectorAll('[data-reset]').forEach((btn) => btn.addEventListener('click', async () => {
+      if (!window.confirm(`Passwort von ${btn.dataset.mail} auf das Werkspasswort zurücksetzen? Die Person muss danach beim Login ein neues wählen.`)) return;
+      try { toast((await api(`/api/admin/users/${btn.dataset.reset}/reset-password`, { method: 'POST' })).message); } catch (err) { toast(err.message, true); }
+    }));
     app.querySelectorAll('[data-verify]').forEach((btn) => btn.addEventListener('click', async () => {
       await api(`/api/admin/users/${btn.dataset.verify}/verify`, { method: 'POST' });
-      toast('Freigeschaltet');
+      toast('Angenommen und freigeschaltet');
       refresh();
     }));
   }
@@ -1948,11 +2052,13 @@
         case 'admin': await viewAdmin(); break;
         default: await viewDashboard(params);
       }
-      if (state.meta && state.meta.user.needsConsent) askConsent();
-      renderBot();
     } catch (err) {
       if (state.meta) shell(page, `<div class="error-box">${esc(err.message)}</div>`);
     }
+    if (state.meta && state.meta.user.needsConsent) askConsent();
+    else if (state.meta && state.meta.user.needsRecoveryId) showRecoveryId(true);
+    else if (state.meta && state.meta.user.mustChangePassword) forcePasswordChange();
+    renderBot();
   }
 
   window.addEventListener('hashchange', route);

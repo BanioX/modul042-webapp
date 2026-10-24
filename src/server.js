@@ -21,6 +21,8 @@ const config = {
   // Teilnehmerliste steht nur in .env (nicht im öffentlichen Repo)
   students: parseList(process.env.TEILNEHMER_EMAILS, []),
   domains: parseList(process.env.ALLOWED_EMAIL_DOMAINS, DEFAULT_DOMAINS),
+  // Werkspasswort für Admin-Resets: nur in der .env, nie im öffentlichen Repo
+  resetPassword: process.env.RESET_PASSWORD || '',
   bcryptRounds: 10,
   sessionCookie: 'user_session',
   cookieOpts: {
@@ -86,7 +88,7 @@ async function loadUser(req, res, next) {
   try {
     const result = await pool.query(
       `SELECT u.id, u.email, u.display_name, u.role, u.email_verified, u.calendar_token,
-              u.consent_at, u.consent_version
+              u.consent_at, u.consent_version, u.must_change_password, (u.recovery_hash IS NOT NULL) AS has_recovery
        FROM users u
        JOIN participants p ON p.email = u.email AND p.active = true
        WHERE u.id = $1 AND u.email_verified = true`,
@@ -107,8 +109,19 @@ async function loadUser(req, res, next) {
   return next();
 }
 
+// Nach einem Admin-Reset ist bis zum Passwortwechsel nur das Nötigste erlaubt
+const ALLOWED_WHILE_RESET = ['/api/meta', '/api/me', '/api/me/consent', '/api/me/recovery-id', '/api/auth/logout'];
+
 function requireAuth(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Bitte zuerst anmelden.' });
+  if (req.user.must_change_password && !ALLOWED_WHILE_RESET.includes(req.path)) {
+    return res.status(403).json({ error: 'Bitte zuerst ein neues Passwort wählen.' });
+  }
+  return next();
+}
+
+function requireAdmin(req, res, next) {
+  if (!req.user || req.user.role !== 'admin') return res.status(403).json({ error: 'Nur für Admins.' });
   return next();
 }
 
@@ -150,8 +163,13 @@ async function audit(req, action, target = null, details = null, actor = null) {
 }
 
 const ctx = {
-  pool, config, requireAuth, requireManager, resolveYear, asyncRoute, authLimiter, audit,
+  pool, config, requireAuth, requireManager, requireAdmin, resolveYear, asyncRoute, authLimiter, audit,
 };
+
+// Öffentliche Einstellungen für Login/Registrierung (ohne Secrets)
+app.get('/api/public-config', (req, res) => {
+  res.json({ mailEnabled: getMailStatus().configured });
+});
 
 // -------------------------------------------------------------
 // Healthcheck (Übung 3)

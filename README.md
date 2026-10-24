@@ -43,6 +43,15 @@ Nur registrierte Mitglieder, und registrieren können sich nur Adressen auf der 
 
 Andere Adressen werden abgewiesen. Die Adresse wird per Bestätigungslink geprüft, Passwörter haben 8–20 Zeichen. Ohne Login liefert der Server keine Inhalte aus (alle APIs und Downloads geben `401`). Suchmaschinen werden über `robots.txt`, den Header `X-Robots-Tag: noindex` und ein Meta-Tag ausgesperrt.
 
+### Demo-Modus: ohne Mailversand
+
+Ohne SMTP-Einstellungen läuft HUB-042 im **Demo-Modus**. Die HKV-Adresse dient dann nur der Identifikation, es werden keine Mails verschickt. Login und Registrierung zeigen einen Hinweis.
+
+- **Annehmen:** Neue Konten erscheinen in der Verwaltung als „Bestätigung offen“. Nur der Admin nimmt sie mit **Annehmen** an.
+- **Passwort vergessen:** Der Admin klickt **Passwort zurücksetzen**. Das Passwort wird auf das Werkspasswort `RESET_PASSWORD` aus der `.env` gesetzt, das **nie im Repo** steht.
+- **Persönliche Wiederherstellungs-ID:** Jede Person erhält beim ersten Login einmalig eine zufällige ID (z. B. `K7Q2-M9XA`). Gespeichert wird nur ein bcrypt-Hash, auch der Admin kennt sie nicht. Nach einem Reset braucht es **Werkspasswort und ID**. Danach muss die Person ein neues Passwort wählen, und bis dahin sperrt der Server alle anderen Funktionen.
+- Admins und Dozierende sind getrennt: Nur der Admin verwaltet Personen und Passwörter, Dozierende pflegen Aufgaben und Stundenplan.
+
 ### Notenformel und LLP
 
 ```

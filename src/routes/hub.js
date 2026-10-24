@@ -5,6 +5,7 @@ const { canManage, PRIVACY_VERSION } = require('../access');
 const { neededPointsTable } = require('../grades');
 const { computeLlp, LLP_TOTAL_PROGRAM } = require('../llp');
 const hkv = require('../data/hkv.json');
+const { getMailStatus } = require('../mail');
 
 module.exports = function hubRoutes(app, ctx) {
   const {
@@ -26,7 +27,10 @@ module.exports = function hubRoutes(app, ctx) {
         role: req.user.role,
         canManage: canManage(req.user),
         needsConsent: req.user.consent_version !== PRIVACY_VERSION,
+        mustChangePassword: Boolean(req.user.must_change_password),
+        needsRecoveryId: !req.user.has_recovery,
       },
+      mailEnabled: getMailStatus().configured,
       privacyVersion: PRIVACY_VERSION,
       years: years.rows,
       currentYearId: current ? current.id : null,
