@@ -74,6 +74,10 @@ module.exports = function adminRoutes(app, ctx) {
     }
     if (typeof active === 'boolean') {
       await pool.query('UPDATE participants SET active = $2 WHERE email = $1', [email, active]);
+      if (!active) {
+        const u = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+        if (u.rows[0]) ctx.chat.leaveAll(u.rows[0].id);
+      }
     }
     if (fullName) {
       await pool.query('UPDATE participants SET full_name = $2 WHERE email = $1', [email, String(fullName).slice(0, 150)]);

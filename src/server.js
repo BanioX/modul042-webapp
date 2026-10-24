@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 const { createPool } = require('./db');
 const { migrate } = require('./migrate');
 const { getMailStatus } = require('./mail');
+const { EphemeralChat } = require('./chat');
 const {
   DEFAULT_ADMINS, DEFAULT_DOZENTEN, DEFAULT_DOMAINS, parseList, canManage,
 } = require('./access');
@@ -110,7 +111,7 @@ async function loadUser(req, res, next) {
 }
 
 // Nach einem Admin-Reset ist bis zum Passwortwechsel nur das Nötigste erlaubt
-const ALLOWED_WHILE_RESET = ['/api/meta', '/api/me', '/api/me/consent', '/api/me/recovery-id', '/api/auth/logout'];
+const ALLOWED_WHILE_RESET = ['/api/chat/ping', '/api/meta', '/api/me', '/api/me/consent', '/api/me/recovery-id', '/api/auth/logout'];
 
 function requireAuth(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Bitte zuerst anmelden.' });
@@ -162,8 +163,12 @@ async function audit(req, action, target = null, details = null, actor = null) {
   }
 }
 
+// Chat nur im Arbeitsspeicher (nie in der Datenbank)
+const chat = new EphemeralChat();
+setInterval(() => chat.expire(), 60 * 1000).unref();
+
 const ctx = {
-  pool, config, requireAuth, requireManager, requireAdmin, resolveYear, asyncRoute, authLimiter, audit,
+  chat, pool, config, requireAuth, requireManager, requireAdmin, resolveYear, asyncRoute, authLimiter, audit,
 };
 
 // Öffentliche Einstellungen für Login/Registrierung (ohne Secrets)
@@ -209,6 +214,7 @@ require('./routes/forum')(app, ctx);
 require('./routes/admin')(app, ctx);
 require('./routes/assistant')(app, ctx);
 require('./routes/downloads')(app, ctx);
+require('./routes/chat')(app, ctx);
 
 app.use('/api', (req, res) => res.status(404).json({ error: 'Unbekannter Endpunkt' }));
 

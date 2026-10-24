@@ -13,7 +13,7 @@ const PASSWORD_HINT = `Passwort muss ${MIN_PASSWORD} bis ${MAX_PASSWORD} Zeichen
 
 module.exports = function authRoutes(app, ctx) {
   const {
-    pool, config, requireAuth, asyncRoute, authLimiter, audit,
+    pool, config, requireAuth, asyncRoute, authLimiter, audit, chat,
   } = ctx;
 
   async function findParticipant(email) {
@@ -138,7 +138,10 @@ module.exports = function authRoutes(app, ctx) {
   }));
 
   app.post('/api/auth/logout', asyncRoute(async (req, res) => {
-    if (req.user) await audit(req, 'logout');
+    if (req.user) {
+      chat.leaveAll(req.user.id);
+      await audit(req, 'logout');
+    }
     res.clearCookie(config.sessionCookie);
     res.json({ success: true });
   }));
@@ -276,6 +279,7 @@ module.exports = function authRoutes(app, ctx) {
   // Konto und alle eigenen Daten löschen (DSG: Recht auf Löschung)
   app.delete('/api/me', requireAuth, asyncRoute(async (req, res) => {
     await audit(req, 'account_deleted', req.user.email);
+    chat.leaveAll(req.user.id);
     await pool.query('DELETE FROM users WHERE id = $1', [req.user.id]);
     res.clearCookie(config.sessionCookie);
     res.json({ success: true });

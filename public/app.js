@@ -178,6 +178,7 @@
     tag: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+    chat: '<path d="M7 18l-4 3V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9"/><path d="M21 9v10l-3-2h-6"/>',
     users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5a5 5 0 0 1 5.5 5"/>',
     shuffle: '<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
@@ -223,6 +224,7 @@
     ['stundenplan', 'Stundenplan', 'calendar'],
     ['ranking', 'Ranking', 'trophy'],
     ['forum', 'Forum', 'forum'],
+    ['chat', 'Chat', 'chat'],
     ['gruppen', 'Gruppen', 'users'],
     ['infos', 'Infos', 'info'],
     ['profil', 'Profil', 'user'],
@@ -257,10 +259,12 @@
         </div>
       </header>
       <nav class="tabs"><div class="tabs-inner">
-        ${nav.map(([key, label, ic]) => `<a class="tab ${key === active ? 'active' : ''}" href="#/${key}">${icon(ic)} ${label}</a>`).join('')}
+        ${nav.map(([key, label, ic]) => `<a class="tab ${key === active ? 'active' : ''}" href="#/${key}">${icon(ic)} ${label}${key === 'chat' ? '<span class="nav-badge" id="chat-badge" hidden></span>' : ''}</a>`).join('')}
       </div></nav>
       <main class="page">${content}</main>`;
     document.getElementById('logout-top').addEventListener('click', logout);
+    const activeTab = app.querySelector('.tab.active');
+    if (activeTab) activeTab.scrollIntoView({ block: 'nearest', inline: 'center' });
     document.getElementById('year-select').addEventListener('change', (e) => {
       state.yearId = parseInt(e.target.value, 10);
       try { localStorage.setItem('hub042-year', String(state.yearId)); } catch (err) { /* optional */ }
@@ -269,6 +273,9 @@
   }
 
   async function logout() {
+    stopChat();
+    if (chatState.heartbeat) { clearInterval(chatState.heartbeat); chatState.heartbeat = null; }
+    chatState.seen = {};
     try { await api('/api/auth/logout', { method: 'POST' }); } catch (e) { /* Cookie wird trotzdem verworfen */ }
     state.meta = null;
     closeModal();
@@ -499,6 +506,9 @@
           <li><strong>Ranking:</strong> Du siehst deinen eigenen Platz. Alle anderen erscheinen nur als „Anonym“ mit Schnitt, ohne Namen oder Kennung.
             Andere werden erst angezeigt, wenn mindestens 3 Personen Einträge haben, damit niemand auf einzelne Noten zurückschliessen kann.</li>
           <li><strong>Forum:</strong> Beiträge sind für eingeloggte Klassenmitglieder mit deinem Anzeigenamen sichtbar.</li>
+          <li><strong>Chat:</strong> Nachrichten liegen nur im Arbeitsspeicher des Servers und werden <strong>nie gespeichert</strong>. Beim Abmelden
+            oder nach 5 Minuten offline verlässt du alle Chats; sind alle draussen, wird der Verlauf gelöscht. Ein Neustart löscht alles. Inhalte erscheinen weder im Audit-Protokoll
+            noch im Datenexport. Screenshots, Kopien und Weitergabe sind nicht erlaubt.</li>
           <li><strong>Gruppengenerator:</strong> Eingeloggte Klassenmitglieder sehen die Namen der Teilnehmenden (ohne Mailadressen), um Lerngruppen auszulosen. Die Auslosung wird nicht gespeichert.</li>
           <li><strong>Verwaltung:</strong> Klassen-Admins und Dozierende sehen die Teilnehmerliste mit Registrierungsstatus, aber keine Punkte.
             Der technische Betreiber hat Zugriff auf die Datenbank und nutzt ihn nur für Betrieb und Wartung.</li>
@@ -1657,6 +1667,265 @@
   }
 
   // ---------------------------------------------------------------
+  // Flüchtiger Chat (nur im Arbeitsspeicher des Servers, nie gespeichert)
+  // ---------------------------------------------------------------
+  const chatState = { room: 'klasse', data: null, seen: {}, timer: null, heartbeat: null };
+
+  function chatUnread(data) {
+    let n = 0;
+    for (const r of data.rooms) {
+      const last = chatState.seen[r.id] || 0;
+      n += r.messages.filter((m) => m.id > last && m.userId !== data.me).length;
+      if (r.invited) n += 1;
+    }
+    return n;
+  }
+
+  function updateChatBadge(data) {
+    const badge = document.getElementById('chat-badge');
+    if (!badge) return;
+    const n = chatUnread(data);
+    badge.hidden = n === 0;
+    badge.textContent = n > 9 ? '9+' : String(n);
+  }
+
+  // Lebenszeichen alle 30 s auf jeder Seite: hält die Chat-Sitzung offen und zeigt ungelesene Nachrichten
+  function startChatHeartbeat() {
+    if (chatState.heartbeat) return;
+    const beat = async () => {
+      if (!state.meta || state.meta.user.mustChangePassword) return;
+      try {
+        const data = await api('/api/chat');
+        chatState.data = data;
+        updateChatBadge(data);
+      } catch (e) { /* offline */ }
+    };
+    beat();
+    chatState.heartbeat = setInterval(beat, 30000);
+  }
+
+  function roomTitle(r, data) {
+    if (r.type === 'group') return '👥 Klasse';
+    const partner = data.online.find((o) => o.id === r.partner) || r.members.find((m) => m.id === r.partner);
+    return `💬 ${partner ? partner.name : 'Direktnachricht'}`;
+  }
+
+  function watermark() {
+    const text = `${state.meta.user.display_name} · ${new Date().toLocaleDateString('de-CH')} · HUB-042 vertraulich`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="340" height="170"><text x="10" y="100" transform="rotate(-20 170 85)" font-family="Arial" font-size="14" fill="rgba(23,60,67,0.10)">${esc(text)}</text></svg>`;
+    return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+  }
+
+  async function viewChat() {
+    loading('chat');
+    const data = await api('/api/chat');
+    chatState.data = data;
+    if (!data.rooms.some((r) => r.id === chatState.room && r.member)) chatState.room = 'klasse';
+    shell('chat', `
+      <div class="page-head">
+        <div><div class="eyebrow">Nur während der Sitzung · wird nie gespeichert</div><h1 class="page-title">Chat</h1></div>
+      </div>
+      <details class="card chat-rules" ${chatState.rulesSeen ? '' : 'open'}>
+        <summary><strong>🔒 So funktioniert der Chat</strong></summary>
+        <ul>
+          <li><strong>Nichts wird gespeichert.</strong> Nachrichten liegen nur im Arbeitsspeicher des Servers, nie in der Datenbank, und verschwinden bei einem Neustart.</li>
+          <li><strong>Klasse</strong> ist der Gruppenchat für alle Eingeloggten. Über „Nachricht“ bei einer Person startest du eine Direktnachricht, die nur ihr zwei seht.</li>
+          <li><strong>Abmelden oder 5 Minuten offline</strong> = du verlässt alle Chats. Beim nächsten Login siehst du deine alten Nachrichten nicht mehr.</li>
+          <li><strong>Wer noch im Chat ist, kann dich wieder einladen.</strong> Dann siehst du den bisherigen Verlauf wieder.</li>
+          <li><strong>Sind alle aus einem Chat raus, wird sein Verlauf sofort gelöscht.</strong></li>
+          <li><strong>Vorhang:</strong> Nach 60 Sekunden ohne Aktivität deckt ein Vorhang den Chat ab, damit niemand mitliest. Schreiben zählt als Aktivität. Zum Weiterlesen nach oben scrollen oder wischen.</li>
+          <li><strong>Keine Screenshots, kein Kopieren, kein Weitergeben.</strong> Der Chat ist vertraulich. Ein Wasserzeichen mit deinem Namen liegt über den Nachrichten.</li>
+        </ul>
+      </details>
+      <div class="chat-shell">
+        <aside class="chat-side">
+          <div class="chat-side-title">Chats</div>
+          <div id="chat-rooms"></div>
+          <div class="chat-side-title" style="margin-top:14px">Online <span class="tag muted" id="online-count"></span></div>
+          <div id="chat-online"></div>
+        </aside>
+        <section class="chat-main">
+          <div class="chat-head" id="chat-head"></div>
+          <div class="chat-msgs" id="chat-msgs" style="background-image:${watermark()}"></div>
+          <div class="chat-curtain" id="chat-curtain" aria-hidden="true">
+            <div class="curtain-inner">
+              <div class="curtain-clock" id="curtain-clock"></div>
+              <div class="curtain-lock">🔒</div>
+              <strong>Chat gesperrt</strong>
+              <p>60 Sekunden keine Aktivität</p>
+            </div>
+            <button class="curtain-hint" id="curtain-up" type="button"><span class="curtain-chevron">︿</span>Nach oben wischen zum Entsperren</button>
+            <div class="curtain-bar"></div></div>
+          <form class="chat-form" id="chat-form"><input class="input" id="chat-input" maxlength="1000" placeholder="Nachricht schreiben …" autocomplete="off">
+            <button class="btn" type="submit">Senden</button></form>
+        </section>
+      </div>
+      <div class="privacy-shield" id="privacy-shield" hidden>
+        <div><div style="font-size:46px">🔒</div><h2>Screenshots sind im Chat nicht erlaubt</h2>
+          <p>Der Chat ist vertraulich und wird nie gespeichert. Bitte respektiere den Datenschutz deiner Mitstudierenden.</p>
+          <button class="btn" id="shield-back">Zurück zum Chat</button></div>
+      </div>
+    `);
+    document.querySelector('.chat-rules').addEventListener('toggle', () => { chatState.rulesSeen = true; });
+    const render = () => {
+      const d = chatState.data;
+      const room = d.rooms.find((r) => r.id === chatState.room) || d.rooms.find((r) => r.id === 'klasse');
+      if (!room) return;
+      chatState.room = room.id;
+      document.getElementById('chat-rooms').innerHTML = d.rooms
+        .sort((a, b) => (a.type === 'group' ? -1 : b.type === 'group' ? 1 : 0))
+        .map((r) => {
+          const unread = r.messages.filter((m) => m.id > (chatState.seen[r.id] || 0) && m.userId !== d.me).length;
+          return `<button class="chat-room ${r.id === room.id ? 'active' : ''}" data-room="${esc(r.id)}">
+            <span>${esc(roomTitle(r, d))}</span>${r.invited ? '<span class="tag jp">Einladung</span>' : (unread && r.id !== room.id ? `<span class="nav-badge">${unread}</span>` : '')}</button>`;
+        }).join('');
+      document.getElementById('online-count').textContent = d.online.length;
+      document.getElementById('chat-online').innerHTML = d.online.map((o) => `<div class="chat-person">
+          <span class="dot" style="--accent:#6ebd91"></span><span class="grow">${esc(o.name)}${o.id === d.me ? ' (du)' : ''}</span>
+          ${o.id === d.me ? '' : `<button class="btn ghost small" data-dm="${o.id}">Nachricht</button>`}</div>`).join('');
+      const candidates = d.online.filter((o) => o.id !== d.me && (room.type === 'group' || o.id === room.partner));
+      document.getElementById('chat-head').innerHTML = `<strong>${esc(roomTitle(room, d))}</strong>
+        <span style="font-size:12px;color:var(--muted)">${room.members.length} im Chat: ${room.members.map((m) => esc(m.name)).join(', ')}</span>
+        ${room.member && candidates.length ? `<select class="input" id="invite-select" style="width:auto;padding:5px 8px;font-size:13px;margin-left:auto">
+          <option value="">Einladen (Verlauf freigeben) …</option>${candidates.map((o) => `<option value="${o.id}">${esc(o.name)}</option>`).join('')}</select>` : ''}`;
+      const box = document.getElementById('chat-msgs');
+      const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+      box.innerHTML = room.invited
+        ? `<div class="empty" style="text-align:center;padding:30px">Du wurdest in diesen Chat eingeladen.<br><button class="btn" id="accept-invite" style="margin-top:10px">Beitreten und Verlauf ansehen</button></div>`
+        : (room.messages.length ? room.messages.map((m) => `<div class="chat-msg ${m.userId === d.me ? 'me' : ''}">
+            ${m.userId === d.me ? '' : `<div class="chat-author">${esc(m.name)}</div>`}<div class="chat-bubble">${esc(m.text)}</div>
+            <div class="chat-time">${esc(fmt.time(m.at))}</div></div>`).join('')
+          : '<div class="empty" style="text-align:center;padding:30px">Noch keine Nachrichten in dieser Sitzung.</div>');
+      if (atBottom) box.scrollTop = box.scrollHeight;
+      if (room.member && room.messages.length) chatState.seen[room.id] = room.messages[room.messages.length - 1].id;
+      updateChatBadge(d);
+      document.getElementById('chat-input').disabled = !room.member;
+      app.querySelectorAll('[data-room]').forEach((b) => b.addEventListener('click', () => { chatState.room = b.dataset.room; render(); }));
+      app.querySelectorAll('[data-dm]').forEach((b) => b.addEventListener('click', async () => {
+        try { chatState.room = (await api('/api/chat/dm', { method: 'POST', body: { userId: Number(b.dataset.dm) } })).room; await refresh(); } catch (err) { toast(err.message, true); }
+      }));
+      const inv = document.getElementById('invite-select');
+      if (inv) {
+        inv.addEventListener('change', async () => {
+          if (!inv.value) return;
+          try { await api('/api/chat/invite', { method: 'POST', body: { room: room.id, userId: Number(inv.value) } }); toast('Eingeladen, der Verlauf ist für die Person sichtbar'); } catch (err) { toast(err.message, true); }
+          inv.value = '';
+        });
+      }
+      const acc = document.getElementById('accept-invite');
+      if (acc) acc.addEventListener('click', async () => { await api('/api/chat/join', { method: 'POST', body: { room: room.id } }); await refresh(); });
+    };
+    const refresh = async () => {
+      try { chatState.data = await api('/api/chat'); render(); } catch (e) { /* kurz offline */ }
+    };
+    document.getElementById('chat-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      try { await api('/api/chat/send', { method: 'POST', body: { room: chatState.room, text } }); await refresh(); } catch (err) { toast(err.message, true); }
+      input.focus();
+    });
+    // Abschreckung gegen Screenshots: schwarzer Bildschirm bei Fokusverlust, Print-Taste, Drucken
+    const shield = document.getElementById('privacy-shield');
+    const show = () => { if (document.getElementById('privacy-shield')) shield.hidden = false; };
+    chatState.onBlur = show;
+    chatState.onVis = () => { if (document.hidden) show(); };
+    chatState.onKey = (e) => {
+      const k = e.key || '';
+      if (k === 'PrintScreen' || (e.metaKey && e.shiftKey) || ((e.ctrlKey || e.metaKey) && k.toLowerCase() === 'p')) {
+        show();
+        if (k === 'PrintScreen' && navigator.clipboard) navigator.clipboard.writeText('Screenshots sind im HUB-042-Chat nicht erlaubt.').catch(() => {});
+        if (k.toLowerCase() === 'p') e.preventDefault();
+      }
+    };
+    window.addEventListener('blur', chatState.onBlur);
+    document.addEventListener('visibilitychange', chatState.onVis);
+    window.addEventListener('keydown', chatState.onKey);
+    window.addEventListener('keyup', chatState.onKey);
+    document.getElementById('shield-back').addEventListener('click', () => { shield.hidden = true; document.getElementById('chat-input').focus(); });
+    ['copy', 'cut', 'contextmenu', 'dragstart'].forEach((ev) => document.getElementById('chat-msgs').addEventListener(ev, (e) => e.preventDefault()));
+    // Vorhang nach 60 s Inaktivität; Tippen, Maus, Scrollen und Touch zählen als Aktivität
+    const curtain = document.getElementById('chat-curtain');
+    const IDLE_MS = 60000;
+    let lastActive = Date.now();
+    let down = false;
+    const activity = () => { if (!down) lastActive = Date.now(); };
+    const raise = () => {
+      if (!down) return;
+      curtain.classList.add('lift');
+      curtain.classList.remove('down');
+      down = false;
+      lastActive = Date.now();
+      setTimeout(() => {
+        // ohne Animation zurück unter den Rand, damit der Vorhang nicht sichtbar zurückfährt
+        curtain.style.transition = 'none';
+        curtain.classList.remove('lift');
+        void curtain.offsetHeight;
+        curtain.style.transition = '';
+        curtain.setAttribute('aria-hidden', 'true');
+      }, 460);
+      document.getElementById('chat-input').focus();
+    };
+    const lower = () => {
+      down = true;
+      document.getElementById('curtain-clock').textContent = new Intl.DateTimeFormat('de-CH', { hour: '2-digit', minute: '2-digit' }).format(new Date());
+      curtain.classList.add('down');
+      curtain.setAttribute('aria-hidden', 'false');
+    };
+    chatState.onActivity = activity;
+    ['mousemove', 'mousedown', 'keydown', 'input', 'touchstart', 'scroll', 'wheel'].forEach((ev) => window.addEventListener(ev, activity, { passive: true, capture: true }));
+    curtain.addEventListener('wheel', (e) => { if (e.deltaY < 0 || e.deltaY > 0) raise(); }, { passive: true });
+    // Wischen: Vorhang folgt dem Finger (bzw. der Maus) nach oben, ab 25 % Weg wird entsperrt
+    let startY = null;
+    let dragY = 0;
+    const dragStart = (y) => { if (!down) return; startY = y; dragY = 0; curtain.style.transition = 'none'; };
+    const dragMove = (y) => {
+      if (startY === null) return;
+      dragY = Math.min(0, y - startY);
+      curtain.style.transform = `translateY(${dragY}px)`;
+      curtain.style.opacity = String(1 - Math.min(0.5, -dragY / curtain.clientHeight));
+    };
+    const dragEnd = () => {
+      if (startY === null) return;
+      startY = null;
+      curtain.style.transition = '';
+      curtain.style.transform = '';
+      curtain.style.opacity = '';
+      if (-dragY > curtain.clientHeight * 0.25) raise();
+    };
+    curtain.addEventListener('touchstart', (e) => dragStart(e.touches[0].clientY), { passive: true });
+    curtain.addEventListener('touchmove', (e) => dragMove(e.touches[0].clientY), { passive: true });
+    curtain.addEventListener('touchend', dragEnd);
+    curtain.addEventListener('mousedown', (e) => dragStart(e.clientY));
+    window.addEventListener('mousemove', (e) => dragMove(e.clientY));
+    window.addEventListener('mouseup', dragEnd);
+    document.getElementById('curtain-up').addEventListener('click', raise);
+    chatState.idleTimer = setInterval(() => { if (!down && Date.now() - lastActive > IDLE_MS) lower(); }, 1000);
+
+    render();
+    document.getElementById('chat-input').focus();
+    chatState.timer = setInterval(refresh, 2500);
+  }
+
+  function stopChat() {
+    if (chatState.timer) { clearInterval(chatState.timer); chatState.timer = null; }
+    if (chatState.idleTimer) { clearInterval(chatState.idleTimer); chatState.idleTimer = null; }
+    if (chatState.onActivity) {
+      ['mousemove', 'mousedown', 'keydown', 'input', 'touchstart', 'scroll', 'wheel'].forEach((ev) => window.removeEventListener(ev, chatState.onActivity, { capture: true }));
+      chatState.onActivity = null;
+    }
+    if (chatState.onBlur) {
+      window.removeEventListener('blur', chatState.onBlur);
+      document.removeEventListener('visibilitychange', chatState.onVis);
+      window.removeEventListener('keydown', chatState.onKey);
+      window.removeEventListener('keyup', chatState.onKey);
+      chatState.onBlur = null;
+    }
+  }
+
+  // ---------------------------------------------------------------
   // Zufalls-Gruppengenerator (läuft nur im Browser, nichts wird gespeichert)
   // ---------------------------------------------------------------
   const groupState = { size: 3, rest: 'verteilen', unchecked: new Set(), extra: [], result: null };
@@ -2132,6 +2401,7 @@
 
   async function route() {
     closeModal();
+    stopChat();
     const { parts, params } = parseHash();
     const page = parts[0] || 'dashboard';
     if (page === 'datenschutz' || page === 'impressum') {
@@ -2161,6 +2431,7 @@
         case 'profil': await viewProfile(); break;
         case 'infos': await viewInfos(); break;
         case 'gruppen': await viewGroups(); break;
+        case 'chat': await viewChat(); break;
         case 'admin': await viewAdmin(); break;
         default: await viewDashboard(params);
       }
@@ -2170,6 +2441,7 @@
     if (state.meta && state.meta.user.needsConsent) askConsent();
     else if (state.meta && state.meta.user.needsRecoveryId) showRecoveryId(true);
     else if (state.meta && state.meta.user.mustChangePassword) forcePasswordChange();
+    if (state.meta) startChatHeartbeat();
     renderBot();
   }
 
