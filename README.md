@@ -155,6 +155,8 @@ Das PDF geht nach der Bestätigung als Anhang der Willkommens-Mail raus und lieg
 
 ## Dauerhaft online (ohne dass der Laptop 24/7 läuft)
 
+> **Stand 24.10.2026: HUB-042 läuft rund um die Uhr** auf einer Gratis-VM von Oracle Cloud (Always Free, `VM.Standard.E2.1.Micro`, Rechenzentrum Zürich) mit fester Adresse über Tailscale Funnel. Neue Versionen spielt Watchtower nach jedem Push auf `main` automatisch ein. Die Adresse steht bewusst nicht im Repo; Mitglieder bekommen sie per QR-Code vom Admin.
+
 Für die Übung läuft HUB-042 auf dem Laptop. Damit die Klasse die Seite jederzeit erreicht, kann derselbe Stack ohne Änderungen auf einem kostenlosen, dauerhaft laufenden Server laufen:
 
 | Option | Kosten | Stabile URL | Bemerkung |
@@ -165,7 +167,7 @@ Für die Übung läuft HUB-042 auf dem Laptop. Damit die Klasse die Seite jederz
 
 Wichtig: Der **Quick Tunnel** (`trycloudflare.com`) bekommt bei jedem Neustart eine neue Adresse. Für eine feste Adresse braucht es einen Cloudflare *Named Tunnel* (gratis, aber mit eigener Domain, ca. CHF 10–15 pro Jahr) oder **Tailscale Funnel** (gratis, Adresse wie `https://hub-042.<tailnet>.ts.net`).
 
-**Link teilen:** In der Verwaltung zeigt die Karte „📱 Link für die Klasse“ die aktuelle Adresse samt **QR-Code** und Kopier-Knopf. Der Code führt auf `#/willkommen`, das 3-Schritte-Onboarding für Neue. Quelle: `PUBLIC_URL` aus der `.env`, sonst die aktuelle Quick-Tunnel-Adresse (Metrics-Endpunkt von `cloudflared`, nur im internen Docker-Netz).
+**Link teilen:** In der Verwaltung zeigt die Karte „📱 Link für die Klasse“ die aktuelle Adresse samt **QR-Code**, Kopier-Knopf, **„Gross zeigen“** (Vollbild zum Hochhalten oder für den Beamer) und **„QR speichern“** (SVG zum Drucken oder Teilen). Der Code führt auf `#/willkommen`, das 3-Schritte-Onboarding für Neue. Quelle: `PUBLIC_URL` aus der `.env`, sonst die aktuelle Quick-Tunnel-Adresse (Metrics-Endpunkt von `cloudflared`, nur im internen Docker-Netz).
 
 ### A) Feste Adresse gratis: Tailscale Funnel
 

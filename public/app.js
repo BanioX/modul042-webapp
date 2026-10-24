@@ -598,8 +598,8 @@
 
         <h3>7. Hosting und Empfänger</h3>
         <ul>
-          <li>Die Applikation und die Datenbank laufen in Docker-Containern auf einem Rechner des Betreibers in der Schweiz.</li>
-          <li>Für den Dauerbetrieb kann derselbe Stack auf einer virtuellen Maschine von <strong>Oracle Cloud</strong> (Rechenzentrum Zürich, Schweiz) laufen. Die Datenbank liegt dann verschlüsselt auf dem Speicher dieser VM; Oracle hat keinen Zweck, auf die Inhalte zuzugreifen.</li>
+          <li>Die Applikation und die Datenbank laufen in Docker-Containern in der Schweiz.</li>
+          <li>Für den Dauerbetrieb läuft HUB-042 auf einer virtuellen Maschine von <strong>Oracle Cloud</strong> (Rechenzentrum Zürich, Schweiz). Die Datenbank liegt dort verschlüsselt auf dem Speicher dieser VM; Oracle hat keinen Zweck, auf die Inhalte zuzugreifen.</li>
           <li>Öffentlich erreichbar ist sie über einen <strong>Cloudflare Tunnel</strong> (Cloudflare Inc., USA) und/oder <strong>Tailscale Funnel</strong> (Tailscale Inc., Kanada/USA). Die Verbindung ist per HTTPS verschlüsselt,
             die Anbieter verarbeiten dabei technisch bedingt IP-Adressen und Verbindungsdaten. Beide sind unter dem Swiss-U.S. Data Privacy Framework zertifiziert bzw. in einem Land mit angemessenem Datenschutzniveau (Kanada).
             Inhalte wie Punkte werden dort nicht gespeichert.</li>
@@ -2323,7 +2323,8 @@
           <div class="qr">${linkInfo.qr}</div>
           <div style="min-width:0">
             <div class="link-url">${esc(linkInfo.shareUrl)}</div>
-            <div class="row" style="margin:10px 0"><button class="btn small" id="copy-link">Link kopieren</button>
+            <div class="row" style="margin:10px 0"><button class="btn small" id="show-qr">⛶ Gross zeigen</button><button class="btn secondary small" id="copy-link">Link kopieren</button>
+              <button class="btn secondary small" id="save-qr">QR speichern</button>
               <a class="btn secondary small" href="${esc(linkInfo.shareUrl)}" target="_blank" rel="noopener">Öffnen</a></div>
             <p style="font-size:13px;color:var(--muted);margin:0 0 6px">Nach dem Scan erklärt HUB-042 in 3 Schritten, was im Dashboard wartet, wie die Registrierung läuft und warum die Wiederherstellungs-ID gespeichert werden muss.</p>
             <p style="font-size:13px;color:var(--muted);margin:0">${linkInfo.kind === 'fest'
@@ -2370,6 +2371,36 @@
     `);
 
     const refresh = () => viewAdmin();
+    // QR-Code im Vollbild, zum Zeigen im Unterricht (Beamer oder Handy hochhalten)
+    const showQr = document.getElementById('show-qr');
+    if (showQr) {
+      showQr.addEventListener('click', () => {
+        const overlay = document.createElement('div');
+        overlay.className = 'qr-full';
+        overlay.innerHTML = `<div class="qr-full-inner">
+            <div class="boot-logo"><span class="logo-box">HUB</span> 042</div>
+            <div class="qr-full-code">${linkInfo.qr}</div>
+            <div class="qr-full-text">📱 Mit der Handykamera scannen<br><span>In 3 Schritten zum eigenen Konto</span></div>
+            <div class="link-url">${esc(linkInfo.shareUrl)}</div>
+            <div class="qr-full-hint">Tippen oder Esc zum Schliessen</div></div>`;
+        const close = () => { overlay.remove(); document.removeEventListener('keydown', onKey); };
+        const onKey = (e) => { if (e.key === 'Escape') close(); };
+        overlay.addEventListener('click', close);
+        document.addEventListener('keydown', onKey);
+        document.body.appendChild(overlay);
+        if (overlay.requestFullscreen) overlay.requestFullscreen().catch(() => {});
+      });
+    }
+    const saveQr = document.getElementById('save-qr');
+    if (saveQr) {
+      saveQr.addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([linkInfo.qr], { type: 'image/svg+xml' }));
+        a.download = 'HUB-042_QR-Code.svg';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      });
+    }
     const copyLink = document.getElementById('copy-link');
     if (copyLink) {
       copyLink.addEventListener('click', async () => {

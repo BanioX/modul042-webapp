@@ -68,8 +68,8 @@ Es werden **keine** besonders schützenswerten Personendaten (Art. 5 lit. c DSG)
 | Cloudflare Inc. (Tunnel) | HTTPS-Zugang; verarbeitet technisch IP und Verbindungsdaten | USA | Swiss-U.S. Data Privacy Framework (Angemessenheit durch den Bundesrat seit 15.9.2024) |
 | Microsoft 365 (HKV-Konto) **oder** Gmail des Betreibers | Versand von Bestätigungs-, Einladungs-, Willkommens- und Reset-Mails (nur Mailadresse und Anzeigename) | CH/EU (HKV-Tenant) bzw. USA (Google) | Schulkonto der HKV bzw. Swiss-U.S. DPF |
 | Google Gemini (optional) | Hilfe-Bot, **nur** wenn ein API-Key gesetzt ist und jemand fragt | USA | Swiss-U.S. DPF; gesendet wird nur die geschwärzte Frage plus allgemeiner/klassenweiter Kontext |
-| Tailscale Inc. (Funnel, optional) | feste HTTPS-Adresse; verarbeitet technisch IP und Verbindungsdaten | Kanada/USA | Kanada: angemessenes Schutzniveau (Anhang 1 DSV); USA: Swiss-U.S. DPF |
-| Oracle Cloud (Always-Free-VM, optional) | Hosting von App und Datenbank für den Dauerbetrieb | **Schweiz** (Region Zürich) | Auftragsbearbeitung (Art. 9 DSG), Oracle Cloud Agreement inkl. DPA |
+| Tailscale Inc. (Funnel, in Betrieb seit 24.10.2026) | feste HTTPS-Adresse; verarbeitet technisch IP und Verbindungsdaten | Kanada/USA | Kanada: angemessenes Schutzniveau (Anhang 1 DSV); USA: Swiss-U.S. DPF |
+| Oracle Cloud (Always-Free-VM, in Betrieb seit 24.10.2026) | Hosting von App und Datenbank für den Dauerbetrieb | **Schweiz** (Region Zürich) | Auftragsbearbeitung (Art. 9 DSG), Oracle Cloud Agreement inkl. DPA |
 | GitHub (Quellcode, Images) | Code und Container-Images | USA | enthält **keine** Personendaten |
 
 Hinweis zum Bot: Beim kostenlosen Gemini-Kontingent kann Google Eingaben zur Verbesserung der Dienste verwenden. Deshalb schwärzt der Server E-Mails und Telefonnummern (`redact()` in `src/routes/assistant.js`), schickt nie Namen, Punkte oder Noten mit, speichert Fragen nicht und zeigt im Chat einen Hinweis „keine persönlichen Daten eingeben“. Ohne Key bleibt alles lokal (FAQ).

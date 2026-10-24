@@ -509,3 +509,13 @@ details.card summary::marker { color: var(--green-dark); }
   .auth-wrap.onboarding .auth-hero { display: none; }
   .auth-wrap.onboarding .auth-form { padding: 24px 16px; align-items: flex-start; }
 }
+/* QR-Code im Vollbild (Verwaltung → Gross zeigen) */
+.qr-full { position: fixed; inset: 0; z-index: 1000; background: #fff; display: grid; place-items: center; padding: 16px; cursor: pointer; }
+.qr-full-inner { text-align: center; display: grid; gap: 14px; justify-items: center; max-width: 100%; }
+.qr-full .boot-logo { color: var(--petrol); }
+.qr-full-code { width: min(78vw, 62vh); aspect-ratio: 1; }
+.qr-full-code svg { width: 100%; height: 100%; display: block; }
+.qr-full-text { font-size: clamp(18px, 3vw, 28px); font-weight: 800; color: var(--petrol); }
+.qr-full-text span { font-size: .7em; font-weight: 600; color: var(--muted); }
+.qr-full-hint { font-size: 12px; color: var(--muted); }
+.qr-full .link-url { font-size: clamp(11px, 2.2vw, 18px); }
