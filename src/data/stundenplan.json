@@ -1,0 +1,1781 @@
+{
+ "1": {
+  "legend": {
+   "MAMON": "Mathematische Modelle nutzen",
+   "SPMA": "Struktur- und Prozessmanagement",
+   "UNTF": "Unternehmensführung",
+   "FINM": "Finanzmanagement",
+   "PROJ": "Projektmanagement",
+   "AUSD": "Gewandter Ausdruck",
+   "NWSE": "Network, System Engineering",
+   "InfSys": "Informationssysteme gestalten",
+   "RECT": "Recht",
+   "Leadership": "Leadership"
+  },
+  "lessons": [
+   {
+    "date": "2025-04-30",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "Kickoff",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-04-30",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "Kickoff",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-03",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "Kickoff",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-05-03",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "Kickoff",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-05-07",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "Leadership",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-07",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-14",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-14",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-21",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-21",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-28",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "Leadership",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-05-28",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-06-04",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-06-04",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "Leadership",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-06-11",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-06-11",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": "Verschiebung auf 7.1.2026"
+   },
+   {
+    "date": "2025-06-14",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": "Zimmer 226"
+   },
+   {
+    "date": "2025-06-14",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": "Zimmer 226"
+   },
+   {
+    "date": "2025-06-18",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "Leadership",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-06-18",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-06-25",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-06-25",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-07-02",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-07-02",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-08-13",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-08-13",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-08-16",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": "Zimmer 226"
+   },
+   {
+    "date": "2025-08-16",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": "Zimmer 226"
+   },
+   {
+    "date": "2025-08-20",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "Leadership",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-08-20",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-08-23",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": "online"
+   },
+   {
+    "date": "2025-08-23",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": "online"
+   },
+   {
+    "date": "2025-08-27",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-08-27",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-03",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-03",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-06",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": "online"
+   },
+   {
+    "date": "2025-09-06",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": "online"
+   },
+   {
+    "date": "2025-09-10",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-10",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-17",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-17",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-24",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-09-24",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-10-15",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-10-15",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-10-22",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-10-22",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "FINM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-10-25",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "MAMON",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-10-25",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-10-29",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-10-29",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-01",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-11-01",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-11-05",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AUSD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-05",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-12",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-12",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "AUSD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-19",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AUSD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-19",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-22",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-11-22",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "PROJ",
+    "dozent": null,
+    "note": "Zimmer 211"
+   },
+   {
+    "date": "2025-11-26",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-11-26",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-12-03",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AUSD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-12-03",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "RECT",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-12-10",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-12-10",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-12-17",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-12-17",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2025-12-20",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil  - Verschiebung auf 31.01.2026"
+   },
+   {
+    "date": "2025-12-20",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil  - Verschiebung auf 31.01.2026"
+   },
+   {
+    "date": "2026-01-07",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "RECT",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-01-07",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-01-14",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-01-14",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-01-17",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil"
+   },
+   {
+    "date": "2026-01-17",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil"
+   },
+   {
+    "date": "2026-01-21",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-01-21",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "Leadership",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-01-31",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil"
+   },
+   {
+    "date": "2026-01-31",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil"
+   },
+   {
+    "date": "2026-02-11",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "RECT",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-02-11",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-02-18",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-02-18",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": "Zimmer 234"
+   },
+   {
+    "date": "2026-02-21",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil"
+   },
+   {
+    "date": "2026-02-21",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": "Mägenwil"
+   },
+   {
+    "date": "2026-02-25",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "RECT",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-02-25",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-04",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "Leadership",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-04",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-11",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "RECT",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-11",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SPMA",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-18",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "UNTF",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-18",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-19",
+    "start": null,
+    "end": null,
+    "lektionen": 0,
+    "module": "Jahresprüfung",
+    "dozent": null,
+    "note": "gem. separatem Plan"
+   },
+   {
+    "date": "2026-03-20",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": "Seminar"
+   },
+   {
+    "date": "2026-03-20",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": "Seminar"
+   },
+   {
+    "date": "2026-03-21",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": "Seminar"
+   },
+   {
+    "date": "2026-03-21",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "InfSys",
+    "dozent": null,
+    "note": "Seminar"
+   },
+   {
+    "date": "2026-03-25",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "RECT",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-25",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "NWSE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-03-26",
+    "start": null,
+    "end": null,
+    "lektionen": null,
+    "module": "Jahresprüfung",
+    "dozent": null,
+    "note": "gem. separatem Plan"
+   },
+   {
+    "date": "2026-04-01",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-04-01",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   }
+  ]
+ },
+ "2": {
+  "legend": {
+   "AGMP": "Agile Methodik",
+   "APPL": "Applications-Engineering",
+   "AUFK": "Auftrittskompetenz",
+   "BDAI": "Big Data und artificial intelligence",
+   "BITD": "Business- und ICT-Development",
+   "CHMG": "Changemanagement",
+   "DA": "Diplomarbeit",
+   "DSRE": "Datenschutz",
+   "INOM": "Innovationsmanagement",
+   "INWI": "Informations- und Wissensmanagement",
+   "SECM": "ICT-Security-Management"
+  },
+  "lessons": [
+   {
+    "date": "2026-04-22",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-04-22",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "CHMG",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-04-29",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AGMP",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-04-29",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "DSRE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-06",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "DSRE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-06",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-13",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AGMP",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-13",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-20",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "CHMG",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-20",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-27",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "DSRE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-05-27",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "AGMP",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-03",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-03",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-10",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AGMP",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-10",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "DSRE",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-17",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-17",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-24",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "CHMG",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-06-24",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-07-01",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AGMP",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-07-01",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "CHMG",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-08-12",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-08-12",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-08-19",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "CHMG",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-08-19",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-08-26",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-08-26",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-08-29",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": "Zimmer 113"
+   },
+   {
+    "date": "2026-08-29",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": "Zimmer 113"
+   },
+   {
+    "date": "2026-09-02",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-09-02",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-09-09",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-09-09",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-09-16",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "CHMG",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-09-16",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-09-23",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-09-23",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-10-14",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-10-14",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "CHMG",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-10-21",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-10-21",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-10-28",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-10-28",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-04",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-04",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INWI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-11",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-11",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-18",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-18",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-25",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-25",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-11-28",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": "Zimmer 126"
+   },
+   {
+    "date": "2026-11-28",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": "Zimmer 126"
+   },
+   {
+    "date": "2026-12-02",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-12-02",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "APPL",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-12-09",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-12-09",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "DA",
+    "dozent": null,
+    "note": "Vorinformation DA"
+   },
+   {
+    "date": "2026-12-16",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2026-12-16",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-06",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-06",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-13",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AUFK",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-13",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-16",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": "Zimmer 113"
+   },
+   {
+    "date": "2027-01-16",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": "Zimmer 113"
+   },
+   {
+    "date": "2027-01-20",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-20",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "AUFK",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-27",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-27",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-02-17",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "AUFK",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-02-17",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "INOM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-02-24",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "SECM",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-02-24",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "AUFK",
+    "dozent": null,
+    "note": "Hauptprobe, Aula"
+   },
+   {
+    "date": "2027-03-03",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-03",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "Jahresprüfung",
+    "dozent": null,
+    "note": "WI-Forum, Aula"
+   },
+   {
+    "date": "2027-03-06",
+    "start": "08:00",
+    "end": "11:30",
+    "lektionen": 4,
+    "module": "DA",
+    "dozent": null,
+    "note": "Kickoff, Zimmer 126"
+   },
+   {
+    "date": "2027-03-06",
+    "start": "12:15",
+    "end": "15:30",
+    "lektionen": 4,
+    "module": "DA",
+    "dozent": null,
+    "note": "Kickoff, Zimmer 126"
+   },
+   {
+    "date": "2027-03-10",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-10",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-17",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-17",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-24",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-24",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 4,
+    "module": "BDAI",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-31",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 4,
+    "module": "BITD",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-03-31",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-04-07",
+    "start": "13:00",
+    "end": "16:10",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   },
+   {
+    "date": "2027-04-07",
+    "start": "16:40",
+    "end": "19:50",
+    "lektionen": 0,
+    "module": "Reserve",
+    "dozent": null,
+    "note": null
+   }
+  ]
+ }
+}

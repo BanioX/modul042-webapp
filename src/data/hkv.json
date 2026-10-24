@@ -1,0 +1,618 @@
+{
+  "ferien": [
+    {
+      "name": "Herbstferien",
+      "start": "2025-09-29",
+      "end": "2025-10-12"
+    },
+    {
+      "name": "Weihnachtsferien",
+      "start": "2025-12-22",
+      "end": "2026-01-04"
+    },
+    {
+      "name": "Sportferien",
+      "start": "2026-01-26",
+      "end": "2026-02-08"
+    },
+    {
+      "name": "Frühlingsferien",
+      "start": "2026-04-06",
+      "end": "2026-04-19"
+    },
+    {
+      "name": "Sommerferien",
+      "start": "2026-07-06",
+      "end": "2026-08-09"
+    },
+    {
+      "name": "Herbstferien",
+      "start": "2026-09-28",
+      "end": "2026-10-11"
+    },
+    {
+      "name": "Weihnachtsferien",
+      "start": "2026-12-21",
+      "end": "2027-01-03"
+    },
+    {
+      "name": "Sportferien",
+      "start": "2027-01-25",
+      "end": "2027-02-07"
+    },
+    {
+      "name": "Frühlingsferien",
+      "start": "2027-04-12",
+      "end": "2027-04-25"
+    },
+    {
+      "name": "Sommerferien",
+      "start": "2027-07-05",
+      "end": "2027-08-08"
+    },
+    {
+      "name": "Sommerferien",
+      "start": "2025-07-07",
+      "end": "2025-08-10"
+    },
+    {
+      "name": "Frühlingsferien",
+      "start": "2025-04-07",
+      "end": "2025-04-20"
+    }
+  ],
+  "feiertage": [
+    {
+      "name": "Karfreitag",
+      "date": "2025-04-18"
+    },
+    {
+      "name": "Ostermontag",
+      "date": "2025-04-21"
+    },
+    {
+      "name": "1. Mai (Konferenz)",
+      "date": "2025-05-01"
+    },
+    {
+      "name": "Auffahrt",
+      "date": "2025-05-29"
+    },
+    {
+      "name": "Auffahrtsbrücke",
+      "date": "2025-05-30"
+    },
+    {
+      "name": "Pfingstmontag",
+      "date": "2025-06-09"
+    },
+    {
+      "name": "Maienzug",
+      "date": "2025-07-04"
+    },
+    {
+      "name": "Karfreitag",
+      "date": "2026-04-03"
+    },
+    {
+      "name": "Ostermontag",
+      "date": "2026-04-06"
+    },
+    {
+      "name": "1. Mai (Konferenz)",
+      "date": "2026-05-01"
+    },
+    {
+      "name": "Auffahrt",
+      "date": "2026-05-14"
+    },
+    {
+      "name": "Auffahrtsbrücke",
+      "date": "2026-05-15"
+    },
+    {
+      "name": "Pfingstmontag",
+      "date": "2026-05-25"
+    },
+    {
+      "name": "Maienzug",
+      "date": "2026-07-03"
+    }
+  ],
+  "campus": {
+    "name": "HKV Aarau · Pestalozzischulhaus",
+    "address": "Bahnhofstrasse 46, 5001 Aarau",
+    "hint": "Direkt beim Bahnhof Aarau, Anreise mit dem ÖV empfohlen. Auf dem Schulareal gibt es keine Autoparkplätze.",
+    "parking": [
+      "Aargauische Kantonalbank",
+      "Bahnhofparking",
+      "Behmen",
+      "Kasino",
+      "Kaserne"
+    ],
+    "bikes": "Velos, Roller und Motorräder auf der Südseite des Schulhauses",
+    "contact": "Weiterbildung HKV Aarau · 062 837 97 20 · wb@hkvaarau.ch"
+  },
+  "hfwi": {
+    "titel": "Dipl. Wirtschaftsinformatiker/-in HF",
+    "untertitel": "Höhere Fachschule für Wirtschaftsinformatik (HFWI) · eidgenössisch anerkannt gemäss MiVo-HF (SBFI)",
+    "englisch": "Business Data Processing Specialist, Advanced Federal Diploma of Higher Education",
+    "eckdaten": [
+      [
+        "Dauer",
+        "3 Studienjahre, ca. 125 Unterrichtstage"
+      ],
+      [
+        "Kontaktunterricht",
+        "ca. 960 Lektionen und 2800 Lernstunden"
+      ],
+      [
+        "Lernleistungspunkte",
+        "max. 3600 LLP über 3 Jahre · Präsenz 0.5 LLP pro Lektion"
+      ],
+      [
+        "Unterricht",
+        "Mittwoch 13.00–19.50 Uhr, pro Semester ca. 4–5 Samstage 08.00–15.40 Uhr"
+      ],
+      [
+        "Ort",
+        "Pestalozzischulhaus, Bahnhofstrasse 46, Aarau (Mittwoch Zimmer 126)"
+      ],
+      [
+        "Starttermine",
+        "jeweils im April/Mai und Oktober"
+      ],
+      [
+        "Ferien",
+        "mehrheitlich gemäss Schulferien Aarau"
+      ],
+      [
+        "Qualifikation",
+        "laufende Qualifikationsleistungen pro Modul (ATL, Mastery Tests), Jahresprüfung im 1. und 2. Studienjahr, Diplomarbeit im 3. Studienjahr"
+      ]
+    ],
+    "lehrplan": [
+      {
+        "jahr": "1. Studienjahr",
+        "module": [
+          [
+            "Selbstführung, Kickoff, DA",
+            26,
+            40
+          ],
+          [
+            "Leadership",
+            28,
+            80
+          ],
+          [
+            "Gewandter Ausdruck",
+            16,
+            50
+          ],
+          [
+            "Unternehmensführung",
+            48,
+            100
+          ],
+          [
+            "Finanzmanagement",
+            40,
+            90
+          ],
+          [
+            "Recht",
+            24,
+            50
+          ],
+          [
+            "Struktur-/Prozessmanagement",
+            36,
+            80
+          ],
+          [
+            "Projektmanagement",
+            44,
+            90
+          ],
+          [
+            "Informationssysteme gestalten",
+            44,
+            100
+          ],
+          [
+            "Mathematische Modelle nutzen",
+            36,
+            90
+          ],
+          [
+            "Network, System Engineering",
+            44,
+            90
+          ],
+          [
+            "Jahresprüfung 1",
+            0,
+            200
+          ]
+        ]
+      },
+      {
+        "jahr": "2. Studienjahr",
+        "module": [
+          [
+            "Auftrittskompetenz",
+            16,
+            20
+          ],
+          [
+            "Innovationsmanagement",
+            48,
+            100
+          ],
+          [
+            "Business- und ICT-Development",
+            40,
+            100
+          ],
+          [
+            "Agile Methodik",
+            20,
+            50
+          ],
+          [
+            "ICT-Security-Management",
+            40,
+            80
+          ],
+          [
+            "Datenschutz",
+            16,
+            40
+          ],
+          [
+            "Informations- und Wissensmanagement",
+            40,
+            100
+          ],
+          [
+            "Veränderungsmanagement",
+            28,
+            70
+          ],
+          [
+            "Applications-Engineering",
+            32,
+            70
+          ],
+          [
+            "Big Data und Artificial Intelligence",
+            32,
+            60
+          ],
+          [
+            "Jahresprüfung 2",
+            0,
+            200
+          ]
+        ]
+      },
+      {
+        "jahr": "3. Studienjahr",
+        "module": [
+          [
+            "Englisch",
+            60,
+            200
+          ],
+          [
+            "Simulation Unternehmensführung",
+            24,
+            50
+          ],
+          [
+            "ICT-Management",
+            40,
+            100
+          ],
+          [
+            "ICT-Produktmanagement",
+            28,
+            60
+          ],
+          [
+            "Business Solutions",
+            48,
+            90
+          ],
+          [
+            "Digital Business",
+            40,
+            90
+          ],
+          [
+            "Studienreise",
+            24,
+            40
+          ],
+          [
+            "Diplomarbeit",
+            0,
+            200
+          ]
+        ]
+      }
+    ],
+    "kompetenzen": [
+      [
+        "Systeme zur unternehmerischen Nutzung von Informationssystemen planen",
+        "Unternehmensstrategie analysieren, ICT-Bereichsstrategie, Businesscase, Projekte initialisieren, Innovationsmanagement"
+      ],
+      [
+        "Systeme erstellen, die IT und Unternehmung verbinden",
+        "ICT-Systeme spezifizieren, Implementation, Entwicklung, Testmanagement, Dokumentation"
+      ],
+      [
+        "Systeme der Wirtschaftsinformatik betreiben",
+        "Systemleistungen spezifizieren, Nutzerbetreuung, Serviceadministration, Problem-Management"
+      ],
+      [
+        "Innovative Systeme ermöglichen",
+        "Informationssicherheit, Anforderungsmanagement, Beschaffung, Wissensmanagement, Digital Business"
+      ],
+      [
+        "Systeme der Wirtschaftsinformatik steuern",
+        "Projekte leiten, Risikomanagement, Veränderungen mitgestalten, ICT-Governance"
+      ],
+      [
+        "Als Führungspersönlichkeit Leadership entfalten",
+        "Selbst- und Teamführung, Auftrittskompetenz, Konfliktmanagement"
+      ]
+    ],
+    "highlights": [
+      "Studienreise (z. B. Berlin)",
+      "3-tägiges Simulationsseminar Unternehmensführung",
+      "Seminar Informationssysteme in einer Tourismusdestination",
+      "Projektsimulation",
+      "Business Solutions bei Unternehmen vor Ort",
+      "Wirtschaftsinformatik-Forum Aarau",
+      "Optionale Zertifikate (z. B. IPMA, ITIL, IREB)"
+    ],
+    "englischRegel": [
+      "Ziel: Niveau B2, nachgewiesen mit IELTS Academic am Ende des 3. Studienjahres",
+      "Modul Englisch: 60 Lektionen im 3. Studienjahr",
+      "LLP: max. 30 Präsenz + 40 Mastery Tests + 110 IELTS bzw. Cambridge = 180 LLP",
+      "Mit Cambridge B2 oder höher (BEC Vantage/Higher, FCE, CAE, CPE) dispensiert; Zertifikat bis Ende 2. Studienjahr einreichen",
+      "Dispensierte erhalten 100 % der Präsenz-LLP und 90 % der Mastery-LLP"
+    ],
+    "online": [
+      "Zugang zu MS Teams nur mit der HKV-Mailadresse, vorher testen",
+      "Spätestens 5 Minuten vor Beginn einloggen",
+      "Mikrofon standardmässig stumm, Kamera eingeschaltet",
+      "Aufnahmen durch Studierende sind nicht erlaubt",
+      "Empfohlen: Chrome oder Edge, stabiles Internet, Headset"
+    ],
+    "benefits": [
+      "Kostenloser Zugang zu Microsoft 365",
+      "Rabatte über Brands for Students"
+    ],
+    "kontakte": [
+      {
+        "rolle": "Lehrgangsleitung HFWI",
+        "name": "Reto De Martin",
+        "mail": "reto.demartin@hkv.ch"
+      },
+      {
+        "rolle": "Beratung und Administration",
+        "name": "Anna Langenegger",
+        "mail": "anna.langenegger@hkv.ch",
+        "tel": "062 837 97 04"
+      },
+      {
+        "rolle": "HFWI allgemein",
+        "name": "Sekretariat HFWI",
+        "mail": "hfwi@hkv.ch"
+      },
+      {
+        "rolle": "Weiterbildung HKV Aarau",
+        "name": "Sekretariat Weiterbildung",
+        "mail": "weiterbildung@hkv.ch",
+        "tel": "062 837 97 20"
+      }
+    ],
+    "oeffnungszeiten": [
+      "Mo–Do 08.00–12.00 | 12.45–18.30 Uhr",
+      "Fr 08.00–12.00 | 12.45–18.00 Uhr",
+      "Sa 07.30–10.30 Uhr"
+    ],
+    "quelle": "Factsheet, Broschüre HFWI (Mai 2024), Merkblatt Englisch (Nov. 2025), Ferienplan 2024–2027, Zimmer- und Lageplan HKV Aarau"
+  },
+  "bachelor": {
+    "stand": "Recherche Oktober 2026, ohne Gewähr. Anrechnung, Dauer und Kosten immer direkt bei der Hochschule bestätigen lassen.",
+    "intro": "Mit dem Diplom HF Wirtschaftsinformatik kannst du an vielen Fachhochschulen verkürzt einen Bachelor (180 ECTS) machen. Grob gilt: Private Anbieter sind teurer, aber kürzer und flexibler. Staatliche FH sind günstiger, dauern aber meist länger und verlangen mehr Präsenz.",
+    "optionen": [
+      {
+        "schule": "Kalaidos FH",
+        "ort": "Zürich-Oerlikon oder online (Livestream)",
+        "studiengang": "Passerelle BSc Business Information Technology nach HF Wirtschaftsinformatik",
+        "anrechnung": "80 ECTS angerechnet, 100 ECTS an der Kalaidos",
+        "dauer": "4 Semester inkl. Bachelorarbeit",
+        "kosten": "CHF 1'100 pro Monat inkl. Prüfungen (1. Versuch) + CHF 100 Immatrikulation, total ca. CHF 26'500",
+        "zulassung": "HF-Diplom WI, ohne Aufnahmeprüfung, mind. 12 Monate Berufserfahrung in der IT",
+        "plus": "am schnellsten, keine Präsenzpflicht, Start Mai und November",
+        "minus": "privat und am teuersten",
+        "url": "https://www.kalaidos-fh.ch/de-CH/Studiengaenge/Passerelle-Bachelor-Business-Information-Technology-nach-HF-Wirtschaftsinformatik",
+        "typ": "privat"
+      },
+      {
+        "schule": "ZHAW School of Management and Law",
+        "ort": "Winterthur",
+        "studiengang": "BSc Wirtschaftsinformatik (berufsbegleitend)",
+        "anrechnung": "Direkteinstieg ins Hauptstudium: Assessmentstufe (60 ECTS) wird pauschal erlassen",
+        "dauer": "regulär 8 Semester berufsbegleitend, mit HF ca. 6 Semester",
+        "kosten": "CHF 720 pro Semester + Lehrmittel, total ca. CHF 4'500–5'000",
+        "zulassung": "HF-Diplom WI + mind. 12 Monate (100 %) kaufmännische oder Informatik-Berufserfahrung",
+        "plus": "staatlich und sehr günstig, starker Ruf",
+        "minus": "dauert länger, Präsenz in Winterthur",
+        "url": "https://www.zhaw.ch/de/sml/studium/bachelor/aufnahmebedingungen",
+        "typ": "staatlich"
+      },
+      {
+        "schule": "FHNW Hochschule für Wirtschaft",
+        "ort": "Olten (Wirtschaftsinformatik, deutsch) · Brugg-Windisch und Basel (Business IT, englisch)",
+        "studiengang": "BSc Wirtschaftsinformatik / Business Information Technology",
+        "anrechnung": "individuelle Anrechnung von HF-Leistungen (keine Pauschale für HF WI gefunden); zum Vergleich: HF Wirtschaft → Betriebsökonomie 90 ECTS, Einstieg 5. Semester",
+        "dauer": "abhängig von der Anrechnung",
+        "kosten": "staatliche FH-Gebühren pro Semester (bei der FHNW erfragen)",
+        "zulassung": "Berufsmaturität oder gleichwertig; HF-Absolvent*innen sur dossier",
+        "plus": "am nächsten zu Aarau, staatlich",
+        "minus": "Anrechnung muss individuell geklärt werden",
+        "url": "https://www.fhnw.ch/de/studium/wirtschaft",
+        "typ": "staatlich"
+      },
+      {
+        "schule": "FFHS Fernfachhochschule Schweiz",
+        "ort": "Blended Learning, Präsenz u. a. in Zürich, Bern, Basel",
+        "studiengang": "Passerelle BSc Wirtschaftsinformatik",
+        "anrechnung": "HF-Leistungen werden mit bis zu 79 ECTS angerechnet",
+        "dauer": "verkürzt, Einstieg je nach HF-Richtung",
+        "kosten": "gemäss FFHS-Preisliste",
+        "zulassung": "HF-Diplom; Details zur WI-Passerelle bei der FFHS",
+        "plus": "rund 80 % Fernstudium, gut neben dem Job",
+        "minus": "viel Selbststudium",
+        "url": "https://www.ffhs.ch/de/bachelor/passerellen-fuer-hf-absolventen",
+        "typ": "staatlich anerkannt (Stiftung)"
+      },
+      {
+        "schule": "BFH Berner Fachhochschule",
+        "ort": "Bern",
+        "studiengang": "Passerelle BSc Digital Business & AI",
+        "anrechnung": "90 ECTS für das HF-Diplom, Einstieg in die zweite Studienhälfte",
+        "dauer": "ca. halbe Studiendauer",
+        "kosten": "staatliche FH-Gebühren",
+        "zulassung": "HF-Diplom Wirtschaftsinformatik",
+        "plus": "höchste gefundene Anrechnung",
+        "minus": "ausserhalb Aarau/Zürich",
+        "url": "https://www.bfh.ch/de/studium/passerelle-und-vorkurse/passerelle-wirtschaftsinformatik/",
+        "typ": "staatlich"
+      },
+      {
+        "schule": "FH Graubünden",
+        "ort": "Chur / teilweise online",
+        "studiengang": "Bachelor nach HF",
+        "anrechnung": "bis 75 von 180 ECTS für Wirtschaftsinformatiker*innen HF",
+        "dauer": "ca. 2 Jahre",
+        "kosten": "staatliche FH-Gebühren",
+        "zulassung": "HF-Diplom",
+        "plus": "klar kommunizierte Anrechnung",
+        "minus": "weit weg",
+        "url": "https://blog.fhgr.ch/dsc/mit-hf-abschluss-in-2-jahren-zum-bachelor/",
+        "typ": "staatlich"
+      }
+    ],
+    "tipps": [
+      "Anrechnung immer schriftlich bestätigen lassen, bevor du dich anmeldest.",
+      "Viele Programme verlangen 12 Monate Berufserfahrung in der IT: die Arbeitsbestätigung früh organisieren.",
+      "Arbeitgeber fragen: Viele beteiligen sich an Studienkosten oder geben Lerntage.",
+      "Bundesbeiträge gibt es für eidg. Prüfungen, nicht für FH-Bachelor. HF-Diplom und Bachelor ergänzen sich trotzdem gut.",
+      "Nach dem Bachelor steht auch der Master offen (z. B. MSc Wirtschaftsinformatik an ZHAW, HSLU oder FFHS)."
+    ]
+  },
+  "zertifikate": {
+    "intro": "Laut Broschüre kannst du während des Studiums in verschiedenen Modulen zusätzlich international anerkannte Zertifikate erwerben. Die Prüfungskosten kommen zu den Studiengebühren dazu (Factsheet: „Zertifikatskosten für optionale Prüfungen (IPMA, ITIL, IREB etc.)“).",
+    "liste": [
+      {
+        "kuerzel": "IPMA",
+        "name": "IPMA Level D – Certified Project Management Associate",
+        "thema": "Projektmanagement",
+        "was": "Internationale Zertifizierung der International Project Management Association. Level D bestätigt fundiertes Projektmanagement-Wissen (Planung, Risiken, Stakeholder, Teamführung) nach der IPMA Individual Competence Baseline (ICB4). Höhere Stufen (C, B, A) setzen Projektleitungserfahrung voraus.",
+        "modul": "Projektmanagement (1. Studienjahr), Projektsimulation",
+        "pruefung": "schriftliche Prüfung, in der Schweiz über den VZPM",
+        "nutzen": "In der Schweiz sehr verbreitet, gilt in vielen Stelleninseraten als Plus für Projektleitende.",
+        "links": [
+          [
+            "IPMA international",
+            "https://www.ipma.world/individuals/certification/"
+          ],
+          [
+            "VZPM (Schweizer Zertifizierungsstelle)",
+            "https://www.vzpm.ch/"
+          ]
+        ]
+      },
+      {
+        "kuerzel": "IREB",
+        "name": "IREB CPRE Foundation Level – Certified Professional for Requirements Engineering",
+        "thema": "Requirements Engineering",
+        "was": "Zertifikat des International Requirements Engineering Board. Grundlagen, wie man Anforderungen erhebt, dokumentiert, prüft und verwaltet. Damit spricht man dieselbe Sprache wie Business-Analyst*innen und Entwicklungsteams.",
+        "modul": "Business- und ICT-Development, Informationssysteme gestalten, Anforderungsmanagement",
+        "pruefung": "Multiple-Choice-Prüfung, online oder im Testcenter",
+        "nutzen": "Standard für Business Analysis und Requirements Engineering, besonders gefragt in IT-Projekten und Product Ownership.",
+        "links": [
+          [
+            "IREB CPRE Foundation Level",
+            "https://cpre.ireb.org/en/foundation-level"
+          ],
+          [
+            "IREB Übersicht",
+            "https://www.ireb.org/"
+          ]
+        ]
+      },
+      {
+        "kuerzel": "ITIL",
+        "name": "ITIL 4 Foundation",
+        "thema": "IT-Service-Management",
+        "was": "Weltweit verbreitetes Rahmenwerk, wie IT-Services geplant, erbracht und verbessert werden (Service Value System, Incident-, Problem- und Change-Management). Herausgegeben von PeopleCert (früher AXELOS).",
+        "modul": "ICT-Produktmanagement (Servicemanagement), ICT-Management, Systeme betreiben",
+        "pruefung": "Multiple-Choice-Prüfung, online oder im Testcenter",
+        "nutzen": "In IT-Betrieb, Service Desk und IT-Management fast überall verlangt oder gern gesehen.",
+        "links": [
+          [
+            "ITIL 4 bei PeopleCert",
+            "https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1"
+          ],
+          [
+            "ITIL bei AXELOS",
+            "https://www.axelos.com/certifications/itil-service-management"
+          ]
+        ]
+      },
+      {
+        "kuerzel": "COBIT",
+        "name": "COBIT 2019 Foundation",
+        "thema": "IT-Governance",
+        "was": "Rahmenwerk der ISACA für die Steuerung und Kontrolle der IT (Governance, Risikomanagement, Compliance). Zeigt, wie die IT messbar zu den Unternehmenszielen beiträgt.",
+        "modul": "ICT-Management, ICT-Security-Management, Systeme steuern (ICT-Governance)",
+        "pruefung": "Multiple-Choice-Prüfung, online",
+        "nutzen": "Wichtig für IT-Governance, Audit, Risk und Compliance sowie als Basis für CISA oder CGEIT.",
+        "links": [
+          [
+            "COBIT bei ISACA",
+            "https://www.isaca.org/resources/cobit"
+          ],
+          [
+            "COBIT Foundation Zertifikat",
+            "https://www.isaca.org/credentialing/cobit-foundation"
+          ]
+        ]
+      },
+      {
+        "kuerzel": "IELTS",
+        "name": "IELTS Academic (Pflicht für das Diplom)",
+        "thema": "Englisch B2",
+        "was": "Englisch-Sprachtest, mit dem an der HFWI das Niveau B2 nachgewiesen wird. Die Punktzahl wird in bis zu 110 LLP umgerechnet (siehe Merkblatt Englisch).",
+        "modul": "Englisch (3. Studienjahr)",
+        "pruefung": "Lesen, Hören, Schreiben, Sprechen; Termin Ende 3. Studienjahr",
+        "nutzen": "Pflicht im Bildungsgang, international anerkannt.",
+        "links": [
+          [
+            "IELTS Schweiz",
+            "https://www.ielts.org/"
+          ]
+        ]
+      }
+    ],
+    "tipp": "Frag bei der Lehrgangsleitung nach, welche Zertifikatsprüfungen in eurem Durchgang angeboten werden und ob es Sammeltermine oder Rabatte gibt."
+  }
+}

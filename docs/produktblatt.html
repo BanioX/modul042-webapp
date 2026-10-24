@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<title>HUB-042 – Produktblatt &amp; FAQ</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Arial, "Liberation Sans", "DejaVu Sans", sans-serif; color: #17262a; font-size: 9.6pt; line-height: 1.38; letter-spacing: 0; }
+  .page { width: 210mm; height: 296mm; overflow: hidden; padding: 0 16mm 14mm; position: relative; page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+  .hero { background: #173c43; color: #fff; margin: 0 -16mm 5mm; padding: 10mm 16mm 7mm; border-bottom: 5px solid #6ebd91; }
+  .logo { display: inline-block; background: #2f7d5b; color: #fff; font-weight: 800; padding: 4px 8px; border-radius: 4px; letter-spacing: .5px; }
+  .hero h1 { font-size: 22pt; margin: 5mm 0 2mm; letter-spacing: -.5px; }
+  .hero h1 span { color: #6ebd91; }
+  .hero p { color: #cfe0db; margin: 0; max-width: 150mm; }
+  h2 { color: #173c43; font-size: 12.5pt; margin: 4mm 0 2.5mm; border-bottom: 2px solid #e6f2ec; padding-bottom: 1.5mm; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5mm; }
+  .feat { border: 1px solid #dde4e0; border-left: 4px solid #2f7d5b; border-radius: 6px; padding: 2.2mm 3.5mm; break-inside: avoid; }
+  .feat b { color: #173c43; display: block; font-size: 10pt; margin-bottom: 1mm; }
+  .feat p { margin: 0; font-size: 8.8pt; color: #33454a; }
+  .faq { break-inside: avoid; margin-bottom: 2.2mm; }
+  .faq b { color: #173c43; }
+  .faq p { margin: 1mm 0 0; }
+  .box { background: #e6f2ec; border-radius: 6px; padding: 3mm 4.5mm; margin-top: 3mm; break-inside: avoid; }
+  .box.dark { background: #173c43; color: #fff; }
+  .box.dark a { color: #6ebd91; }
+  .foot { position: absolute; bottom: 8mm; left: 16mm; right: 16mm; font-size: 8pt; color: #5d6e72; border-top: 1px solid #dde4e0; padding-top: 2mm; display: flex; justify-content: space-between; }
+  ul { margin: 1mm 0; padding-left: 5mm; }
+  .formula { font-family: Consolas, monospace; background: #f5f8f7; padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<section class="page">
+  <div class="hero">
+    <span class="logo">HUB</span> <b style="font-size:13pt">042</b>
+    <h1>Willkommen im <span>HUB-042</span> 👋</h1>
+    <p>Lieber Nutzer, liebe Nutzerin: danke fürs Registrieren! Hier siehst du auf einen Blick, was der HUB-042 kann, wie er funktioniert und an wen du dich wendest.</p>
+  </div>
+
+  <h2>Was ist der HUB-042?</h2>
+  <p>Die Klassen-App der <b>HFWI-2504-AA</b> (Dipl. Wirtschaftsinformatiker*in HF, HKV Aarau). Stundenplan, Fristen, Punkte, Noten, Lernleistungspunkte und Austausch an einem Ort, im Browser und auf dem Handy.
+    Entstanden als <b>nicht-kommerzielles Schulprojekt</b> im Modul 042 „Applications Engineering“. Kein offizielles Angebot der HKV Aarau.</p>
+
+  <h2>Funktionen</h2>
+  <div class="grid">
+    <div class="feat"><b>🏠 Dashboard</b><p>Nächste Lektionen, offene Aufgaben, Countdown zur nächsten Prüfung, Notenschnitt, Rang, XP und Level.</p></div>
+    <div class="feat"><b>✅ ATL-Tracker</b><p>Alle Aufgaben wie in MS Teams: Bevorstehend, Überfällig, Erledigt. Punkte eintragen (z. B. 45/60) und Note sofort sehen.</p></div>
+    <div class="feat"><b>📈 Noten &amp; Notenrechner</b><p>Modul wählen, Aufgabe wählen (Maximum ist vorgegeben), Punkte eingeben. Note pro Aufgabe, pro Modul und pro Schuljahr.</p></div>
+    <div class="feat"><b>🎓 Leistungsausweis &amp; LLP</b><p>Wie der HKV-Leistungsausweis: LLP möglich/erreicht, Note und Bemerkung pro Modul, Fortschritt Richtung 3600 LLP.</p></div>
+    <div class="feat"><b>📅 Stundenplan</b><p>Alle Lektionen beider Studienjahre mit Raum, Dozent*in, Ferien und Feiertagen. Kalender-Abo für Outlook, Google und Apple.</p></div>
+    <div class="feat"><b>📍 Check-in</b><p>Präsenz pro Lektion bestätigen: 0.5 LLP pro Lektion (4 Lektionen = 2 LLP, ganzer Schultag = 4 LLP).</p></div>
+    <div class="feat"><b>🏆 Anonymes Ranking</b><p>Podest pro Schuljahr nach Notenschnitt oder XP. Du siehst nur dich selbst, alle anderen bleiben „Anonym“.</p></div>
+    <div class="feat"><b>💬 Forum</b><p>Fragen, Wissenswertes, Zusammenfassungen und Lerngruppen. Beiträge als hilfreich markieren und als gelöst abhaken.</p></div>
+    <div class="feat"><b>ℹ️ Infos &amp; Downloads</b><p>Lehrplan, Kontakte, Zertifikate (IPMA, IREB, ITIL, COBIT), Weg zum Bachelor nach dem HF sowie Broschüren und Pläne zum Download.</p></div>
+    <div class="feat"><b>🤖 Hilfe-Bot</b><p>Fragen zum HUB-042 und zum Studium rund um die Uhr. Beantwortet nur allgemeine Fragen und kennt keine persönlichen Daten.</p></div>
+    <div class="feat"><b>⭐ Gamification</b><p>XP für Abgaben, Pünktlichkeit, gute Noten und Hilfe im Forum. Level, Streak und Abzeichen.</p></div>
+    <div class="feat"><b>📱 App auf dem Homescreen</b><p>iPhone: Safari → Teilen → „Zum Home-Bildschirm“. Android: Chrome → Menü → „App installieren“.</p></div>
+  </div>
+  <div class="foot"><span>HUB-042 · Schulprojekt Modul 042 Applications Engineering · HFWI-2504-AA</span><span>Seite 1/2</span></div>
+</section>
+
+<section class="page">
+  <h2 style="margin-top:10mm">FAQ</h2>
+  <div class="faq"><b>Wer kann sich registrieren?</b><p>Nur Personen auf der Teilnehmerliste der HFWI-2504-AA mit <b>vorname.nachname@stud.hkv.ch</b> sowie der Dozent Applications Engineering mit <b>vorname.nachname@hkv.ch</b>. Andere Adressen werden abgewiesen.</p></div>
+  <div class="faq"><b>Wie wird meine Note berechnet?</b><p>Nach der Schweizer Formel <span class="formula">Note = Punkte × 5 ÷ Maximum + 1</span>, gerundet auf 0.1. Beispiel: 45 von 60 Punkten = 4.75, gerundet 4.8. Für das Modul zählen zusätzlich die Präsenz-LLP, genau wie im Leistungsausweis.</p></div>
+  <div class="faq"><b>Was sind LLP?</b><p>Lernleistungspunkte. LLP möglich = Präsenz (0.5 LLP pro Lektion) + Maximalpunkte der ATL und Mastery Tests. Über drei Jahre sind 3600 LLP möglich.</p></div>
+  <div class="faq"><b>Wer sieht meine Punkte?</b><p>Nur du. Im Ranking erscheinen alle anderen als „Anonym“, und angezeigt wird erst ab 3 Personen mit Einträgen. Dozierende und Admins sehen keine Punkte.</p></div>
+  <div class="faq"><b>Ist das offiziell?</b><p>Nein. Massgebend sind immer die Angaben der HKV Aarau in MS Teams und Tocco sowie der offizielle Leistungsausweis.</p></div>
+  <div class="faq"><b>Wie abonniere ich den Stundenplan?</b><p>Stundenplan → „Kalender abonnieren“ → Link kopieren → in Outlook unter „Kalender hinzufügen → Aus dem Internet“ einfügen.</p></div>
+  <div class="faq"><b>Passwort vergessen?</b><p>Auf der Anmeldeseite „Passwort vergessen?“ wählen. Der Link kommt an deine HKV-Adresse und ist eine Stunde gültig.</p></div>
+  <div class="faq"><b>Wie lösche ich meine Daten?</b><p>Profil → „Konto löschen“ entfernt sofort alle Punkte, Check-ins und Beiträge. Unter „Meine Daten herunterladen“ bekommst du vorher alles als Datei.</p></div>
+
+  <div class="box">
+    <b>🔒 Datenschutz in Kürze</b>
+    <ul>
+      <li>Nicht-kommerziell, keine Werbung, kein Tracking, keine Weitergabe an Dritte</li>
+      <li>Passwörter nur verschlüsselt (bcrypt), keine IP-Adressen im Besucherzähler</li>
+      <li>Ein einziges technisch notwendiges Cookie, alles über HTTPS</li>
+      <li>Vollständige Datenschutzerklärung und Impressum im HUB-042 (Fusszeile)</li>
+    </ul>
+  </div>
+
+  <div class="box dark">
+    <b>📬 Feature-Wünsche, Fragen, Löschanfragen</b>
+    <p style="margin:1.5mm 0 0">Schreib an <a href="mailto:alban.hyseni@stud.hkv.ch">alban.hyseni@stud.hkv.ch</a> oder sprich Alban persönlich im Unterricht an. Löschanfragen werden umgehend erledigt, du kannst dein Konto aber auch selbst im Profil löschen.</p>
+  </div>
+
+  <h2>Entstehung &amp; Name</h2>
+  <p>Der HUB-042 entstand in der Übung „Webapplikation (1–3)“ im Modul 042 Applications Engineering. Thema war der Betrieb einer Webapplikation:
+    App und Datenbank in getrennten Docker-Containern, automatischer Build mit GitHub Actions, Veröffentlichung über einen Cloudflare Tunnel und eine Betriebs-Checkliste.
+    <b>Warum HUB-042?</b> Die Seite entstand während des Unterrichts im Modul 042. Der Name gefiel, weil 42 in Douglas Adams’ „Per Anhalter durch die Galaxis“ die Antwort auf die Frage nach dem Leben, dem Universum und dem ganzen Rest ist.</p>
+  <div class="foot"><span>Stand: Oktober 2026 · Alle Angaben ohne Gewähr</span><span>Seite 2/2</span></div>
+</section>
+</body>
+</html>

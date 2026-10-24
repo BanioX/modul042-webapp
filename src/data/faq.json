@@ -1,0 +1,150 @@
+[
+  {
+    "keywords": [
+      "042",
+      "42",
+      "name",
+      "heisst",
+      "warum hub",
+      "hub-042",
+      "douglas",
+      "anhalter",
+      "galaxis"
+    ],
+    "answer": "Der Name HUB-042 kommt vom Modul 042 „Applications Engineering“: Die Seite ist während dieses Unterrichts entstanden. Der Macher fand den Namen ausserdem passend, weil er Sci-Fi-Fan ist: In Douglas Adams’ „Per Anhalter durch die Galaxis“ berechnet der Supercomputer Deep Thought 7,5 Millionen Jahre lang die Antwort auf die endgültige Frage nach dem Leben, dem Universum und dem ganzen Rest und verkündet: „Zweiundvierzig.“ Also ein Hub mit der Antwort auf (fast) alle Fragen der Klasse. 🚀"
+  },
+  {
+    "keywords": [
+      "note",
+      "formel",
+      "berechn",
+      "rechner",
+      "runden"
+    ],
+    "answer": "Die Note wird nach der Schweizer Formel berechnet: Note = Punkte × 5 ÷ Maximum + 1, gerundet auf 0.1. Beispiel: 45/60 = 4.8. Im Tab „Noten“ wählst du Modul und Aufgabe, das Maximum ist vorgegeben."
+  },
+  {
+    "keywords": [
+      "llp",
+      "lernleistung",
+      "leistungsausweis",
+      "3600",
+      "promotion"
+    ],
+    "answer": "LLP möglich = Präsenz (0.5 LLP pro Lektion) + Maximalpunkte der ATL und Mastery Tests. Modulnote = erreicht ÷ möglich × 5 + 1. Über drei Jahre sind 3600 LLP möglich. Deinen Leistungsausweis findest du im Tab „Noten“."
+  },
+  {
+    "keywords": [
+      "check-in",
+      "checkin",
+      "präsenz",
+      "anwesen",
+      "absenz"
+    ],
+    "answer": "Im Stundenplan bestätigst du pro Lektion deine Anwesenheit mit „Check-in“ (0.5 LLP pro Lektion, ein Schultag mit 8 Lektionen = 4 LLP). Mit „Alle vergangenen bestätigen“ geht es schneller, Absenzen entfernst du danach einzeln."
+  },
+  {
+    "keywords": [
+      "ranking",
+      "podest",
+      "anonym",
+      "rang",
+      "sichtbar"
+    ],
+    "answer": "Im Ranking siehst nur du deinen Namen, alle anderen erscheinen als „Anonym“. Andere werden erst ab 3 Personen mit Einträgen angezeigt. Deine Punkte sieht sonst niemand, auch nicht Admins oder Dozierende."
+  },
+  {
+    "keywords": [
+      "kalender",
+      "outlook",
+      "abo",
+      "ics",
+      "teams"
+    ],
+    "answer": "Stundenplan → „Kalender abonnieren“ → Link kopieren → in Outlook „Kalender hinzufügen → Aus dem Internet“. Lektionen und Fristen aktualisieren sich automatisch."
+  },
+  {
+    "keywords": [
+      "passwort",
+      "vergessen",
+      "reset",
+      "login"
+    ],
+    "answer": "Auf der Anmeldeseite „Passwort vergessen?“ wählen. Der Link kommt an deine HKV-Adresse und ist eine Stunde gültig. Passwörter müssen 8 bis 20 Zeichen lang sein."
+  },
+  {
+    "keywords": [
+      "löschen",
+      "loeschen",
+      "export",
+      "daten",
+      "datenschutz",
+      "dsg"
+    ],
+    "answer": "Im Profil kannst du alle deine Daten herunterladen oder dein Konto sofort löschen. Löschanfragen und Fragen zum Datenschutz auch an alban.hyseni@stud.hkv.ch. Details in der Datenschutzerklärung (Fusszeile)."
+  },
+  {
+    "keywords": [
+      "registr",
+      "einlad",
+      "zugang",
+      "freischalt",
+      "mail"
+    ],
+    "answer": "Registrieren können sich nur Personen auf der Teilnehmerliste: Studierende mit vorname.nachname@stud.hkv.ch und der Dozent Applications Engineering mit vorname.nachname@hkv.ch."
+  },
+  {
+    "keywords": [
+      "feature",
+      "wunsch",
+      "idee",
+      "fehler",
+      "bug",
+      "kontakt"
+    ],
+    "answer": "Feature-Wünsche und Fehler bitte an alban.hyseni@stud.hkv.ch oder Alban persönlich im Unterricht ansprechen."
+  },
+  {
+    "keywords": [
+      "bachelor",
+      "fachhochschule",
+      "ects",
+      "kalaidos",
+      "zhaw",
+      "fhnw",
+      "weiter"
+    ],
+    "answer": "Nach dem HF ist ein verkürzter Bachelor möglich, z. B. Kalaidos (80 ECTS angerechnet, ca. 2 Jahre, teurer) oder ZHAW (Direkteinstieg ins Hauptstudium, günstiger, länger). Vergleich im Tab „Infos → Nach dem HF“."
+  },
+  {
+    "keywords": [
+      "zertifikat",
+      "ipma",
+      "itil",
+      "ireb",
+      "cobit",
+      "ielts"
+    ],
+    "answer": "Optionale Zertifikate wie IPMA (Projektmanagement), IREB (Requirements Engineering), ITIL (Service-Management) und COBIT (IT-Governance) sind im Tab „Infos → Zertifikate“ mit Links erklärt. IELTS ist Pflicht im 3. Studienjahr."
+  },
+  {
+    "keywords": [
+      "zimmer",
+      "raum",
+      "wo",
+      "anfahrt",
+      "park"
+    ],
+    "answer": "Mittwochs sind wir in Zimmer 126 (1. Stock, Treppe West). 1xx/2xx/3xx = Stockwerk, Zimmer 226–341 Treppe West, 211–222 Treppe Ost. Kein Autoparkplatz auf dem Areal; Parkhäuser: Kantonalbank, Bahnhofparking, Behmen, Kasino, Kaserne."
+  },
+  {
+    "keywords": [
+      "homescreen",
+      "app",
+      "iphone",
+      "android",
+      "installieren"
+    ],
+    "answer": "iPhone: in Safari Teilen ↑ → „Zum Home-Bildschirm“. Android: Chrome-Menü ⋮ → „App installieren“. Danach öffnet sich der HUB-042 wie eine App."
+  }
+]

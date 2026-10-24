@@ -1,7 +1,7 @@
 {
-  "name": "devops-webapp",
-  "version": "1.1.0",
-  "description": "Modul 042 DevOps & Wirtschaftsinformatik ATL Notenrechner & Benchmark",
+  "name": "hub-042",
+  "version": "2.0.0",
+  "description": "HUB-042 – Klassen-App der HFWI-2504-AA (Schulprojekt Modul 042 Applications Engineering): Stundenplan, ATL-Tracker, Notenrechner, LLP, anonymes Ranking, Forum",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -15,5 +15,6 @@
     "helmet": "^8.1.0",
     "nodemailer": "^10.1.7",
     "pg": "^8.11.5"
-  }
+  },
+  "private": true
 }

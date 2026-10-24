@@ -20,3 +20,8 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Downloads nur lokal (nicht öffentlich), ausser dem eigenen Produktblatt
+downloads/*
+!downloads/HUB-042_Produktblatt.pdf
+hub-042-downloads.zip

@@ -1,7 +1,9 @@
+name: hub-042
+
 services:
   db:
     image: postgres:16-alpine
-    container_name: webapp_postgres
+    container_name: hub042_postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME:-webapp_db}
@@ -15,7 +17,7 @@ services:
       timeout: 3s
       retries: 5
     networks:
-      - webapp_net
+      - hub042_net
 
   app:
     build:
@@ -23,8 +25,8 @@ services:
       dockerfile: Dockerfile
       args:
         GIT_COMMIT: ${APP_VERSION:-dev}
-    image: ghcr.io/baniox/modul042-webapp:latest
-    container_name: webapp_server
+    image: ghcr.io/baniox/hub-042:latest
+    container_name: hub042_server
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -44,6 +46,18 @@ services:
       SMTP_PASS: ${SMTP_PASS:-}
       MAIL_FROM: ${MAIL_FROM:-}
       PUBLIC_URL: ${PUBLIC_URL:-}
+      # Zugang: Teilnehmerliste nur in .env (nicht im öffentlichen Repo)
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+      DOZENT_EMAILS: ${DOZENT_EMAILS:-}
+      TEILNEHMER_EMAILS: ${TEILNEHMER_EMAILS:-}
+      ALLOWED_EMAIL_DOMAINS: ${ALLOWED_EMAIL_DOMAINS:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      # Hilfe-Bot (optional): ohne Key antwortet die lokale FAQ
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+    volumes:
+      # Downloads-Bereich: Dateien liegen nur lokal (nicht im öffentlichen Repo)
+      - ./downloads:/app/downloads:ro
     depends_on:
       db:
         condition: service_healthy
@@ -54,22 +68,22 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - webapp_net
+      - hub042_net
 
   tunnel:
     image: cloudflare/cloudflared:latest
-    container_name: webapp_cloudflare_tunnel
+    container_name: hub042_tunnel
     restart: unless-stopped
     command: tunnel --no-autoupdate --url http://app:3000
     depends_on:
       app:
         condition: service_healthy
     networks:
-      - webapp_net
+      - hub042_net
 
   watchtower:
     image: containrrr/watchtower:latest
-    container_name: webapp_watchtower
+    container_name: hub042_watchtower
     restart: unless-stopped
     environment:
       - DOCKER_API_VERSION=1.44
@@ -82,7 +96,10 @@ services:
 volumes:
   postgres_data:
     driver: local
+    # Fester Name, damit die bestehende Datenbank auch nach der Umbenennung
+    # (Projekt/Ordner hub-042) weiterverwendet wird. Anderes Volume: DB_VOLUME in .env
+    name: ${DB_VOLUME:-modul042-webapp_postgres_data}
 
 networks:
-  webapp_net:
+  hub042_net:
     driver: bridge

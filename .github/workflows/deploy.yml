@@ -11,7 +11,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: baniox/modul042-webapp
+  IMAGE_NAME: baniox/hub-042
 
 jobs:
   build-and-push:
