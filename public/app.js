@@ -29,7 +29,9 @@
     try { data = await res.json(); } catch (e) { data = {}; }
     if (res.status === 401 && !path.startsWith('/api/auth')) {
       state.meta = null;
-      go('/anmelden');
+      // /api/meta prüft nur, ob jemand eingeloggt ist: nicht umleiten, sonst wären
+      // Datenschutz und Impressum ausgeloggt nicht erreichbar (der Router leitet selbst um)
+      if (path !== '/api/meta') go('/anmelden');
       throw new Error(data.error || 'Bitte anmelden');
     }
     if (res.status === 403 && data.code === 'MUST_CHANGE_PASSWORD' && state.meta && !document.getElementById('force-pw')) {
