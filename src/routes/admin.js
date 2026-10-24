@@ -120,11 +120,12 @@ module.exports = function adminRoutes(app, ctx) {
     const result = await sendInvitationEmail({
       email, name: p.rows[0].full_name, inviter: req.user.display_name, req,
     });
-    await audit(req, 'invitation_sent', email, { sent: result.sent });
+    // Nur protokollieren, was wirklich passiert ist (im Demo-Modus geht keine Mail raus)
+    await audit(req, result.sent ? 'invitation_sent' : 'invitation_not_sent', email, { mode: result.mode });
     if (!result.sent) {
       return res.status(502).json({
         error: result.mode === 'dev-fallback'
-          ? 'SMTP ist noch nicht eingerichtet (.env). Der Link steht im Server-Log.'
+          ? 'Demo-Modus ohne Mailversand: Es wurde keine Einladung verschickt. Teile den Link oder QR-Code selbst.'
           : `Versand fehlgeschlagen: ${result.error}`,
       });
     }

@@ -2287,7 +2287,7 @@
           ${['student', 'dozent', 'admin'].filter((r) => isAdmin || r !== 'admin' || p.role === 'admin').map((r) => `<option value="${r}" ${r === p.role ? 'selected' : ''}>${roleLabel(r)}</option>`).join('')}</select>`}</td>
         <td>${status}${p.last_active ? `<br><span style="font-size:12px;color:var(--muted)">zuletzt ${esc(fmt.date(fmt.day(p.last_active), { day: 'numeric', month: 'short' }))}</span>` : ''}</td>
         <td style="white-space:nowrap">
-          ${!p.user_id && p.active ? `<button class="btn secondary small" data-invite="${esc(p.email)}">Einladen</button>` : ''}
+          ${!p.user_id && p.active && data.mail.configured ? `<button class="btn secondary small" data-invite="${esc(p.email)}">Einladen</button>` : ''}
           ${p.user_id && !p.email_verified ? `<button class="btn small" data-verify="${p.user_id}">Annehmen</button>` : ''}
           ${p.user_id && p.email_verified && p.user_id !== state.meta.user.id ? `<button class="btn ghost small" data-reset="${p.user_id}" data-mail="${esc(p.email)}">Passwort zurücksetzen</button>
             <button class="btn ghost small" data-reset-id="${p.user_id}" data-mail="${esc(p.email)}" title="Wenn die Person ihre Wiederherstellungs-ID verloren hat">Passwort + ID zurücksetzen</button>` : ''}
@@ -2305,7 +2305,7 @@
         email_verified: 'E-Mail bestätigt', password_reset_requested: 'Passwort-Reset angefordert', password_reset: 'Passwort zurückgesetzt',
         password_changed: 'Passwort geändert', profile_updated: 'Profil geändert', data_export: 'Datenexport', account_deleted: 'Konto gelöscht',
         participants_added: 'Teilnehmende hinzugefügt', participant_updated: 'Teilnehmende*r geändert', participant_removed: 'Teilnehmende*r entfernt',
-        invitation_sent: 'Einladung versendet', user_verified_manually: 'Manuell freigeschaltet', task_created: 'Aufgabe erstellt',
+        invitation_sent: 'Einladung versendet', invitation_not_sent: 'Einladung NICHT versendet (kein Mailversand)', user_verified_manually: 'Manuell freigeschaltet', task_created: 'Aufgabe erstellt',
         task_updated: 'Aufgabe geändert', mail_test: 'Test-Mail', password_reset_by_admin: 'Passwort durch Admin zurückgesetzt', password_and_id_reset_by_admin: 'Passwort + ID durch Admin zurückgesetzt',
         recovery_id_created: 'Wiederherstellungs-ID erzeugt', recovery_id_failed: 'Wiederherstellungs-ID falsch', task_deleted: 'Aufgabe gelöscht', lessons_imported: 'Stundenplan importiert',
       };
