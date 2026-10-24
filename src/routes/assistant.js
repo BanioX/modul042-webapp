@@ -5,6 +5,7 @@
  */
 const rateLimit = require('express-rate-limit');
 const faq = require('../data/faq.json');
+const { localAnswer } = require('../bot/local');
 const hkv = require('../data/hkv.json');
 
 const MAX_QUESTION = 500;
@@ -127,17 +128,18 @@ module.exports = function assistantRoutes(app, ctx) {
     const question = redact(req.body.message).trim();
     if (!question) return res.status(400).json({ error: 'Frage fehlt.' });
     const page = String(req.body.page || '').slice(0, 40);
-    if (process.env.GEMINI_API_KEY) {
-      try {
-        const answer = await askGemini(question, page, await pageContext(pool, page));
-        if (answer) return res.json({ answer, source: 'gemini' });
-      } catch (err) {
-        console.error('[BOT] Gemini nicht erreichbar:', err.message);
-      }
+    // Zuerst lokal: Termine, Notenrechner, eigene Werte und App-Wissen (bleibt auf dem Server)
+    const local = await localAnswer({ pool, user: req.user, question, page });
+    if (!local.fallback || !process.env.GEMINI_API_KEY) {
+      return res.json({ ...local, source: 'local' });
     }
-    const answer = faqAnswer(question)
-      || 'Dazu habe ich leider keine Antwort. Frag im Forum nach oder schreib an alban.hyseni@stud.hkv.ch.';
-    return res.json({ answer, source: 'faq' });
+    try {
+      const answer = await askGemini(question, page, await pageContext(pool, page));
+      if (answer) return res.json({ answer, source: 'gemini' });
+    } catch (err) {
+      console.error('[BOT] Gemini nicht erreichbar:', err.message);
+    }
+    return res.json({ ...local, source: 'local' });
   }));
 };
 

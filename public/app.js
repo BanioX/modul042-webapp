@@ -252,6 +252,7 @@
               <span class="avatar">${esc(initials(user.display_name))}</span>
               <span class="meta"><div class="name">${esc(user.display_name)}</div><div class="role">${esc(roleLabel(user.role))}</div></span>
             </a>
+            <button class="logout-btn" id="logout-top" title="Abmelden" aria-label="Abmelden">${icon('logout', 18)}<span class="hide-sm">Abmelden</span></button>
           </div>
         </div>
       </header>
@@ -259,11 +260,21 @@
         ${nav.map(([key, label, ic]) => `<a class="tab ${key === active ? 'active' : ''}" href="#/${key}">${icon(ic)} ${label}</a>`).join('')}
       </div></nav>
       <main class="page">${content}</main>`;
+    document.getElementById('logout-top').addEventListener('click', logout);
     document.getElementById('year-select').addEventListener('change', (e) => {
       state.yearId = parseInt(e.target.value, 10);
       try { localStorage.setItem('hub042-year', String(state.yearId)); } catch (err) { /* optional */ }
       route();
     });
+  }
+
+  async function logout() {
+    try { await api('/api/auth/logout', { method: 'POST' }); } catch (e) { /* Cookie wird trotzdem verworfen */ }
+    state.meta = null;
+    closeModal();
+    renderBot();
+    toast('Abgemeldet');
+    go('/anmelden');
   }
 
   function loading(active) {
@@ -614,10 +625,11 @@
           <div class="field"><label>Aktuelles Passwort (Werkspasswort)</label><input class="input" type="password" name="current_password" autocomplete="current-password" required></div>
           <div class="field"><label>Neues Passwort</label><input class="input" type="password" name="new_password" minlength="8" maxlength="20" autocomplete="new-password" required><span class="hint">8 bis 20 Zeichen</span></div>
         </form>`,
-      foot: '<button class="btn" id="force-pw-save">Speichern</button>',
+      foot: '<button class="btn secondary" id="force-pw-logout">Abmelden</button><button class="btn" id="force-pw-save">Speichern</button>',
       onMount(modal) {
         modal.querySelector('[data-close]').remove();
         modal.parentElement.removeAttribute('data-close');
+        modal.querySelector('#force-pw-logout').addEventListener('click', logout);
         modal.querySelector('#force-pw-save').addEventListener('click', async () => {
           try {
             await api('/api/me', { method: 'PATCH', body: formData(modal.querySelector('#force-pw')) });
@@ -1897,7 +1909,7 @@
       if (window.confirm('Neue ID erzeugen? Die bisherige ist danach ungültig.')) showRecoveryId(false);
     });
     document.getElementById('new-cal').addEventListener('click', async () => { await api('/api/me/calendar-token', { method: 'POST' }); toast('Neuer Kalender-Link erzeugt'); });
-    document.getElementById('logout').addEventListener('click', async () => { await api('/api/auth/logout', { method: 'POST' }); state.meta = null; go('/anmelden'); });
+    document.getElementById('logout').addEventListener('click', logout);
     document.getElementById('delete-me').addEventListener('click', async () => {
       if (!window.confirm('Konto und alle deine Daten endgültig löschen?')) return;
       await api('/api/me', { method: 'DELETE' });
@@ -2055,11 +2067,12 @@
       <div class="bot-panel" role="dialog" aria-label="Hilfe-Bot">
         <div class="bot-head"><strong>🤖 HUB-042 Hilfe</strong><button class="icon-btn" id="bot-close" aria-label="Schliessen" style="color:#fff">×</button></div>
         <div class="bot-msgs" id="bot-msgs">
-          <div class="bot-msg bot">Hoi! Frag mich zum HUB-042, zu Noten, LLP, Stundenplan oder zum Studium. Ich sehe, dass du gerade auf „${esc(page)}“ bist.</div>
-          ${bot.history.map((m) => `<div class="bot-msg ${m.role}">${esc(m.text)}</div>`).join('')}
+          <div class="bot-msg bot">Hoi! Frag mich zu Terminen, Noten, LLP, Modulen, Zertifikaten oder zur Bedienung von HUB-042.</div>
+          ${bot.history.length ? '' : `<div class="bot-chips">${['Wann ist die nächste Prüfung?', 'Wie viel ist 45 von 60?', 'Wie ist mein Notenschnitt?', 'Wann sind die nächsten Ferien?'].map((t) => `<button type="button" class="bot-chip" data-ask="${esc(t)}">${esc(t)}</button>`).join('')}</div>`}
+          ${bot.history.map((m) => `<div class="bot-msg ${m.role}">${esc(m.text)}</div>${m.suggestions ? `<div class="bot-chips">${m.suggestions.map((t) => `<button type="button" class="bot-chip" data-ask="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : ''}`).join('')}
         </div>
         <form class="bot-form" id="bot-form"><input class="input" id="bot-input" maxlength="500" placeholder="Frage eingeben …" autocomplete="off"><button class="btn" type="submit">➤</button></form>
-        <div class="bot-note">${bot.ai ? 'Antworten von Google Gemini, ohne Gewähr.' : 'Antworten aus der HKV-Hub-FAQ.'} Bitte keine persönlichen Daten eingeben.</div>
+        <div class="bot-note">Antworten aus den Daten von HUB-042${bot.ai ? ', bei offenen Fragen ergänzt durch Google Gemini' : ''}, ohne Gewähr. Bitte keine persönlichen Daten eingeben.</div>
       </div>` : '<button class="bot-fab" id="bot-open" aria-label="Hilfe-Bot öffnen">🤖</button>';
     const openBtn = document.getElementById('bot-open');
     if (openBtn) {
@@ -2074,23 +2087,27 @@
     document.getElementById('bot-close').addEventListener('click', () => { bot.open = false; renderBot(); });
     const msgs = document.getElementById('bot-msgs');
     msgs.scrollTop = msgs.scrollHeight;
-    document.getElementById('bot-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const input = document.getElementById('bot-input');
-      const text = input.value.trim();
-      if (!text) return;
+    const ask = async (text) => {
+      bot.history.forEach((m) => { delete m.suggestions; });
       bot.history.push({ role: 'me', text });
       bot.history.push({ role: 'bot', text: '…' });
       renderBot();
       try {
         const res = await api('/api/assistant', { method: 'POST', body: { message: text, page } });
         bot.history[bot.history.length - 1].text = res.answer;
+        if (res.suggestions) bot.history[bot.history.length - 1].suggestions = res.suggestions;
       } catch (err) {
         bot.history[bot.history.length - 1].text = err.message;
       }
       renderBot();
       document.getElementById('bot-input').focus();
+    };
+    document.getElementById('bot-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = document.getElementById('bot-input').value.trim();
+      if (text) ask(text);
     });
+    document.querySelectorAll('#bot-root [data-ask]').forEach((b) => b.addEventListener('click', () => ask(b.dataset.ask)));
   }
 
   // ---------------------------------------------------------------

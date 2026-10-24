@@ -102,6 +102,33 @@ function computeLlp({
   };
 }
 
+/** LLP einer Person für ein Schuljahr aus der Datenbank. */
+async function loadLlp(pool, userId, year) {
+  const [modules, lessons, attended, tasks, today] = await Promise.all([
+    pool.query('SELECT code, name FROM modules WHERE school_year_id = $1 ORDER BY name', [year.id]),
+    pool.query("SELECT id, module_code, lektionen, to_char(date, 'YYYY-MM-DD') AS date FROM lessons WHERE school_year_id = $1", [year.id]),
+    pool.query(
+      `SELECT a.lesson_id FROM attendance a JOIN lessons l ON l.id = a.lesson_id
+       WHERE a.user_id = $1 AND l.school_year_id = $2`,
+      [userId, year.id]
+    ),
+    pool.query(
+      `SELECT t.module_code, t.kind, t.max_points, s.points, (s.id IS NOT NULL) AS submitted
+       FROM tasks t LEFT JOIN submissions s ON s.task_id = t.id AND s.user_id = $2
+       WHERE t.school_year_id = $1`,
+      [year.id, userId]
+    ),
+    pool.query("SELECT to_char((NOW() AT TIME ZONE 'Europe/Zurich')::date, 'YYYY-MM-DD') AS d"),
+  ]);
+  return computeLlp({
+    modules: modules.rows,
+    lessons: lessons.rows,
+    attended: new Set(attended.rows.map((r) => r.lesson_id)),
+    tasks: tasks.rows,
+    today: today.rows[0].d,
+  });
+}
+
 module.exports = {
-  LLP_PER_LEKTION, LLP_TOTAL_PROGRAM, EXAM_GROUP, computeLlp,
+  LLP_PER_LEKTION, LLP_TOTAL_PROGRAM, EXAM_GROUP, computeLlp, loadLlp,
 };
