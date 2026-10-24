@@ -35,5 +35,7 @@ ssh-key-*
 
 # Lokaler Admin-Ordner (Server-IP, gesicherte Stände mit Datenbank-Backups)
 admin-config.txt
+HUB-042-Admin/
+HUB-042-Admin*.zip
 Staende/
 *.sql.gz.enc
