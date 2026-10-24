@@ -32,6 +32,13 @@
       go('/anmelden');
       throw new Error(data.error || 'Bitte anmelden');
     }
+    if (res.status === 403 && data.code === 'MUST_CHANGE_PASSWORD' && state.meta && !document.getElementById('force-pw')) {
+      // Passwort wurde inzwischen zurückgesetzt (z. B. in einem anderen Tab): Status neu laden und Fenster zeigen
+      state.meta = null;
+      await loadMeta();
+      if (state.meta && state.meta.user.needsRecoveryId) showRecoveryId(true);
+      else if (state.meta) forcePasswordChange();
+    }
     if (!res.ok) {
       const error = new Error(data.error || `Fehler ${res.status}`);
       error.data = data;

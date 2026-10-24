@@ -115,7 +115,7 @@ const ALLOWED_WHILE_RESET = ['/api/meta', '/api/me', '/api/me/consent', '/api/me
 function requireAuth(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Bitte zuerst anmelden.' });
   if (req.user.must_change_password && !ALLOWED_WHILE_RESET.includes(req.path)) {
-    return res.status(403).json({ error: 'Bitte zuerst ein neues Passwort wählen.' });
+    return res.status(403).json({ error: 'Bitte zuerst ein neues Passwort wählen.', code: 'MUST_CHANGE_PASSWORD' });
   }
   return next();
 }
