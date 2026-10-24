@@ -1814,7 +1814,7 @@
           <li><strong>Abmelden oder 5 Minuten offline</strong> = du verlässt alle Chats. Beim nächsten Login siehst du deine alten Nachrichten nicht mehr.</li>
           <li><strong>Wer noch im Chat ist, kann dich wieder einladen.</strong> Dann siehst du den bisherigen Verlauf wieder.</li>
           <li><strong>Sind alle aus einem Chat raus, wird sein Verlauf sofort gelöscht.</strong></li>
-          <li><strong>Vorhang:</strong> Nach 60 Sekunden ohne Aktivität deckt ein Vorhang den Chat ab, damit niemand mitliest. Schreiben zählt als Aktivität. Zum Weiterlesen nach oben scrollen oder wischen.</li>
+          <li><strong>Vorhang:</strong> Nach 15 Sekunden ohne Aktivität deckt ein Vorhang den Chat ab, damit niemand mitliest. Schreiben zählt als Aktivität. Zum Weiterlesen nach oben scrollen oder wischen.</li>
           <li><strong>Keine Screenshots, kein Kopieren, kein Weitergeben.</strong> Der Chat ist vertraulich. Ein Wasserzeichen mit deinem Namen liegt über den Nachrichten.</li>
         </ul>
       </details>
@@ -1833,7 +1833,7 @@
               <div class="curtain-clock" id="curtain-clock"></div>
               <div class="curtain-lock">🔒</div>
               <strong>Chat gesperrt</strong>
-              <p>60 Sekunden keine Aktivität</p>
+              <p>15 Sekunden keine Aktivität</p>
             </div>
             <button class="curtain-hint" id="curtain-up" type="button"><span class="curtain-chevron">︿</span>Nach oben wischen zum Entsperren</button>
             <div class="curtain-bar"></div></div>
@@ -1927,9 +1927,9 @@
     window.addEventListener('keyup', chatState.onKey);
     document.getElementById('shield-back').addEventListener('click', () => { shield.hidden = true; document.getElementById('chat-input').focus(); });
     ['copy', 'cut', 'contextmenu', 'dragstart'].forEach((ev) => document.getElementById('chat-msgs').addEventListener(ev, (e) => e.preventDefault()));
-    // Vorhang nach 60 s Inaktivität; Tippen, Maus, Scrollen und Touch zählen als Aktivität
+    // Vorhang nach 15 s Inaktivität; Tippen, Maus, Scrollen und Touch zählen als Aktivität
     const curtain = document.getElementById('chat-curtain');
-    const IDLE_MS = 60000;
+    const IDLE_MS = 15000;
     let lastActive = Date.now();
     let down = false;
     const activity = () => { if (!down) lastActive = Date.now(); };

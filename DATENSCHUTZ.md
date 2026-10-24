@@ -59,7 +59,7 @@ Es werden **keine** besonders schützenswerten Personendaten (Art. 5 lit. c DSG)
 - Sitzungsende (Abmelden, Konto gesperrt oder gelöscht, 5 min ohne Lebenszeichen) entfernt die Person aus allen Chats. Ohne Einladung sieht sie den alten Verlauf nicht mehr.
 - Ein Chat ohne Mitglieder wird samt Verlauf sofort gelöscht; ein Neustart löscht alles.
 - Direktnachrichten sind serverseitig auf die zwei Beteiligten beschränkt (Test `chat.test.js`).
-- Abschreckung gegen Weitergabe: Sperrvorhang nach 60 s Inaktivität, schwarzer Schutzschild bei Fokusverlust, Print-Taste oder Drucken, Wasserzeichen mit dem eigenen Namen, kein Kopieren. Ein Browser kann Screenshots technisch nicht vollständig verhindern; darauf weist die App hin.
+- Abschreckung gegen Weitergabe: Sperrvorhang nach 15 s Inaktivität, schwarzer Schutzschild bei Fokusverlust, Print-Taste oder Drucken, Wasserzeichen mit dem eigenen Namen, kein Kopieren. Ein Browser kann Screenshots technisch nicht vollständig verhindern; darauf weist die App hin.
 
 ## 6. Bekanntgabe an Dritte / ins Ausland (Art. 16 DSG)
 

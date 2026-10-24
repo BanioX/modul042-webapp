@@ -24,6 +24,8 @@ Der Admin zeigt der Klasse einen QR-Code aus der Verwaltung. Wer ihn scannt, lan
 
 Ein flüchtiger, nicht gespeicherter Chat wird im Browser nach **60 Sekunden ohne Aktivität** automatisch von einem **schwarzen Sperrbildschirm („Vorhang“)** abgedeckt, damit Umstehende nicht mitlesen können.
 
+> **Anpassung am 24.10.2026 (Betreiber):** Die Wartezeit wurde von 60 auf **15 Sekunden** verkürzt, damit der Chat schneller geschützt ist. Die übrige Mechanik bleibt gleich.
+
 Mechanik im Einzelnen:
 
 1. **Aktivitätserkennung:** Mausbewegung, Klick, Tastendruck, Texteingabe, Scrollen und Touch setzen den 60-Sekunden-Zähler zurück. **Wer gerade eine Nachricht schreibt, gilt als aktiv**, auch wenn das Schreiben länger als 60 Sekunden dauert. Es wird jeder Tastendruck erkannt, nicht nur das Absenden.

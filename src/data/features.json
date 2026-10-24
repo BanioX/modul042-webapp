@@ -36,8 +36,8 @@
   },
   {
     "id": "vorhang", "icon": "🖤", "title": "Sperrvorhang (Wischen zum Entsperren)",
-    "text": "Nach 60 s ohne Aktivität fährt ein schwarzer Sperrbildschirm über den Chat. Tippen zählt als Aktivität. Entsperren: nach oben wischen (Handy) oder scrollen bzw. ziehen (PC).",
-    "faq": { "keywords": ["vorhang", "gesperrt", "sperrbildschirm", "schwarz", "entsperren", "wischen", "swipe", "scrollen"], "answer": "Nach 60 Sekunden ohne Aktivität fährt im Chat ein schwarzer Sperrbildschirm von unten hoch, damit niemand mitliest. Tippen, Maus und Touch zählen als Aktivität, auch wenn du länger an einer Nachricht schreibst. Entsperren: am Handy nach oben wischen (der Vorhang folgt dem Finger), am PC mit dem Mausrad scrollen oder hochziehen. Die Idee stammt von Alban (24.10.2026)." }
+    "text": "Nach 15 s ohne Aktivität fährt ein schwarzer Sperrbildschirm über den Chat. Tippen zählt als Aktivität. Entsperren: nach oben wischen (Handy) oder scrollen bzw. ziehen (PC).",
+    "faq": { "keywords": ["vorhang", "gesperrt", "sperrbildschirm", "schwarz", "entsperren", "wischen", "swipe", "scrollen"], "answer": "Nach 15 Sekunden ohne Aktivität fährt im Chat ein schwarzer Sperrbildschirm von unten hoch, damit niemand mitliest. Tippen, Maus und Touch zählen als Aktivität, auch wenn du länger an einer Nachricht schreibst. Entsperren: am Handy nach oben wischen (der Vorhang folgt dem Finger), am PC mit dem Mausrad scrollen oder hochziehen. Die Idee stammt von Alban (24.10.2026)." }
   },
   {
     "id": "gruppen", "icon": "🎲", "title": "Zufalls-Gruppen",
