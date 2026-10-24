@@ -3,6 +3,7 @@
  * Eigene Werte (Schnitt, LLP) werden nur für die fragende Person gelesen und bleiben auf dem Server.
  */
 const faq = require('../data/faq.json');
+const features = require('../data/features.json');
 const hkv = require('../data/hkv.json');
 const { calculateSwissGrade, pointsNeededForGrade } = require('../grades');
 const { loadLlp } = require('../llp');
@@ -95,11 +96,14 @@ function detectModule(raw, modules) {
   return best;
 }
 
+// Antworten zu jeder Funktion kommen aus dem Funktionskatalog (src/data/features.json)
+const KNOWLEDGE = [...features.map((f) => f.faq), ...faq];
+
 function faqMatch(raw) {
   const q = normalize(raw);
   let best = null;
   let bestScore = 0;
-  for (const item of faq) {
+  for (const item of KNOWLEDGE) {
     const score = item.keywords.filter((k) => q.includes(normalize(k))).length;
     if (score > bestScore) {
       best = item;
@@ -128,7 +132,8 @@ function capabilities() {
     + '• Noten rechnen: „45 von 60“ oder „was brauche ich für eine 5 bei 60“\n'
     + '• deinen Notenschnitt und deine LLP anzeigen\n'
     + '• Module, Zertifikate (IPMA, IREB, ITIL, COBIT, IELTS), Bachelor nach dem HF und Kontakte erklären\n'
-    + '• Zimmer finden und die Bedienung von HUB-042 erklären';
+    + '• Zimmer finden und alle Funktionen erklären: '
+    + `${features.map((f) => f.title.split(' (')[0]).join(', ')}`;
 }
 
 async function currentYear(pool) {

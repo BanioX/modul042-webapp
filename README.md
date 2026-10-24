@@ -142,7 +142,7 @@ npm test     # 52 Unit-Tests: Zugang, Ranking-Anonymität, LLP, Noten, Gamificat
 
 ### Produktblatt neu erzeugen
 
-`docs/produktblatt.html` → `downloads/HUB-042_Produktblatt.pdf`:
+Das Produktblatt entsteht automatisch aus `src/data/features.json` und `src/data/faq.json` (Vorlage `docs/produktblatt.template.html`):
 
 ```bash
 node scripts/build-produktblatt.js   # braucht Playwright mit Chromium
@@ -163,6 +163,10 @@ Für die Übung läuft HUB-042 auf dem Laptop. Damit die Klasse die Seite jederz
 | Render / Koyeb / Fly.io Free Tier | 0 CHF | ja | schlafen bei Inaktivität ein, Gratis-Datenbanken sind befristet; Watchtower und Compose nicht nutzbar |
 
 Wichtig: Der **Quick Tunnel** (`trycloudflare.com`) bekommt bei jedem Neustart eine neue Adresse. Für eine feste Adresse braucht es einen Cloudflare *Named Tunnel* (gratis, aber mit eigener Domain, ca. CHF 10–15 pro Jahr) oder **Tailscale Funnel** (gratis, Adresse wie `https://hub-042.<tailnet>.ts.net`).
+
+## Für KI-Assistenten
+
+[`AGENTS.md`](AGENTS.md) (dazu `CLAUDE.md` und `GEMINI.md`) beschreibt Projekt, Datenschutz-Regeln und die **Checkliste nach jeder neuen Funktion**: Funktionskatalog, Bot, Produktblatt, README, Datenschutz, Betriebs-Checkliste, Tests. `test/consistency.test.js` lässt den Build scheitern, wenn Produktblatt oder Bot nicht zum Funktionsumfang passen.
 
 ## Ideen & Urheberschaft
 

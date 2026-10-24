@@ -1,0 +1,82 @@
+[
+  {
+    "id": "dashboard", "icon": "🏠", "title": "Dashboard",
+    "text": "Nächste Lektionen, offene Aufgaben, Countdown zur nächsten Prüfung, Notenschnitt, Rang, XP, Level und LLP-Fortschritt.",
+    "faq": { "keywords": ["dashboard", "startseite", "uebersicht", "überblick"], "answer": "Das Dashboard zeigt dir auf einen Blick die nächsten Lektionen, offene Aufgaben, den Countdown zur nächsten Prüfung, deinen Notenschnitt, Rang, XP und deine LLP." }
+  },
+  {
+    "id": "aufgaben", "icon": "✅", "title": "ATL-Tracker",
+    "text": "Alle Aufgaben wie in MS Teams: Bevorstehend, Überfällig, Erledigt. Punkte eintragen (z. B. 45/60) und Note sofort sehen.",
+    "faq": { "keywords": ["atl-tracker", "aufgabe", "aufgaben", "punkte eintragen", "teams", "abgegeben"], "answer": "Im ATL-Tracker siehst du alle Aufgaben wie in MS Teams (Bevorstehend, Überfällig, Erledigt). Aufgabe antippen, Punkte eintragen (z. B. 45 von 60), speichern. Die Note erscheint sofort, und nur du siehst sie." }
+  },
+  {
+    "id": "noten", "icon": "📈", "title": "Noten & Leistungsausweis",
+    "text": "Notenrechner (Modul und Aufgabe wählen, Maximum vorgegeben) und Leistungsausweis wie bei der HKV: LLP möglich/erreicht, Note pro Modul, Fortschritt Richtung 3600 LLP.",
+    "faq": { "keywords": ["noten", "notenrechner", "leistungsausweis", "modulnote", "jahresschnitt"], "answer": "Im Tab „Noten“ wählst du Modul und Aufgabe, gibst die Punkte ein und siehst die Note. Darunter steht dein Leistungsausweis mit LLP möglich/erreicht und Note pro Modul, wie im offiziellen HKV-Leistungsausweis." }
+  },
+  {
+    "id": "stundenplan", "icon": "📅", "title": "Stundenplan & Check-in",
+    "text": "Alle Lektionen mit Raum, Ferien und Feiertagen, Kalender-Abo für Outlook. Check-in pro Lektion: 0.5 LLP pro Lektion.",
+    "faq": { "keywords": ["stundenplan", "lektionen", "kalender abonnieren", "raum"], "answer": "Im Stundenplan siehst du alle Lektionen mit Raum, Ferien und Feiertagen. Mit „Check-in“ bestätigst du deine Präsenz (0.5 LLP pro Lektion), und mit „Kalender abonnieren“ holst du alles in Outlook, Google oder Apple." }
+  },
+  {
+    "id": "ranking", "icon": "🏆", "title": "Anonymes Ranking",
+    "text": "Podest pro Schuljahr nach Notenschnitt oder XP. Nur du siehst dich selbst, alle anderen bleiben „Anonym“, und angezeigt wird erst ab 3 Personen.",
+    "faq": { "keywords": ["ranking", "podest", "anonym", "rang"], "answer": "Im Ranking siehst nur du deinen Namen, alle anderen erscheinen als „Anonym“. Angezeigt wird erst ab 3 Personen mit Einträgen, damit niemand auf einzelne Noten zurückschliessen kann." }
+  },
+  {
+    "id": "forum", "icon": "💬", "title": "Forum",
+    "text": "Fragen, Wissenswertes, Zusammenfassungen und Lerngruppen. Beiträge als hilfreich markieren und als gelöst abhaken.",
+    "faq": { "keywords": ["forum", "beitrag", "zusammenfassung", "frage stellen"], "answer": "Im Forum stellst du Fragen, teilst Zusammenfassungen oder suchst Lerngruppen. Beiträge kannst du als hilfreich markieren und deine eigenen Fragen als gelöst abhaken." }
+  },
+  {
+    "id": "chat", "icon": "🔒", "title": "Flüchtiger Chat",
+    "text": "Gruppenchat „Klasse“ und Direktnachrichten, nie gespeichert. Abmelden = Chats verlassen. Einladung gibt den Verlauf frei. Sind alle draussen, ist alles gelöscht.",
+    "faq": { "keywords": ["chat", "nachricht", "direktnachricht", "gruppenchat", "verlauf", "einladen"], "answer": "Der Chat hat einen Gruppenchat „Klasse“ und Direktnachrichten. Er wird nie gespeichert: Beim Abmelden oder nach 5 Minuten offline verlässt du alle Chats und siehst den alten Verlauf nicht mehr. Wer noch drin ist, kann dich wieder einladen, dann siehst du den Verlauf wieder. Sind alle draussen, wird alles gelöscht. Screenshots und Kopieren sind nicht erlaubt." }
+  },
+  {
+    "id": "vorhang", "icon": "🖤", "title": "Sperrvorhang (Wischen zum Entsperren)",
+    "text": "Nach 60 s ohne Aktivität fährt ein schwarzer Sperrbildschirm über den Chat. Tippen zählt als Aktivität. Entsperren: nach oben wischen (Handy) oder scrollen bzw. ziehen (PC).",
+    "faq": { "keywords": ["vorhang", "gesperrt", "sperrbildschirm", "schwarz", "entsperren", "wischen", "swipe", "scrollen"], "answer": "Nach 60 Sekunden ohne Aktivität fährt im Chat ein schwarzer Sperrbildschirm von unten hoch, damit niemand mitliest. Tippen, Maus und Touch zählen als Aktivität, auch wenn du länger an einer Nachricht schreibst. Entsperren: am Handy nach oben wischen (der Vorhang folgt dem Finger), am PC mit dem Mausrad scrollen oder hochziehen. Die Idee stammt von Alban (24.10.2026)." }
+  },
+  {
+    "id": "gruppen", "icon": "🎲", "title": "Zufalls-Gruppen",
+    "text": "Anwesende anhaken, 2er–6er wählen, auslosen und für Teams kopieren. Läuft nur im Browser und wird nicht gespeichert.",
+    "faq": { "keywords": ["gruppe", "gruppen", "lerngruppe", "auslosen", "zufall"], "answer": "Im Tab „Gruppen“ hakst du an, wer da ist, wählst die Gruppengrösse (z. B. 3er) und klickst „Gruppen auslosen“. Geht es nicht auf, werden die Übrigen verteilt oder bilden eine Restgruppe. Mit „Kopieren“ postest du das Ergebnis in Teams." }
+  },
+  {
+    "id": "infos", "icon": "ℹ️", "title": "Infos & Downloads",
+    "text": "Lehrplan aller 3 Jahre, Kontakte, Zertifikate (IPMA, IREB, ITIL, COBIT), Weg zum Bachelor nach dem HF, Broschüren und Pläne zum Download.",
+    "faq": { "keywords": ["infos", "download", "broschuere", "lehrplan", "factsheet"], "answer": "Im Tab „Infos“ findest du Downloads (Stundenpläne, Ferienplan, Broschüren, Merkblatt Englisch, Zimmer- und Lageplan), den Lehrplan aller 3 Jahre, Kontakte, Zertifikate und den Vergleich der Bachelor-Wege nach dem HF." }
+  },
+  {
+    "id": "bot", "icon": "🤖", "title": "Hilfe-Bot",
+    "text": "Beantwortet Fragen direkt aus den App-Daten: nächste Prüfungen und Lektionen, Ferien, Notenrechner, eigener Schnitt und LLP, Module, Zertifikate, Zimmer.",
+    "faq": { "keywords": ["bot", "assistent", "hilfe-bot"], "answer": "Ich beantworte Fragen direkt aus den Daten von HUB-042: nächste Prüfungen und Lektionen, Ferien, Noten rechnen, deinen Schnitt und deine LLP, Module, Zertifikate, Bachelor, Kontakte und Zimmer." }
+  },
+  {
+    "id": "profil", "icon": "👤", "title": "Profil & Abmelden",
+    "text": "Name und Passwort ändern, Wiederherstellungs-ID neu erzeugen, Kalender-Link, Abzeichen, Daten herunterladen, Konto löschen. Abmelden oben rechts.",
+    "faq": { "keywords": ["profil", "abmelden", "ausloggen", "logout", "konto loeschen", "konto löschen"], "answer": "Abmelden geht jederzeit oben rechts mit dem Knopf „Abmelden“. Im Profil änderst du Name und Passwort, erzeugst eine neue Wiederherstellungs-ID, lädst deine Daten herunter oder löschst dein Konto." }
+  },
+  {
+    "id": "wiederherstellung", "icon": "🔑", "title": "Wiederherstellungs-ID",
+    "text": "Persönlicher Code (z. B. K7Q2-M9XA), den nur du kennst. Nach einem Passwort-Reset durch den Admin brauchst du Werkspasswort und ID, dann wählst du ein neues Passwort.",
+    "faq": { "keywords": ["wiederherstellung", "recovery", "id verloren", "persoenliche id", "werkspasswort"], "answer": "Die Wiederherstellungs-ID ist ein persönlicher Code wie K7Q2-M9XA, den du beim ersten Login einmal angezeigt bekommst. Nur du kennst ihn, auch der Admin nicht. Setzt der Admin dein Passwort zurück, meldest du dich mit Werkspasswort und ID an und wählst ein neues Passwort. ID verloren? Im Profil eine neue erzeugen oder den Admin um „Passwort + ID zurücksetzen“ bitten." }
+  },
+  {
+    "id": "verwaltung", "icon": "⚙️", "title": "Verwaltung (Admin)",
+    "text": "Demo-Modus ohne Mails: Der Admin nimmt neue Konten an, sperrt sie und setzt Passwörter zurück. Dazu Audit-Protokoll und Schuljahre.",
+    "faq": { "keywords": ["verwaltung", "admin", "annehmen", "freischalten", "demo-modus", "demo"], "answer": "HUB-042 läuft im Demo-Modus ohne Mailversand: Die Mailadresse dient nur zur Identifikation. Nach der Registrierung nimmt der Admin dein Konto in der Verwaltung an. Er kann auch Passwörter auf das Werkspasswort zurücksetzen." }
+  },
+  {
+    "id": "app", "icon": "📱", "title": "Als App aufs Handy",
+    "text": "iPhone: Safari → Teilen → „Zum Home-Bildschirm“. Android: Chrome → Menü → „App installieren“.",
+    "faq": { "keywords": ["homescreen", "iphone", "android", "installieren", "home-bildschirm"], "answer": "iPhone: in Safari Teilen ↑ → „Zum Home-Bildschirm“. Android: Chrome-Menü ⋮ → „App installieren“. Danach öffnet sich HUB-042 wie eine App." }
+  },
+  {
+    "id": "gamification", "icon": "⭐", "title": "XP, Level & Abzeichen",
+    "text": "XP für Abgaben, Pünktlichkeit, gute Noten und Hilfe im Forum. Level, Streak und Abzeichen. Nur zur Motivation, ohne Einfluss auf offizielle Noten.",
+    "faq": { "keywords": ["xp", "level", "abzeichen", "streak", "badge"], "answer": "XP bekommst du für Abgaben (+20), Pünktlichkeit (+10), gute Noten (+10/+20) und das Forum (Beitrag +10, Antwort +5, Like +2). Alle 100 XP steigst du ein Level auf. Abzeichen und Streak findest du im Profil." }
+  }
+]

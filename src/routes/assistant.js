@@ -6,6 +6,7 @@
 const rateLimit = require('express-rate-limit');
 const faq = require('../data/faq.json');
 const { localAnswer } = require('../bot/local');
+const features = require('../data/features.json');
 const hkv = require('../data/hkv.json');
 
 const MAX_QUESTION = 500;
@@ -71,8 +72,7 @@ function systemPrompt(page, extra = '') {
     'Du kennst keine persönlichen Daten der Nutzer*innen und fragst auch nicht danach. Bei Fragen zu offiziellen Noten, Fristen oder Reglementen:',
     'auf MS Teams, Tocco und die Lehrgangsleitung verweisen. Erfinde keine Fakten; wenn du etwas nicht weisst, sag es.',
     `Aktuelle Seite der Person: ${page || 'unbekannt'}.`,
-    'Funktionen: Dashboard, ATL-Tracker (Aufgaben wie MS Teams, Punkte eintragen), Noten (Notenrechner, Leistungsausweis mit LLP),',
-    'Stundenplan (Check-in für Präsenz, Kalender-Abo), anonymes Ranking (andere erst ab 3 Personen sichtbar), Forum, Infos & Downloads, Profil (Datenexport, Konto löschen).',
+    `Funktionen: ${features.map((f) => `${f.title}: ${f.text}`).join(' | ')}`,
     `Eckdaten: ${h.eckdaten.map(([k, v]) => `${k}: ${v}`).join('; ')}.`,
     `Englisch: ${h.englischRegel.join('; ')}.`,
     `Kontakte HKV: ${h.kontakte.map((k) => `${k.rolle} ${k.name} ${k.mail}`).join('; ')}.`,

@@ -21,7 +21,9 @@
       "rechner",
       "runden"
     ],
-    "answer": "Die Note wird nach der Schweizer Formel berechnet: Note = Punkte × 5 ÷ Maximum + 1, gerundet auf 0.1. Beispiel: 45/60 = 4.8. Im Tab „Noten“ wählst du Modul und Aufgabe, das Maximum ist vorgegeben."
+    "answer": "Die Note wird nach der Schweizer Formel berechnet: Note = Punkte × 5 ÷ Maximum + 1, gerundet auf 0.1. Beispiel: 45/60 = 4.8. Im Tab „Noten“ wählst du Modul und Aufgabe, das Maximum ist vorgegeben.",
+    "sheet": true,
+    "question": "Wie wird meine Note berechnet?"
   },
   {
     "keywords": [
@@ -31,7 +33,9 @@
       "3600",
       "promotion"
     ],
-    "answer": "LLP möglich = Präsenz (0.5 LLP pro Lektion) + Maximalpunkte der ATL und Mastery Tests. Modulnote = erreicht ÷ möglich × 5 + 1. Über drei Jahre sind 3600 LLP möglich. Deinen Leistungsausweis findest du im Tab „Noten“."
+    "answer": "LLP möglich = Präsenz (0.5 LLP pro Lektion) + Maximalpunkte der ATL und Mastery Tests. Modulnote = erreicht ÷ möglich × 5 + 1. Über drei Jahre sind 3600 LLP möglich. Deinen Leistungsausweis findest du im Tab „Noten“.",
+    "sheet": true,
+    "question": "Was sind LLP?"
   },
   {
     "keywords": [
@@ -41,17 +45,9 @@
       "anwesen",
       "absenz"
     ],
-    "answer": "Im Stundenplan bestätigst du pro Lektion deine Anwesenheit mit „Check-in“ (0.5 LLP pro Lektion, ein Schultag mit 8 Lektionen = 4 LLP). Mit „Alle vergangenen bestätigen“ geht es schneller, Absenzen entfernst du danach einzeln."
-  },
-  {
-    "keywords": [
-      "ranking",
-      "podest",
-      "anonym",
-      "rang",
-      "sichtbar"
-    ],
-    "answer": "Im Ranking siehst nur du deinen Namen, alle anderen erscheinen als „Anonym“. Andere werden erst ab 3 Personen mit Einträgen angezeigt. Deine Punkte sieht sonst niemand, auch nicht Admins oder Dozierende."
+    "answer": "Im Stundenplan bestätigst du pro Lektion deine Anwesenheit mit „Check-in“ (0.5 LLP pro Lektion, ein Schultag mit 8 Lektionen = 4 LLP). Mit „Alle vergangenen bestätigen“ geht es schneller, Absenzen entfernst du danach einzeln.",
+    "sheet": true,
+    "question": "Was bringt der Check-in?"
   },
   {
     "keywords": [
@@ -61,7 +57,9 @@
       "ics",
       "teams"
     ],
-    "answer": "Stundenplan → „Kalender abonnieren“ → Link kopieren → in Outlook „Kalender hinzufügen → Aus dem Internet“. Lektionen und Fristen aktualisieren sich automatisch."
+    "answer": "Stundenplan → „Kalender abonnieren“ → Link kopieren → in Outlook „Kalender hinzufügen → Aus dem Internet“. Lektionen und Fristen aktualisieren sich automatisch.",
+    "sheet": true,
+    "question": "Wie abonniere ich den Stundenplan?"
   },
   {
     "keywords": [
@@ -70,7 +68,9 @@
       "reset",
       "login"
     ],
-    "answer": "Im Demo-Modus gibt es kein „Passwort vergessen“ per Mail. Melde dich beim Admin (Alban): Er setzt dein Passwort auf das Werkspasswort zurück und teilt es dir persönlich mit. Beim nächsten Login wählst du sofort ein eigenes Passwort (8–20 Zeichen)."
+    "answer": "Im Demo-Modus gibt es kein „Passwort vergessen“ per Mail. Melde dich beim Admin (Alban): Er setzt dein Passwort auf das Werkspasswort zurück und teilt es dir persönlich mit. Beim nächsten Login wählst du sofort ein eigenes Passwort (8–20 Zeichen).",
+    "sheet": true,
+    "question": "Passwort vergessen?"
   },
   {
     "keywords": [
@@ -81,7 +81,9 @@
       "datenschutz",
       "dsg"
     ],
-    "answer": "Im Profil kannst du alle deine Daten herunterladen oder dein Konto sofort löschen. Löschanfragen und Fragen zum Datenschutz auch an alban.hyseni@stud.hkv.ch. Details in der Datenschutzerklärung (Fusszeile)."
+    "answer": "Im Profil kannst du alle deine Daten herunterladen oder dein Konto sofort löschen. Löschanfragen und Fragen zum Datenschutz auch an alban.hyseni@stud.hkv.ch. Details in der Datenschutzerklärung (Fusszeile).",
+    "sheet": true,
+    "question": "Wie lösche ich meine Daten?"
   },
   {
     "keywords": [
@@ -91,7 +93,9 @@
       "freischalt",
       "mail"
     ],
-    "answer": "Registrieren können sich nur Personen auf der Teilnehmerliste: Studierende mit vorname.nachname@stud.hkv.ch und der Dozent Applications Engineering mit vorname.nachname@hkv.ch. Im Demo-Modus werden keine Mails verschickt: Der Admin nimmt dein Konto in der Verwaltung an."
+    "answer": "Registrieren können sich nur Personen auf der Teilnehmerliste: Studierende mit vorname.nachname@stud.hkv.ch und der Dozent Applications Engineering mit vorname.nachname@hkv.ch. Im Demo-Modus werden keine Mails verschickt: Der Admin nimmt dein Konto in der Verwaltung an.",
+    "sheet": true,
+    "question": "Wer kann sich registrieren?"
   },
   {
     "keywords": [
@@ -136,26 +140,5 @@
       "park"
     ],
     "answer": "Mittwochs sind wir in Zimmer 126 (1. Stock, Treppe West). 1xx/2xx/3xx = Stockwerk, Zimmer 226–341 Treppe West, 211–222 Treppe Ost. Kein Autoparkplatz auf dem Areal; Parkhäuser: Kantonalbank, Bahnhofparking, Behmen, Kasino, Kaserne."
-  },
-  {
-    "keywords": [
-      "homescreen",
-      "app",
-      "iphone",
-      "android",
-      "installieren"
-    ],
-    "answer": "iPhone: in Safari Teilen ↑ → „Zum Home-Bildschirm“. Android: Chrome-Menü ⋮ → „App installieren“. Danach öffnet sich der HUB-042 wie eine App."
-  },
-  {
-    "keywords": [
-      "gruppe",
-      "gruppen",
-      "lerngruppe",
-      "auslosen",
-      "zufall",
-      "team"
-    ],
-    "answer": "Im Tab „Gruppen“ hakst du an, wer da ist, wählst die Gruppengrösse (z. B. 3er) und klickst „Gruppen auslosen“. Geht es nicht auf, werden die Übrigen auf Gruppen verteilt oder bilden eine Restgruppe. Mit „Kopieren“ kannst du das Ergebnis in Teams posten."
   }
 ]

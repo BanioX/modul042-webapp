@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<title>HUB-042 – Produktblatt &amp; FAQ</title>
+<!-- Vorlage: wird von scripts/build-produktblatt.js aus src/data/features.json und src/data/faq.json befüllt -->
+<style>
+  @page { size: A4; margin: 14mm 15mm 16mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Arial, "Liberation Sans", "DejaVu Sans", sans-serif; color: #17262a; font-size: 9.6pt; line-height: 1.38; }
+  .hero { background: #173c43; color: #fff; padding: 8mm 9mm 6mm; border-bottom: 5px solid #6ebd91; border-radius: 6px; margin-bottom: 5mm; }
+  .logo { display: inline-block; background: #2f7d5b; color: #fff; font-weight: 800; padding: 3px 7px; border-radius: 4px; }
+  .hero h1 { font-size: 21pt; margin: 4mm 0 1.5mm; }
+  .hero h1 span { color: #6ebd91; }
+  .hero p { color: #cfe0db; margin: 0; }
+  h2 { color: #173c43; font-size: 12.5pt; margin: 5mm 0 2.5mm; border-bottom: 2px solid #e6f2ec; padding-bottom: 1.2mm; break-after: avoid; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; }
+  .feat { border: 1px solid #dde4e0; border-left: 4px solid #2f7d5b; border-radius: 6px; padding: 2.2mm 3.2mm; break-inside: avoid; }
+  .feat b { color: #173c43; display: block; font-size: 10pt; margin-bottom: .6mm; }
+  .feat p { margin: 0; font-size: 8.8pt; color: #33454a; }
+  .faq { break-inside: avoid; margin-bottom: 2mm; }
+  .faq b { color: #173c43; }
+  .faq p { margin: .6mm 0 0; }
+  .box { background: #e6f2ec; border-radius: 6px; padding: 3mm 4.5mm; margin-top: 3mm; break-inside: avoid; }
+  .box.dark { background: #173c43; color: #fff; }
+  .box.dark a { color: #6ebd91; }
+  ul { margin: 1mm 0; padding-left: 5mm; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <span class="logo">HUB</span> <b style="font-size:13pt">042</b>
+    <h1>Willkommen bei <span>HUB-042</span> 👋</h1>
+    <p>Lieber Nutzer, liebe Nutzerin: danke fürs Registrieren! Hier siehst du, was HUB-042 kann, wie es funktioniert und an wen du dich wendest.</p>
+  </div>
+
+  <h2>Was ist HUB-042?</h2>
+  <p>Die Klassen-App der <b>HFWI-2504-AA</b> (Dipl. Wirtschaftsinformatiker*in HF, HKV Aarau): Stundenplan, Fristen, Punkte, Noten, Lernleistungspunkte, Chat und Austausch an einem Ort, im Browser und auf dem Handy.
+    Entstanden als <b>nicht-kommerzielles Schulprojekt</b> im Modul 042 „Applications Engineering“. Kein offizielles Angebot der HKV Aarau.
+    HUB-042 läuft im <b>Demo-Modus ohne Mailversand</b>: Deine Mailadresse dient nur zur Identifikation, der Admin nimmt neue Konten an.</p>
+
+  <h2>Funktionen</h2>
+  <div class="grid">
+{{FEATURES}}
+  </div>
+
+  <h2>FAQ</h2>
+{{FAQ}}
+
+  <div class="box">
+    <b>🔒 Datenschutz in Kürze</b>
+    <ul>
+      <li>Nicht-kommerziell, keine Werbung, kein Tracking, keine Weitergabe an Dritte</li>
+      <li>Deine Punkte siehst nur du; im Ranking sind alle anderen anonym</li>
+      <li>Der Chat wird nie gespeichert; Screenshots und Kopieren sind nicht erlaubt</li>
+      <li>Passwörter und Wiederherstellungs-IDs nur verschlüsselt (bcrypt), keine IP-Adressen</li>
+      <li>Vollständige Datenschutzerklärung und Impressum in HUB-042 (Fusszeile)</li>
+    </ul>
+  </div>
+
+  <div class="box dark">
+    <b>📬 Feature-Wünsche, Fragen, Löschanfragen</b>
+    <p style="margin:1.5mm 0 0">Schreib an <a href="mailto:alban.hyseni@stud.hkv.ch">alban.hyseni@stud.hkv.ch</a> oder sprich Alban persönlich im Unterricht an. Dein Konto kannst du auch selbst im Profil löschen.</p>
+  </div>
+
+  <h2>Entstehung &amp; Name</h2>
+  <p>Entstanden im Unterricht Modul 042 Applications Engineering (Übung „Webapplikation“: Docker, GitHub Actions, Cloudflare Tunnel).
+    <b>Warum HUB-042?</b> Nach dem Modul 042 und weil 42 in „Per Anhalter durch die Galaxis“ die Antwort auf alle Fragen ist.
+    Die Idee des Chat-Sperrvorhangs mit Wisch-Entsperrung stammt von Alban Hyseni (24.10.2026).</p>
+</body>
+</html>

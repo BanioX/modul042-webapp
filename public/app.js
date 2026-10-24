@@ -317,7 +317,7 @@
             <li><span class="fi">${icon('calendar')}</span><span><strong>Stundenplan</strong><br>Alle Lektionen beider Studienjahre, auch als Kalender-Abo für Outlook &amp; Teams.</span></li>
             <li><span class="fi">${icon('tasks')}</span><span><strong>ATL-Tracker</strong><br>Wie in Teams: Aufgaben, Fristen, Punkte eintragen (z. B. 45/60), Note sofort sehen.</span></li>
             <li><span class="fi">${icon('trophy')}</span><span><strong>Anonymes Ranking</strong><br>Du siehst deinen Platz auf dem Podest, die anderen bleiben anonym.</span></li>
-            <li><span class="fi">${icon('forum')}</span><span><strong>Forum &amp; Wissenswertes</strong><br>Fragen, Zusammenfassungen und Lerngruppen.</span></li>
+            <li><span class="fi">${icon('chat')}</span><span><strong>Chat, Forum &amp; Gruppen</strong><br>Flüchtiger Klassenchat (nie gespeichert), Forum und Zufalls-Lerngruppen.</span></li>
           </ul>
         </section>
         <section class="auth-form"><div class="auth-card">${inner}</div></section>

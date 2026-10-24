@@ -3,93 +3,90 @@
 <head>
 <meta charset="utf-8">
 <title>HUB-042 – Produktblatt &amp; FAQ</title>
+<!-- Automatisch erzeugt aus docs/produktblatt.template.html: node scripts/build-produktblatt.js -->
 <style>
-  @page { size: A4; margin: 0; }
+  @page { size: A4; margin: 14mm 15mm 16mm; }
   * { box-sizing: border-box; }
-  body { margin: 0; font-family: "Segoe UI", Arial, "Liberation Sans", "DejaVu Sans", sans-serif; color: #17262a; font-size: 9.6pt; line-height: 1.38; letter-spacing: 0; }
-  .page { width: 210mm; height: 296mm; overflow: hidden; padding: 0 16mm 14mm; position: relative; page-break-after: always; }
-  .page:last-child { page-break-after: auto; }
-  .hero { background: #173c43; color: #fff; margin: 0 -16mm 5mm; padding: 10mm 16mm 7mm; border-bottom: 5px solid #6ebd91; }
-  .logo { display: inline-block; background: #2f7d5b; color: #fff; font-weight: 800; padding: 4px 8px; border-radius: 4px; letter-spacing: .5px; }
-  .hero h1 { font-size: 22pt; margin: 5mm 0 2mm; letter-spacing: -.5px; }
+  body { margin: 0; font-family: "Segoe UI", Arial, "Liberation Sans", "DejaVu Sans", sans-serif; color: #17262a; font-size: 9.6pt; line-height: 1.38; }
+  .hero { background: #173c43; color: #fff; padding: 8mm 9mm 6mm; border-bottom: 5px solid #6ebd91; border-radius: 6px; margin-bottom: 5mm; }
+  .logo { display: inline-block; background: #2f7d5b; color: #fff; font-weight: 800; padding: 3px 7px; border-radius: 4px; }
+  .hero h1 { font-size: 21pt; margin: 4mm 0 1.5mm; }
   .hero h1 span { color: #6ebd91; }
-  .hero p { color: #cfe0db; margin: 0; max-width: 150mm; }
-  h2 { color: #173c43; font-size: 12.5pt; margin: 4mm 0 2.5mm; border-bottom: 2px solid #e6f2ec; padding-bottom: 1.5mm; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5mm; }
-  .feat { border: 1px solid #dde4e0; border-left: 4px solid #2f7d5b; border-radius: 6px; padding: 2.2mm 3.5mm; break-inside: avoid; }
-  .feat b { color: #173c43; display: block; font-size: 10pt; margin-bottom: 1mm; }
+  .hero p { color: #cfe0db; margin: 0; }
+  h2 { color: #173c43; font-size: 12.5pt; margin: 5mm 0 2.5mm; border-bottom: 2px solid #e6f2ec; padding-bottom: 1.2mm; break-after: avoid; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm; }
+  .feat { border: 1px solid #dde4e0; border-left: 4px solid #2f7d5b; border-radius: 6px; padding: 2.2mm 3.2mm; break-inside: avoid; }
+  .feat b { color: #173c43; display: block; font-size: 10pt; margin-bottom: .6mm; }
   .feat p { margin: 0; font-size: 8.8pt; color: #33454a; }
-  .faq { break-inside: avoid; margin-bottom: 1.6mm; }
+  .faq { break-inside: avoid; margin-bottom: 2mm; }
   .faq b { color: #173c43; }
-  .faq p { margin: 1mm 0 0; }
+  .faq p { margin: .6mm 0 0; }
   .box { background: #e6f2ec; border-radius: 6px; padding: 3mm 4.5mm; margin-top: 3mm; break-inside: avoid; }
   .box.dark { background: #173c43; color: #fff; }
   .box.dark a { color: #6ebd91; }
-  .foot { position: absolute; bottom: 8mm; left: 16mm; right: 16mm; font-size: 8pt; color: #5d6e72; border-top: 1px solid #dde4e0; padding-top: 2mm; display: flex; justify-content: space-between; }
   ul { margin: 1mm 0; padding-left: 5mm; }
-  .formula { font-family: Consolas, monospace; background: #f5f8f7; padding: 1px 5px; border-radius: 3px; }
 </style>
 </head>
 <body>
-<section class="page">
   <div class="hero">
     <span class="logo">HUB</span> <b style="font-size:13pt">042</b>
-    <h1>Willkommen im <span>HUB-042</span> 👋</h1>
-    <p>Lieber Nutzer, liebe Nutzerin: danke fürs Registrieren! Hier siehst du auf einen Blick, was der HUB-042 kann, wie er funktioniert und an wen du dich wendest.</p>
+    <h1>Willkommen bei <span>HUB-042</span> 👋</h1>
+    <p>Lieber Nutzer, liebe Nutzerin: danke fürs Registrieren! Hier siehst du, was HUB-042 kann, wie es funktioniert und an wen du dich wendest.</p>
   </div>
 
-  <h2>Was ist der HUB-042?</h2>
-  <p>Die Klassen-App der <b>HFWI-2504-AA</b> (Dipl. Wirtschaftsinformatiker*in HF, HKV Aarau). Stundenplan, Fristen, Punkte, Noten, Lernleistungspunkte und Austausch an einem Ort, im Browser und auf dem Handy.
-    Entstanden als <b>nicht-kommerzielles Schulprojekt</b> im Modul 042 „Applications Engineering“. Kein offizielles Angebot der HKV Aarau.</p>
+  <h2>Was ist HUB-042?</h2>
+  <p>Die Klassen-App der <b>HFWI-2504-AA</b> (Dipl. Wirtschaftsinformatiker*in HF, HKV Aarau): Stundenplan, Fristen, Punkte, Noten, Lernleistungspunkte, Chat und Austausch an einem Ort, im Browser und auf dem Handy.
+    Entstanden als <b>nicht-kommerzielles Schulprojekt</b> im Modul 042 „Applications Engineering“. Kein offizielles Angebot der HKV Aarau.
+    HUB-042 läuft im <b>Demo-Modus ohne Mailversand</b>: Deine Mailadresse dient nur zur Identifikation, der Admin nimmt neue Konten an.</p>
 
   <h2>Funktionen</h2>
   <div class="grid">
-    <div class="feat"><b>🏠 Dashboard</b><p>Nächste Lektionen, offene Aufgaben, Countdown zur nächsten Prüfung, Notenschnitt, Rang, XP und Level.</p></div>
+    <div class="feat"><b>🏠 Dashboard</b><p>Nächste Lektionen, offene Aufgaben, Countdown zur nächsten Prüfung, Notenschnitt, Rang, XP, Level und LLP-Fortschritt.</p></div>
     <div class="feat"><b>✅ ATL-Tracker</b><p>Alle Aufgaben wie in MS Teams: Bevorstehend, Überfällig, Erledigt. Punkte eintragen (z. B. 45/60) und Note sofort sehen.</p></div>
-    <div class="feat"><b>📈 Noten &amp; Notenrechner</b><p>Modul wählen, Aufgabe wählen (Maximum ist vorgegeben), Punkte eingeben. Note pro Aufgabe, pro Modul und pro Schuljahr.</p></div>
-    <div class="feat"><b>🎓 Leistungsausweis &amp; LLP</b><p>Wie der HKV-Leistungsausweis: LLP möglich/erreicht, Note und Bemerkung pro Modul, Fortschritt Richtung 3600 LLP.</p></div>
-    <div class="feat"><b>📅 Stundenplan</b><p>Alle Lektionen beider Studienjahre mit Raum, Dozent*in, Ferien und Feiertagen. Kalender-Abo für Outlook, Google und Apple.</p></div>
-    <div class="feat"><b>📍 Check-in</b><p>Präsenz pro Lektion bestätigen: 0.5 LLP pro Lektion (4 Lektionen = 2 LLP, ganzer Schultag = 4 LLP).</p></div>
-    <div class="feat"><b>🏆 Anonymes Ranking</b><p>Podest pro Schuljahr nach Notenschnitt oder XP. Du siehst nur dich selbst, alle anderen bleiben „Anonym“.</p></div>
+    <div class="feat"><b>📈 Noten &amp; Leistungsausweis</b><p>Notenrechner (Modul und Aufgabe wählen, Maximum vorgegeben) und Leistungsausweis wie bei der HKV: LLP möglich/erreicht, Note pro Modul, Fortschritt Richtung 3600 LLP.</p></div>
+    <div class="feat"><b>📅 Stundenplan &amp; Check-in</b><p>Alle Lektionen mit Raum, Ferien und Feiertagen, Kalender-Abo für Outlook. Check-in pro Lektion: 0.5 LLP pro Lektion.</p></div>
+    <div class="feat"><b>🏆 Anonymes Ranking</b><p>Podest pro Schuljahr nach Notenschnitt oder XP. Nur du siehst dich selbst, alle anderen bleiben „Anonym“, und angezeigt wird erst ab 3 Personen.</p></div>
     <div class="feat"><b>💬 Forum</b><p>Fragen, Wissenswertes, Zusammenfassungen und Lerngruppen. Beiträge als hilfreich markieren und als gelöst abhaken.</p></div>
-    <div class="feat"><b>ℹ️ Infos &amp; Downloads</b><p>Lehrplan, Kontakte, Zertifikate (IPMA, IREB, ITIL, COBIT), Weg zum Bachelor nach dem HF sowie Broschüren und Pläne zum Download.</p></div>
-    <div class="feat"><b>🤖 Hilfe-Bot</b><p>Fragen zum HUB-042 und zum Studium rund um die Uhr. Beantwortet nur allgemeine Fragen und kennt keine persönlichen Daten.</p></div>
-    <div class="feat"><b>⭐ Gamification</b><p>XP für Abgaben, Pünktlichkeit, gute Noten und Hilfe im Forum. Level, Streak und Abzeichen.</p></div>
-    <div class="feat"><b>📱 App auf dem Homescreen</b><p>iPhone: Safari → Teilen → „Zum Home-Bildschirm“. Android: Chrome → Menü → „App installieren“.</p></div>
+    <div class="feat"><b>🔒 Flüchtiger Chat</b><p>Gruppenchat „Klasse“ und Direktnachrichten, nie gespeichert. Abmelden = Chats verlassen. Einladung gibt den Verlauf frei. Sind alle draussen, ist alles gelöscht.</p></div>
+    <div class="feat"><b>🖤 Sperrvorhang (Wischen zum Entsperren)</b><p>Nach 60 s ohne Aktivität fährt ein schwarzer Sperrbildschirm über den Chat. Tippen zählt als Aktivität. Entsperren: nach oben wischen (Handy) oder scrollen bzw. ziehen (PC).</p></div>
+    <div class="feat"><b>🎲 Zufalls-Gruppen</b><p>Anwesende anhaken, 2er–6er wählen, auslosen und für Teams kopieren. Läuft nur im Browser und wird nicht gespeichert.</p></div>
+    <div class="feat"><b>ℹ️ Infos &amp; Downloads</b><p>Lehrplan aller 3 Jahre, Kontakte, Zertifikate (IPMA, IREB, ITIL, COBIT), Weg zum Bachelor nach dem HF, Broschüren und Pläne zum Download.</p></div>
+    <div class="feat"><b>🤖 Hilfe-Bot</b><p>Beantwortet Fragen direkt aus den App-Daten: nächste Prüfungen und Lektionen, Ferien, Notenrechner, eigener Schnitt und LLP, Module, Zertifikate, Zimmer.</p></div>
+    <div class="feat"><b>👤 Profil &amp; Abmelden</b><p>Name und Passwort ändern, Wiederherstellungs-ID neu erzeugen, Kalender-Link, Abzeichen, Daten herunterladen, Konto löschen. Abmelden oben rechts.</p></div>
+    <div class="feat"><b>🔑 Wiederherstellungs-ID</b><p>Persönlicher Code (z. B. K7Q2-M9XA), den nur du kennst. Nach einem Passwort-Reset durch den Admin brauchst du Werkspasswort und ID, dann wählst du ein neues Passwort.</p></div>
+    <div class="feat"><b>⚙️ Verwaltung (Admin)</b><p>Demo-Modus ohne Mails: Der Admin nimmt neue Konten an, sperrt sie und setzt Passwörter zurück. Dazu Audit-Protokoll und Schuljahre.</p></div>
+    <div class="feat"><b>📱 Als App aufs Handy</b><p>iPhone: Safari → Teilen → „Zum Home-Bildschirm“. Android: Chrome → Menü → „App installieren“.</p></div>
+    <div class="feat"><b>⭐ XP, Level &amp; Abzeichen</b><p>XP für Abgaben, Pünktlichkeit, gute Noten und Hilfe im Forum. Level, Streak und Abzeichen. Nur zur Motivation, ohne Einfluss auf offizielle Noten.</p></div>
   </div>
-  <div class="foot"><span>HUB-042 · Schulprojekt Modul 042 Applications Engineering · HFWI-2504-AA</span><span>Seite 1/2</span></div>
-</section>
 
-<section class="page">
-  <h2 style="margin-top:10mm">FAQ</h2>
-  <div class="faq"><b>Wer kann sich registrieren?</b><p>Nur Personen auf der Teilnehmerliste der HFWI-2504-AA mit <b>vorname.nachname@stud.hkv.ch</b> sowie der Dozent Applications Engineering mit <b>vorname.nachname@hkv.ch</b>. Andere Adressen werden abgewiesen. Im Demo-Modus werden keine Mails verschickt: Der Admin nimmt neue Konten an.</p></div>
-  <div class="faq"><b>Wie wird meine Note berechnet?</b><p>Nach der Schweizer Formel <span class="formula">Note = Punkte × 5 ÷ Maximum + 1</span>, gerundet auf 0.1. Beispiel: 45 von 60 Punkten = 4.75, gerundet 4.8. Für das Modul zählen zusätzlich die Präsenz-LLP, genau wie im Leistungsausweis.</p></div>
-  <div class="faq"><b>Was sind LLP?</b><p>Lernleistungspunkte. LLP möglich = Präsenz (0.5 LLP pro Lektion) + Maximalpunkte der ATL und Mastery Tests. Über drei Jahre sind 3600 LLP möglich.</p></div>
-  <div class="faq"><b>Wer sieht meine Punkte?</b><p>Nur du. Im Ranking erscheinen alle anderen als „Anonym“, und angezeigt wird erst ab 3 Personen mit Einträgen. Dozierende und Admins sehen keine Punkte.</p></div>
-  <div class="faq"><b>Ist das offiziell?</b><p>Nein. Massgebend sind immer die Angaben der HKV Aarau in MS Teams und Tocco sowie der offizielle Leistungsausweis.</p></div>
-  <div class="faq"><b>Wie abonniere ich den Stundenplan?</b><p>Stundenplan → „Kalender abonnieren“ → Link kopieren → in Outlook unter „Kalender hinzufügen → Aus dem Internet“ einfügen.</p></div>
-  <div class="faq"><b>Passwort vergessen?</b><p>Der Admin setzt dein Passwort auf das Werkspasswort zurück und teilt es dir persönlich mit. Einloggen kannst du dich dann nur mit Werkspasswort <b>und</b> deiner persönlichen Wiederherstellungs-ID, die du beim ersten Login notiert hast. Danach wählst du sofort ein eigenes Passwort.</p></div>
-  <div class="faq"><b>Wie lösche ich meine Daten?</b><p>Profil → „Konto löschen“ entfernt sofort alle Punkte, Check-ins und Beiträge. Unter „Meine Daten herunterladen“ bekommst du vorher alles als Datei.</p></div>
+  <h2>FAQ</h2>
+  <div class="faq"><b>Wie wird meine Note berechnet?</b><p>Die Note wird nach der Schweizer Formel berechnet: Note = Punkte × 5 ÷ Maximum + 1, gerundet auf 0.1. Beispiel: 45/60 = 4.8. Im Tab „Noten“ wählst du Modul und Aufgabe, das Maximum ist vorgegeben.</p></div>
+  <div class="faq"><b>Was sind LLP?</b><p>LLP möglich = Präsenz (0.5 LLP pro Lektion) + Maximalpunkte der ATL und Mastery Tests. Modulnote = erreicht ÷ möglich × 5 + 1. Über drei Jahre sind 3600 LLP möglich. Deinen Leistungsausweis findest du im Tab „Noten“.</p></div>
+  <div class="faq"><b>Was bringt der Check-in?</b><p>Im Stundenplan bestätigst du pro Lektion deine Anwesenheit mit „Check-in“ (0.5 LLP pro Lektion, ein Schultag mit 8 Lektionen = 4 LLP). Mit „Alle vergangenen bestätigen“ geht es schneller, Absenzen entfernst du danach einzeln.</p></div>
+  <div class="faq"><b>Wie abonniere ich den Stundenplan?</b><p>Stundenplan → „Kalender abonnieren“ → Link kopieren → in Outlook „Kalender hinzufügen → Aus dem Internet“. Lektionen und Fristen aktualisieren sich automatisch.</p></div>
+  <div class="faq"><b>Passwort vergessen?</b><p>Im Demo-Modus gibt es kein „Passwort vergessen“ per Mail. Melde dich beim Admin (Alban): Er setzt dein Passwort auf das Werkspasswort zurück und teilt es dir persönlich mit. Beim nächsten Login wählst du sofort ein eigenes Passwort (8–20 Zeichen).</p></div>
+  <div class="faq"><b>Wie lösche ich meine Daten?</b><p>Im Profil kannst du alle deine Daten herunterladen oder dein Konto sofort löschen. Löschanfragen und Fragen zum Datenschutz auch an alban.hyseni@stud.hkv.ch. Details in der Datenschutzerklärung (Fusszeile).</p></div>
+  <div class="faq"><b>Wer kann sich registrieren?</b><p>Registrieren können sich nur Personen auf der Teilnehmerliste: Studierende mit vorname.nachname@stud.hkv.ch und der Dozent Applications Engineering mit vorname.nachname@hkv.ch. Im Demo-Modus werden keine Mails verschickt: Der Admin nimmt dein Konto in der Verwaltung an.</p></div>
 
   <div class="box">
     <b>🔒 Datenschutz in Kürze</b>
     <ul>
       <li>Nicht-kommerziell, keine Werbung, kein Tracking, keine Weitergabe an Dritte</li>
-      <li>Passwörter nur verschlüsselt (bcrypt), keine IP-Adressen im Besucherzähler</li>
-      <li>Ein einziges technisch notwendiges Cookie, alles über HTTPS</li>
-      <li>Vollständige Datenschutzerklärung und Impressum im HUB-042 (Fusszeile)</li>
+      <li>Deine Punkte siehst nur du; im Ranking sind alle anderen anonym</li>
+      <li>Der Chat wird nie gespeichert; Screenshots und Kopieren sind nicht erlaubt</li>
+      <li>Passwörter und Wiederherstellungs-IDs nur verschlüsselt (bcrypt), keine IP-Adressen</li>
+      <li>Vollständige Datenschutzerklärung und Impressum in HUB-042 (Fusszeile)</li>
     </ul>
   </div>
 
   <div class="box dark">
     <b>📬 Feature-Wünsche, Fragen, Löschanfragen</b>
-    <p style="margin:1.5mm 0 0">Schreib an <a href="mailto:alban.hyseni@stud.hkv.ch">alban.hyseni@stud.hkv.ch</a> oder sprich Alban persönlich im Unterricht an. Löschanfragen werden umgehend erledigt, du kannst dein Konto aber auch selbst im Profil löschen.</p>
+    <p style="margin:1.5mm 0 0">Schreib an <a href="mailto:alban.hyseni@stud.hkv.ch">alban.hyseni@stud.hkv.ch</a> oder sprich Alban persönlich im Unterricht an. Dein Konto kannst du auch selbst im Profil löschen.</p>
   </div>
 
   <h2>Entstehung &amp; Name</h2>
   <p>Entstanden im Unterricht Modul 042 Applications Engineering (Übung „Webapplikation“: Docker, GitHub Actions, Cloudflare Tunnel).
-    <b>Warum HUB-042?</b> Nach dem Modul 042 und weil 42 in „Per Anhalter durch die Galaxis“ die Antwort auf alle Fragen ist.</p>
-  <div class="foot"><span>Stand: Oktober 2026 · Alle Angaben ohne Gewähr</span><span>Seite 2/2</span></div>
-</section>
+    <b>Warum HUB-042?</b> Nach dem Modul 042 und weil 42 in „Per Anhalter durch die Galaxis“ die Antwort auf alle Fragen ist.
+    Die Idee des Chat-Sperrvorhangs mit Wisch-Entsperrung stammt von Alban Hyseni (24.10.2026).</p>
 </body>
 </html>
