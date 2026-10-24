@@ -598,12 +598,11 @@
 
         <h3>7. Hosting und Empfänger</h3>
         <ul>
-          <li>Die Applikation und die Datenbank laufen in Docker-Containern in der Schweiz.</li>
-          <li>Für den Dauerbetrieb läuft HUB-042 auf einer virtuellen Maschine von <strong>Oracle Cloud</strong> (Rechenzentrum Zürich, Schweiz). Die Datenbank liegt dort verschlüsselt auf dem Speicher dieser VM; Oracle hat keinen Zweck, auf die Inhalte zuzugreifen.</li>
+          <li>Applikation und Datenbank laufen in Docker-Containern auf einer virtuellen Maschine von <strong>Oracle Cloud</strong> (Rechenzentrum Zürich, Schweiz). Die Datenbank liegt dort verschlüsselt auf dem Speicher dieser VM; Oracle hat keinen Zweck, auf die Inhalte zuzugreifen.</li>
           <li>Öffentlich erreichbar ist sie über einen <strong>Cloudflare Tunnel</strong> (Cloudflare Inc., USA) und/oder <strong>Tailscale Funnel</strong> (Tailscale Inc., Kanada/USA). Die Verbindung ist per HTTPS verschlüsselt,
             die Anbieter verarbeiten dabei technisch bedingt IP-Adressen und Verbindungsdaten. Beide sind unter dem Swiss-U.S. Data Privacy Framework zertifiziert bzw. in einem Land mit angemessenem Datenschutzniveau (Kanada).
             Inhalte wie Punkte werden dort nicht gespeichert.</li>
-          <li>Bestätigungs-, Einladungs-, Willkommens- und Passwort-Mails werden über das HKV-Microsoft-365-Konto ${CONTACT} oder über ein Gmail-Konto des Betreibers (Google LLC, USA, Swiss-U.S. Data Privacy Framework) versendet. Dabei werden nur deine Mailadresse und dein Anzeigename übermittelt.</li>
+          <li><strong>Kein Mailversand:</strong> HUB-042 läuft im Demo-Modus und verschickt keine E-Mails. Deine Mailadresse dient nur zur Identifikation und wird an keinen Maildienst übermittelt. Sollte der Mailversand später eingeschaltet werden, wird diese Erklärung vorher angepasst und du wirst erneut um Zustimmung gebeten.</li>
           <li><strong>Hilfe-Bot (freiwillig):</strong> Nur wenn du dem Bot eine Frage stellst und er mit KI läuft, wird der Fragetext an
             <strong>Google Gemini</strong> (Google LLC, USA, zertifiziert unter dem Swiss-U.S. Data Privacy Framework) übermittelt, zusammen mit allgemeinen Infos
             zum HUB-042 und klassenweiten Terminen. Nie mitgesendet werden dein Name, deine E-Mail, Punkte oder Noten. E-Mail-Adressen und Telefonnummern in der Frage

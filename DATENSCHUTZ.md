@@ -66,7 +66,7 @@ Es werden **keine** besonders schützenswerten Personendaten (Art. 5 lit. c DSG)
 | Empfänger | Zweck | Land | Grundlage |
 | :--- | :--- | :--- | :--- |
 | Cloudflare Inc. (Tunnel) | HTTPS-Zugang; verarbeitet technisch IP und Verbindungsdaten | USA | Swiss-U.S. Data Privacy Framework (Angemessenheit durch den Bundesrat seit 15.9.2024) |
-| Microsoft 365 (HKV-Konto) **oder** Gmail des Betreibers | Versand von Bestätigungs-, Einladungs-, Willkommens- und Reset-Mails (nur Mailadresse und Anzeigename) | CH/EU (HKV-Tenant) bzw. USA (Google) | Schulkonto der HKV bzw. Swiss-U.S. DPF |
+| ~~Maildienst (Microsoft 365 oder Gmail)~~ | **derzeit nicht aktiv:** Demo-Modus ohne Mailversand, die Mailadresse dient nur zur Identifikation. Wird SMTP später eingeschaltet, werden Erklärung und `PRIVACY_VERSION` vorher angepasst | – | – |
 | Google Gemini (optional) | Hilfe-Bot, **nur** wenn ein API-Key gesetzt ist und jemand fragt | USA | Swiss-U.S. DPF; gesendet wird nur die geschwärzte Frage plus allgemeiner/klassenweiter Kontext |
 | Tailscale Inc. (Funnel, in Betrieb seit 24.10.2026) | feste HTTPS-Adresse; verarbeitet technisch IP und Verbindungsdaten | Kanada/USA | Kanada: angemessenes Schutzniveau (Anhang 1 DSV); USA: Swiss-U.S. DPF |
 | Oracle Cloud (Always-Free-VM, in Betrieb seit 24.10.2026) | Hosting von App und Datenbank für den Dauerbetrieb | **Schweiz** (Region Zürich) | Auftragsbearbeitung (Art. 9 DSG), Oracle Cloud Agreement inkl. DPA |
@@ -83,7 +83,7 @@ Hinweis zum Bot: Beim kostenlosen Gemini-Kontingent kann Google Eingaben zur Ver
 | Passwörter bcrypt (10 Runden), 8–20 Zeichen | umgesetzt |
 | Signierte httpOnly-Session-Cookies (`sameSite=lax`) | umgesetzt |
 | Rate-Limits für Login, Registrierung, Schreibzugriffe und Bot | umgesetzt |
-| Zugang nur mit HKV-Domain **und** Teilnehmerliste **und** bestätigter Mail | umgesetzt |
+| Zugang nur mit HKV-Domain **und** Teilnehmerliste **und** Annahme durch den Admin (Demo-Modus; mit SMTP: bestätigte Mail) | umgesetzt |
 | Alle Inhalte, APIs und Downloads nur mit Login (`401` ohne) | umgesetzt |
 | Keine Indexierung (`robots.txt`, `X-Robots-Tag`, Meta-Tag) | umgesetzt |
 | Datenbank nur im internen Docker-Netz, kein offener Port | umgesetzt |
@@ -98,6 +98,6 @@ Ein technisch notwendiges Session-Cookie (`user_session`, 30 Tage). `localStorag
 
 ## 9. Offene Punkte
 
-- Teilnehmende vor dem Live-Gang über die Plattform informieren (Einladungs-Mail mit Link zur Datenschutzerklärung erfolgt automatisch).
+- Teilnehmende vor dem Live-Gang über die Plattform informieren: QR-Aushang bzw. Onboarding `#/willkommen` mit Link zur Datenschutzerklärung (ohne Mailversand).
 - Nach Studienabschluss: Datenbank löschen (`docker compose down -v`) und Tunnel abschalten.
 - Bei Änderungen der Datenbearbeitung `PRIVACY_VERSION` erhöhen, dann müssen alle neu zustimmen.
